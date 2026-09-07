@@ -1,0 +1,13 @@
+# Core dependency
+Pillow>=9.0.0
+
+# Optional (only required if you want real diffusion backend)
+# diffusers>=0.18.0
+# torch>=2.0.0
+# transformers>=4.0.0
+# accelerate>=0.20.0
+# safetensors>=0.3.0
+
+# If you later migrate to FastAPI
+# fastapi>=0.95.0
+# uvicorn[standard]>=0.22.0
