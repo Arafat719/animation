@@ -1,6 +1,7 @@
 import json
 import os
 import threading
+import shutil
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
@@ -597,6 +598,40 @@ class AppHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({'characters': list_characters()}).encode('utf-8'))
             return
 
+        if path == '/manage_characters':
+            # simple management UI for characters
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.end_headers()
+            manage_html = '''
+            <html><head><title>Manage Characters</title></head><body>
+            <h2>Characters</h2>
+            <div id="list"></div>
+            <h3>Add Character</h3>
+            <form id="addForm">
+              <input name="name" placeholder="Name" />
+              <select name="style"><option value="anime">anime</option><option value="cyberpunk">cyberpunk</option></select>
+              <button type="submit">Add</button>
+            </form>
+            <script>
+            async function refresh(){
+              const res = await fetch('/api/v1/characters');
+              const data = await res.json();
+              document.getElementById('list').innerText = (data.characters||[]).join(', ');
+            }
+            document.getElementById('addForm').addEventListener('submit', async (e)=>{
+              e.preventDefault();
+              const fd = new FormData(e.target);
+              await fetch('/api/v1/characters',{method:'POST', body: JSON.stringify({name: fd.get('name'), style: fd.get('style')}), headers:{'Content-Type':'application/json'}});
+              await refresh();
+            });
+            refresh();
+            </script>
+            </body></html>
+            '''
+            self.wfile.write(manage_html.encode('utf-8'))
+            return
+
         if path == '/health' or path == '/api/v1/health':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
@@ -641,6 +676,36 @@ class AppHandler(BaseHTTPRequestHandler):
                 data = parse_qs(raw.decode('utf-8') or '')
             except Exception:
                 data = {}
+
+        # character creation endpoint (API)
+        if parsed.path == '/api/v1/characters' and self.command == 'POST':
+          if data_json is not None:
+            name = (data_json.get('name') or '').strip()
+            style = (data_json.get('style') or 'anime').strip() or 'anime'
+          else:
+            name = (data.get('name', [''])[0] or '').strip()
+            style = (data.get('style', ['anime'])[0] or 'anime').strip() or 'anime'
+
+          if not name:
+            self.send_response(400)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'error': 'name is required'}).encode('utf-8'))
+            return
+
+          from app import load_character_profile
+          try:
+            profile = load_character_profile(name, style)
+            self.send_response(201)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'profile': profile}).encode('utf-8'))
+          except Exception as exc:
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'error': str(exc)}).encode('utf-8'))
+          return
 
         # /generate
         if parsed.path == '/generate':
@@ -732,7 +797,32 @@ class AppHandler(BaseHTTPRequestHandler):
 
                 frames = generate_storyboard(character_name, scene_list, pose, OUTPUT_DIR, character_style)
                 frame_paths = [item['image_path'] for item in frames if item.get('image_path')]
+                # accept optional format parameter: gif (default) or mp4
+                requested_format = 'gif'
+                if data_json is not None:
+                  requested_format = (data_json.get('format') or 'gif').strip().lower() or 'gif'
+                else:
+                  try:
+                    requested_format = (json.loads(data.get('format', ['"gif"'])[0]) if data.get('format') else 'gif')
+                  except Exception:
+                    requested_format = 'gif'
+
                 animation_path = create_animation_from_frames(frame_paths, OUTPUT_DIR, fps=2)
+
+                warning_msg = None
+                # If user requested mp4, attempt conversion via app helper
+                if requested_format == 'mp4':
+                  ffmpeg_available = shutil.which('ffmpeg') is not None
+                  if not ffmpeg_available:
+                    warning_msg = 'ffmpeg not found on server; returning GIF instead.'
+                  else:
+                    from app import _create_animation_with_format
+                    converted = _create_animation_with_format(frame_paths, OUTPUT_DIR, fps=2, output_format='mp4')
+                    # if conversion succeeded and returned mp4, use it; otherwise keep gif and warn
+                    if converted and converted.endswith('.mp4'):
+                      animation_path = converted
+                    else:
+                      warning_msg = 'ffmpeg conversion failed; returning GIF instead.'
                 if not animation_path:
                     raise ValueError('Animation creation failed')
 

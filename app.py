@@ -7,11 +7,29 @@ import random
 import re
 import sys
 from datetime import datetime
+import logging
+import shutil
+import subprocess
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 CHARACTER_STORE = "characters.json"
 _REAL_PIPE = None
+
+# configure basic logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+
+
+def _sanitize_filename(s: str) -> str:
+    s = re.sub(r"[^a-zA-Z0-9._-]+", "_", s or "")
+    return s.strip("_")[:120] or "image"
+
+
+def _cache_filename_for(prompt: str, character_name: str | None, character_style: str) -> str:
+    key = f"{(prompt or '').strip()}|{(character_name or '').strip()}|{character_style or 'anime'}"
+    h = hashlib.md5(key.encode('utf-8')).hexdigest()[:12]
+    safe = _sanitize_filename(prompt)[:40].lower()
+    return f"{h}_{safe}.png"
 
 
 def sanitize_prompt(prompt: str) -> str:
@@ -210,6 +228,10 @@ def add_text_and_title(image, prompt: str):
 
 def get_real_image_pipe():
     global _REAL_PIPE
+    # Allow disabling the heavy diffusers/torch pipeline via environment variable
+    if os.environ.get('DISABLE_REAL_PIPE', '').lower() in ('1', 'true', 'yes'):
+        logging.info('DISABLE_REAL_PIPE is set; skipping real image pipeline')
+        return None
     if _REAL_PIPE is not None:
         return _REAL_PIPE
 
@@ -249,31 +271,44 @@ def generate_real_image(prompt: str, output_dir: str = "output", character_name:
     ).images[0]
 
     os.makedirs(output_dir, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{timestamp}_{re.sub(r'[^a-zA-Z0-9]+', '_', safe_prompt).strip('_')[:30].lower() or 'image'}.png"
+    # deterministic cache filename for same prompt/character/style
+    filename = _cache_filename_for(enhanced_prompt, character_name, character_style)
     save_path = os.path.join(output_dir, filename)
+    if os.path.exists(save_path):
+        logging.info("Reusing cached real image: %s", save_path)
+        return save_path
+
     image.save(save_path)
+    logging.info("Saved real image: %s", save_path)
     return save_path
 
 
 def generate_image(prompt: str, output_dir: str = "output", character_name: str | None = None, character_style: str = "anime", rng=None):
     try:
         return generate_real_image(prompt, output_dir, character_name, character_style, rng=rng)
-    except Exception:
-        pass
+    except Exception as e:
+        logging.debug("Real image generation unavailable or failed: %s", e)
 
     os.makedirs(output_dir, exist_ok=True)
     safe_prompt = sanitize_prompt(prompt) or "creative concept"
     character_profile = load_character_profile(character_name, character_style)
+    # caching: use deterministic filename so repeated calls reuse existing images
+    cache_name = _cache_filename_for(safe_prompt + f"|{character_profile.get('seed') if character_profile else ''}", character_name, character_style)
+    save_path = os.path.join(output_dir, cache_name)
+    if os.path.exists(save_path):
+        logging.info("Reusing cached generated image: %s", save_path)
+        return save_path
+
     image = create_background(safe_prompt, character_profile=character_profile, rng=rng)
-    draw_prompt_scene(image, safe_prompt, character_profile, rng=rng)
+    try:
+        draw_prompt_scene(image, safe_prompt, character_profile, rng=rng)
+    except Exception:
+        logging.exception("draw_prompt_scene failed; continuing")
     add_text_and_title(image, safe_prompt)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{timestamp}_{re.sub(r'[^a-zA-Z0-9]+', '_', safe_prompt).strip('_')[:30].lower() or 'image'}.png"
-    save_path = os.path.join(output_dir, filename)
     image = image.filter(ImageFilter.GaussianBlur(radius=0.3))
     image.save(save_path)
+    logging.info("Saved generated image: %s", save_path)
     return save_path
 
 
@@ -324,6 +359,10 @@ def list_characters():
 
 
 def create_animation_from_frames(frame_paths: list[str], output_dir: str = "output", fps: int = 2):
+    return _create_animation_with_format(frame_paths, output_dir, fps, output_format='gif')
+
+
+def _create_animation_with_format(frame_paths: list[str], output_dir: str = "output", fps: int = 2, output_format: str = 'gif'):
     if not frame_paths:
         return None
 
@@ -337,15 +376,37 @@ def create_animation_from_frames(frame_paths: list[str], output_dir: str = "outp
 
     os.makedirs(output_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.join(output_dir, f"{timestamp}_storyboard_animation.gif")
+    gif_path = os.path.join(output_dir, f"{timestamp}_storyboard_animation.gif")
     images[0].save(
-        output_path,
+        gif_path,
         save_all=True,
         append_images=images[1:],
         duration=int(1000 / max(1, fps)),
         loop=0,
     )
-    return output_path
+
+    if output_format.lower() == 'gif':
+        return gif_path
+
+    # for mp4 conversion, require ffmpeg on PATH
+    if output_format.lower() in ('mp4', 'video', 'h264'):
+        mp4_path = os.path.splitext(gif_path)[0] + '.mp4'
+        ffmpeg_path = shutil.which('ffmpeg')
+        if not ffmpeg_path:
+            logging.warning('ffmpeg not found on PATH; cannot convert GIF to MP4')
+            return gif_path
+
+        try:
+            # convert gif to mp4 with reasonable defaults
+            cmd = [ffmpeg_path, '-y', '-i', gif_path, '-movflags', 'faststart', '-pix_fmt', 'yuv420p', mp4_path]
+            subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            logging.info('Converted GIF to MP4: %s', mp4_path)
+            return mp4_path
+        except subprocess.CalledProcessError as exc:
+            logging.exception('ffmpeg conversion failed: %s', exc)
+            return gif_path
+
+    return gif_path
 
 
 def main():
