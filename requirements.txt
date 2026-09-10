@@ -1,13 +1,22 @@
-# Core dependency
-Pillow>=9.0.0
-
-# Optional (only required if you want real diffusion backend)
-# diffusers>=0.18.0
-# torch>=2.0.0
-# transformers>=4.0.0
-# accelerate>=0.20.0
-# safetensors>=0.3.0
-
-# If you later migrate to FastAPI
-# fastapi>=0.95.0
-# uvicorn[standard]>=0.22.0
+# Local backend and legacy image renderer; Python 3.11/3.12 on Linux.
+# Direct and transitive versions captured from the passing local environment.
+# GPU/model packages are optional and intentionally excluded from this setup.
+alembic==1.19.2
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+click==8.5.0
+fastapi==0.141.1
+greenlet==3.5.5
+h11==0.16.0
+idna==3.19
+mako==1.4.1
+markupsafe==3.0.3
+pillow==12.3.0
+pydantic==2.13.5
+pydantic-core==2.46.5
+starlette==1.6.0
+sqlalchemy==2.0.48
+typing-extensions==4.16.0
+typing-inspection==0.4.4
+uvicorn==0.52.4

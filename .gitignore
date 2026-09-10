@@ -13,5 +13,11 @@ __pycache__/
 # Output assets (generated)
 output/
 
+# Runtime/project data
+.env
+.env.*
+data/
+logs/
+
 # OS files
 .DS_Store

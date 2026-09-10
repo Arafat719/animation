@@ -409,17 +409,32 @@ def _create_animation_with_format(frame_paths: list[str], output_dir: str = "out
     return gif_path
 
 
-def main():
+def build_parser():
     parser = argparse.ArgumentParser(description="Simple prompt-to-image starter generator.")
     parser.add_argument("--prompt", type=str, default="anime girl in neon city at sunset", help="Prompt text for the image")
     parser.add_argument("--output-dir", type=str, default="output", help="Directory where images are saved")
     parser.add_argument("--character-name", type=str, default="", help="Name of the character to keep consistent across generations")
     parser.add_argument("--character-style", type=str, default="anime", help="Character style")
-    args = parser.parse_args()
+    parser.add_argument(
+        "--disable-real-pipe",
+        action="store_true",
+        help="Disable the real diffusers image pipeline and force the local deterministic renderer.",
+    )
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
+    args = parser.parse_args(argv)
+
+    if args.disable_real_pipe:
+        os.environ["DISABLE_REAL_PIPE"] = "1"
+        logging.info("DISABLE_REAL_PIPE flag set; using deterministic local renderer")
 
     prompt = args.prompt.strip() or "anime girl in neon city at sunset"
     result = generate_image(prompt, args.output_dir, args.character_name, args.character_style)
     print(f"Image created: {result}")
+    return result
 
 
 if __name__ == "__main__":

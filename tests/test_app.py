@@ -40,3 +40,29 @@ def test_generate_image_writes_file(tmp_path):
     assert path is not None
     assert os.path.exists(path)
     assert str(outdir) in path
+
+
+def test_main_disable_real_pipe_flag_sets_env(monkeypatch, tmp_path):
+    monkeypatch.delenv("DISABLE_REAL_PIPE", raising=False)
+
+    captured = {}
+
+    def fake_generate_image(*args, **kwargs):
+        captured["called"] = True
+        return str(tmp_path / "fake.png")
+
+    monkeypatch.setattr(app, "generate_image", fake_generate_image)
+
+    result = app.main([
+        "--disable-real-pipe",
+        "--prompt",
+        "anime girl in pastel city",
+        "--output-dir",
+        str(tmp_path),
+        "--character-name",
+        "Airi",
+    ])
+
+    assert result == str(tmp_path / "fake.png")
+    assert captured["called"] is True
+    assert os.environ.get("DISABLE_REAL_PIPE") == "1"
