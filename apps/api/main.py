@@ -7,14 +7,37 @@ from fastapi import FastAPI, HTTPException, Path, Query, Request, Response, stat
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from animation_studio.domain.v1.character import Character, CharacterCreate
+from animation_studio.domain.v1.project import Project, ProjectCreate
+from animation_studio.domain.v1.render_job import FixtureJobCreate, JobCreate, RenderJob
+from animation_studio.domain.v1.voice import Voice, VoiceCreate
+from animation_studio.domain.v1.story_plan import StoryPlan
+from animation_studio.providers.planner import PlannerRequest
+from animation_studio.providers.planner_service import MockDraftProvider, PlannerService
+from animation_studio.providers.planner_repair import RepairExhausted
 from animation_studio.media.artifacts import ArtifactUnavailable, load_fixture_artifact
 from animation_studio.observability import emit_event, pipeline_logging
 from animation_studio.persistence.db import init_db
-from animation_studio.persistence.job_results import JobResultRepository, SavedOutcome, UnknownJobError
+from animation_studio.persistence.plan_store import (
+    PlanStore,
+    PlanView,
+    PlanVersion,
+    SavePlan,
+    PlanConflict,
+)
+from animation_studio.persistence.job_results import (
+    JobResultRepository,
+    SavedOutcome,
+    UnknownJobError,
+)
 from animation_studio.pipeline.dispatcher import (
-    ActiveFixtureJob, DispatchUnavailable, FixtureDispatcher, UnknownProject,
+    ActiveFixtureJob,
+    DispatchUnavailable,
+    FixtureDispatcher,
+    UnknownProject,
 )
 from animation_studio.settings import get_database_path, get_settings
+from apps.api.composer import router as composer_router
 
 
 @asynccontextmanager
@@ -31,74 +54,19 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title='Animation Studio API', lifespan=lifespan)
+app.include_router(composer_router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000'],
+    allow_origins=[
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+    ],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
 )
-
-
-class ProjectCreate(BaseModel):
-    title: str = Field(..., min_length=1, max_length=200)
-    master_prompt: str | None = Field(default=None)
-    target_duration_seconds: int | None = Field(default=None, ge=1, le=600)
-    status: str = Field(default='draft')
-
-
-class Project(BaseModel):
-    id: int
-    title: str
-    master_prompt: str | None = None
-    target_duration_seconds: int | None = None
-    status: str = 'draft'
-
-
-class JobCreate(BaseModel):
-    current_step: str | None = Field(default='queued')
-
-
-class FixtureJobCreate(BaseModel):
-    model_config = ConfigDict(extra='forbid')
-
-
-class RenderJob(BaseModel):
-    id: int
-    project_id: int
-    current_step: str | None = 'queued'
-    current_shot: int | None = None
-    state: str = 'running'
-    progress: int = 0
-
-
-class CharacterCreate(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True, extra='forbid')
-    name: str = Field(min_length=1, max_length=120)
-    description: str | None = Field(default=None, max_length=4000)
-
-
-class Character(BaseModel):
-    id: int
-    name: str
-    description: str | None
-    created_at: str
-
-
-class VoiceCreate(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True, extra='forbid')
-    name: str = Field(min_length=1, max_length=120)
-    language: str | None = Field(default=None, max_length=80)
-    style: str | None = Field(default=None, max_length=400)
-
-
-class Voice(BaseModel):
-    id: int
-    name: str
-    voice_type: str
-    language: str | None
-    style: str | None
-    created_at: str
 
 
 class SettingsView(BaseModel):
@@ -151,7 +119,9 @@ def create_character(payload: CharacterCreate):
 def list_characters():
     conn = get_connection()
     try:
-        rows = conn.execute('SELECT id, name, description, created_at FROM characters ORDER BY id').fetchall()
+        rows = conn.execute(
+            'SELECT id, name, description, created_at FROM characters ORDER BY id'
+        ).fetchall()
         return [Character(**dict(row)) for row in rows]
     finally:
         conn.close()
@@ -190,16 +160,23 @@ def list_voices():
 @app.post('/projects', response_model=Project, status_code=status.HTTP_201_CREATED)
 def create_project(payload: ProjectCreate):
     if not payload.title or not payload.title.strip():
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Title is required')
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Title is required'
+        )
 
     conn = get_connection()
     try:
         cursor = conn.execute(
-            '''
+            """
             INSERT INTO projects (title, master_prompt, target_duration_seconds, status, updated_at)
             VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
-            ''',
-            (payload.title.strip(), payload.master_prompt, payload.target_duration_seconds, payload.status),
+            """,
+            (
+                payload.title.strip(),
+                payload.master_prompt,
+                payload.target_duration_seconds,
+                payload.status,
+            ),
         )
         conn.commit()
         project_id = cursor.lastrowid
@@ -252,7 +229,74 @@ def get_project(project_id: int):
         conn.close()
 
 
-@app.post('/projects/{project_id}/jobs', response_model=RenderJob, status_code=status.HTTP_201_CREATED)
+@app.get('/projects/{project_id}/mock-plan', response_model=StoryPlan | None)
+def get_mock_plan(project_id: int):
+    """Read-only deterministic preview; does not persist a plan or start rendering."""
+    project = get_project(project_id)
+    if not project.master_prompt or not project.master_prompt.strip():
+        return None
+    try:
+        request = PlannerRequest(
+            prompt=project.master_prompt,
+            duration_seconds=(
+                project.target_duration_seconds
+                if project.target_duration_seconds is not None
+                else 30
+            ),
+        )
+    except ValidationError as error:
+        raise HTTPException(
+            status_code=422,
+            detail='Mock planning requires a prompt of 1–4000 characters and 30–60 seconds.',
+        ) from error
+    try:
+        return PlannerService(MockDraftProvider(), max_retries=1).plan(request)
+    except RepairExhausted as error:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                'code': 'PLANNER_OUTPUT_INVALID',
+                'attempts': error.attempts,
+                'issues': [
+                    {'code': issue.code, 'path': list(issue.path)} for issue in error.issues
+                ],
+            },
+        ) from error
+
+
+@app.get('/projects/{project_id}/plan', response_model=PlanView)
+def read_project_plan(project_id: int):
+    get_project(project_id)
+    saved = PlanStore(get_db_path()).read(project_id)
+    return saved if saved else PlanView(revision=0, plan=get_mock_plan(project_id))
+
+
+def change_project_plan(project_id: int, revision: int, action: str, plan: StoryPlan | None = None):
+    get_project(project_id)
+    try:
+        return PlanStore(get_db_path()).update(project_id, revision, action, plan)
+    except PlanConflict as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+@app.put('/projects/{project_id}/plan', response_model=PlanView)
+def save_project_plan(project_id: int, request: SavePlan):
+    return change_project_plan(project_id, request.revision, 'save', request.plan)
+
+
+@app.post('/projects/{project_id}/plan/approve', response_model=PlanView)
+def approve_project_plan(project_id: int, request: PlanVersion):
+    return change_project_plan(project_id, request.revision, 'approve')
+
+
+@app.post('/projects/{project_id}/plan/mock-render', response_model=PlanView)
+def run_project_plan(project_id: int, request: PlanVersion):
+    return change_project_plan(project_id, request.revision, 'run')
+
+
+@app.post(
+    '/projects/{project_id}/jobs', response_model=RenderJob, status_code=status.HTTP_201_CREATED
+)
 def create_job(project_id: int, payload: JobCreate):
     conn = get_connection()
     try:
@@ -261,10 +305,10 @@ def create_job(project_id: int, payload: JobCreate):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Project not found')
 
         cursor = conn.execute(
-            '''
+            """
             INSERT INTO render_jobs (project_id, current_step, current_shot, state, progress, updated_at)
             VALUES (?, ?, ?, 'running', 5, CURRENT_TIMESTAMP)
-            ''',
+            """,
             (project_id, payload.current_step or 'queued', None),
         )
         conn.commit()
@@ -303,7 +347,9 @@ def list_jobs():
 
 
 @app.post('/projects/{project_id}/fixture-jobs', response_model=RenderJob, status_code=202)
-def create_fixture_job(project_id: Annotated[int, Path(gt=0)], payload: FixtureJobCreate, request: Request):
+def create_fixture_job(
+    project_id: Annotated[int, Path(gt=0)], payload: FixtureJobCreate, request: Request
+):
     dispatcher = getattr(request.app.state, 'fixture_dispatcher', None)
     if dispatcher is None:
         raise HTTPException(status_code=503, detail='Job worker প্রস্তুত নয়।')
@@ -312,11 +358,17 @@ def create_fixture_job(project_id: Annotated[int, Path(gt=0)], payload: FixtureJ
     except UnknownProject as error:
         raise HTTPException(status_code=404, detail='Project not found') from error
     except ValidationError as error:
-        raise HTTPException(status_code=422, detail='Project-এ ১–৪০০০ অক্ষরের prompt প্রয়োজন।') from error
+        raise HTTPException(
+            status_code=422, detail='Project-এ ১–৪০০০ অক্ষরের prompt প্রয়োজন।'
+        ) from error
     except ActiveFixtureJob as error:
-        raise HTTPException(status_code=409, detail='এই project-এর একটি job ইতিমধ্যে চলছে।') from error
+        raise HTTPException(
+            status_code=409, detail='এই project-এর একটি job ইতিমধ্যে চলছে।'
+        ) from error
     except DispatchUnavailable as error:
-        raise HTTPException(status_code=503, detail='Job queue এখন পূর্ণ বা বন্ধ। পরে চেষ্টা করুন।') from error
+        raise HTTPException(
+            status_code=503, detail='Job queue এখন পূর্ণ বা বন্ধ। পরে চেষ্টা করুন।'
+        ) from error
 
 
 @app.get('/jobs/{job_id}', response_model=RenderJob)
@@ -359,7 +411,9 @@ def get_job_artifact(
         error.headers = {**(error.headers or {}), **headers}
         raise
     except ArtifactUnavailable as error:
-        raise HTTPException(status_code=error.status_code, detail=error.message, headers=headers) from error
+        raise HTTPException(
+            status_code=error.status_code, detail=error.message, headers=headers
+        ) from error
     disposition = 'attachment' if query.download else 'inline'
     return Response(
         content=content.body,
@@ -389,14 +443,14 @@ def tick_job(job_id: int):
             )
 
         conn.execute(
-            '''
+            """
             UPDATE render_jobs
             SET progress = MIN(100, progress + 15),
                 state = CASE WHEN progress + 15 >= 100 THEN 'completed' ELSE 'running' END,
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = ? AND state = 'running'
                 AND NOT EXISTS (SELECT 1 FROM fixture_jobs WHERE job_id = render_jobs.id)
-            ''',
+            """,
             (job_id,),
         )
         conn.commit()
@@ -422,20 +476,26 @@ def cancel_job(job_id: int, request: Request):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
 
         cancellation = conn.execute(
-            '''
+            """
             UPDATE render_jobs
             SET state = 'cancelled', updated_at = CURRENT_TIMESTAMP
             WHERE id = ? AND state IN ('queued', 'running', 'waiting_for_gpu')
-            ''',
+            """,
             (job_id,),
         )
         conn.commit()
         updated = conn.execute('SELECT * FROM render_jobs WHERE id = ?', (job_id,)).fetchone()
         dispatcher = getattr(request.app.state, 'fixture_dispatcher', None)
         if cancellation.rowcount:
-            emit_event('job_cancel_requested', job_id=job_id, project_id=updated['project_id'],
-                       shot_id=updated['current_shot'], step='cancelled', state='cancelled',
-                       progress=updated['progress'])
+            emit_event(
+                'job_cancel_requested',
+                job_id=job_id,
+                project_id=updated['project_id'],
+                shot_id=updated['current_shot'],
+                step='cancelled',
+                state='cancelled',
+                progress=updated['progress'],
+            )
         if updated['state'] == 'cancelled' and dispatcher is not None:
             dispatcher.cancel(get_db_path(), job_id)
         return RenderJob(

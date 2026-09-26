@@ -1,0 +1,29 @@
+{
+  "source": "docker.io/library/python",
+  "tag_observed": "3.12-slim-bookworm",
+  "checked_on": "2026-09-25",
+  "platform": "linux/amd64",
+  "index_digest": "sha256:392307d22300de8b5986851a12d9176dfc0fc073e65bf6523ebd7dcbeb23564e",
+  "manifest_digest": "sha256:1aaa65a85fda306ffb8b910824d4e93bdce61e212c7e87168123ea3073b41a1a",
+  "base_image": "docker.io/library/python@sha256:1aaa65a85fda306ffb8b910824d4e93bdce61e212c7e87168123ea3073b41a1a",
+  "compressed_layer_bytes": 45443850,
+  "layers": [
+    {
+      "digest": "sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+      "size": 28238443
+    },
+    {
+      "digest": "sha256:1c5e03f304918f89aed0c098c8f4b6f163f7bf9d2702991696bf0132a2853e30",
+      "size": 3533359
+    },
+    {
+      "digest": "sha256:a2e58067964fcd8f46a6b5992975e9c8ab34e7620d96204e08e99bf0fdf4dab8",
+      "size": 13671799
+    },
+    {
+      "digest": "sha256:7c6fab1667eb7d9029684d783e4c127f11dd7ed5120829f875b799a0b9431558",
+      "size": 249
+    }
+  ],
+  "verification": "Registry manifest bytes SHA256 matched Docker-Content-Digest; layers not downloaded or verified"
+}

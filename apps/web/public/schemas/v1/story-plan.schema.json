@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:animation-studio:contracts:v1:story-plan",
+  "$defs": {
+    "DialogueLine": {
+      "additionalProperties": false,
+      "properties": {
+        "speaker_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Speaker Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "speaker_id",
+        "text"
+      ],
+      "title": "DialogueLine",
+      "type": "object"
+    },
+    "PlanCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "PlanCharacter",
+      "type": "object"
+    },
+    "ShotError": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "ShotError",
+      "type": "object"
+    },
+    "ShotPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "order": {
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Order",
+          "type": "integer"
+        },
+        "duration_seconds": {
+          "maximum": 6,
+          "minimum": 3,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "camera_framing": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Camera Framing",
+          "type": "string"
+        },
+        "camera_movement": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Camera Movement",
+          "type": "string"
+        },
+        "background": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Background",
+          "type": "string"
+        },
+        "action": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Action",
+          "type": "string"
+        },
+        "lighting": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Lighting",
+          "type": "string"
+        },
+        "visible_character_ids": {
+          "items": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Visible Character Ids",
+          "type": "array"
+        },
+        "dialogue": {
+          "items": {
+            "$ref": "#/$defs/DialogueLine"
+          },
+          "maxItems": 100,
+          "title": "Dialogue",
+          "type": "array"
+        },
+        "image_prompt": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Image Prompt",
+          "type": "string"
+        },
+        "negative_prompt": {
+          "maxLength": 4000,
+          "title": "Negative Prompt",
+          "type": "string"
+        },
+        "motion_prompt": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Motion Prompt",
+          "type": "string"
+        },
+        "seed": {
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "reference_inputs": {
+          "items": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Reference Inputs",
+          "type": "array"
+        },
+        "keyframe_path": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Keyframe Path"
+        },
+        "raw_clip_path": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Clip Path"
+        },
+        "lip_synced_clip_path": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lip Synced Clip Path"
+        },
+        "status": {
+          "default": "pending",
+          "enum": [
+            "pending",
+            "running",
+            "completed",
+            "failed",
+            "cancelled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShotError"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "order",
+        "duration_seconds",
+        "camera_framing",
+        "camera_movement",
+        "background",
+        "action",
+        "lighting",
+        "visible_character_ids",
+        "dialogue",
+        "image_prompt",
+        "negative_prompt",
+        "motion_prompt",
+        "seed"
+      ],
+      "title": "ShotPlan",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "logline": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Logline",
+      "type": "string"
+    },
+    "setting": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Setting",
+      "type": "string"
+    },
+    "mood": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Mood",
+      "type": "string"
+    },
+    "visual_style": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Visual Style",
+      "type": "string"
+    },
+    "characters": {
+      "items": {
+        "$ref": "#/$defs/PlanCharacter"
+      },
+      "maxItems": 100,
+      "title": "Characters",
+      "type": "array"
+    },
+    "shots": {
+      "items": {
+        "$ref": "#/$defs/ShotPlan"
+      },
+      "maxItems": 10,
+      "minItems": 6,
+      "title": "Shots",
+      "type": "array"
+    },
+    "estimated_total_duration_seconds": {
+      "maximum": 60,
+      "minimum": 30,
+      "title": "Estimated Total Duration Seconds",
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema_version",
+    "logline",
+    "setting",
+    "mood",
+    "visual_style",
+    "characters",
+    "shots",
+    "estimated_total_duration_seconds"
+  ],
+  "title": "StoryPlan",
+  "type": "object"
+}

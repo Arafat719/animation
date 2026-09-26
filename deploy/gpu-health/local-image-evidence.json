@@ -1,0 +1,25 @@
+{
+  "checked_on": "2026-09-26",
+  "scope": "Owner-built local CPU/no-GPU container smoke; not remote GPU validation",
+  "image_id": "45b4d841a9a333f8d3be70dba655d17c474e607ea930a1b4d6e8eeaae6a45cef",
+  "manifest_digest": "sha256:cf6d763e453be68cd78406731a860b862dad69f6cfd7c2f7ffa844322ce7516f",
+  "size_bytes": 144892683,
+  "user": "65532:65532",
+  "auth_missing_wrong": "401 PASS",
+  "no_gpu_health": {
+    "healthy": false,
+    "provider_name": "nvidia-device-health",
+    "provider_version": "1"
+  },
+  "devices": {
+    "devices": [],
+    "error_code": "tool_missing"
+  },
+  "capabilities": {
+    "operations": []
+  },
+  "jobs": "404",
+  "token_absent_from_logs": true,
+  "pip_check": "No broken requirements found.",
+  "cleanup": "container removed and absence verified"
+}

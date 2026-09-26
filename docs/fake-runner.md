@@ -6,18 +6,19 @@ persists progress and commits the final job state and outcome together.
 
 ```python
 from threading import Event
+from animation_studio.observability import pipeline_logging
 from animation_studio.pipeline.fake_runner import FakeJobRunner
 
 # The selected database must already contain this queued job and its project.
 runner = FakeJobRunner('/absolute/path/to/animation.db')
-outcome = runner.run(job_id, seed=42, timeout_seconds=10, cancel=Event())
-print(outcome.model_dump_json(indent=2))
+with pipeline_logging():
+    outcome = runner.run(job_id, seed=42, timeout_seconds=10, cancel=Event())
 ```
 
 The constructor applies existing migrations through RunnerStore. No new schema
 revision is needed. `run` executes on the calling thread; it does not create a
-background worker, HTTP endpoint or queue manager. A future async API integration
-must dispatch it off the event loop. Existing browser demo jobs start as `running`
+background worker, HTTP endpoint or queue manager. The API's fixture dispatcher
+runs it off the event loop. Legacy demo jobs start as `running`
 and are deliberately not eligible for this queued-job runner.
 
 ## State and transaction rules
@@ -49,8 +50,8 @@ on progress callbacks and again under the final write lock. A database cancellat
 committed before finalization wins over an in-flight successful result.
 
 Database-only cancellation does not signal a provider that is blocked between
-callbacks immediately; prompt interruption needs the shared Event. Future API
-integration must connect its Cancel action to that Event as well as database state.
+callbacks immediately; prompt interruption needs the shared Event. The API
+Cancel action now signals that Event as well as updating database state.
 If finalization acquires the write lock first, it completes before a later database
 cancel, following the existing rule that completed jobs remain completed.
 
@@ -62,7 +63,10 @@ Known `ProviderError` codes/messages are persisted. Unexpected provider exceptio
 or invalid output become failed outcomes with the additive `provider_error` code;
 the exception type/message is recorded (up to 2000 characters). No provider error
 is reported as success. Prompt/progress/result contracts use the current fixture
-v1 schemas; this is not a general real-model pipeline yet.
+v1 schemas; this is not a general real-model pipeline yet. These stored errors
+remain separate from [structured logs](pipeline-logging.md), which omit raw error
+text and provider input/output. Committed state changes, reuse and transaction
+failures emit safe context; serializer warnings cannot reveal malformed values.
 
 ## Current integration limits
 
@@ -72,10 +76,10 @@ crash or storage failure can leave a running job without an outcome; re-running
 such a job is rejected pending an explicit recovery design. Completed outcomes
 remain readable after reopening the database.
 
-Keep runner jobs separate from browser-driven demo jobs until API integration:
-the current demo tick endpoint still advances running jobs independently. Future
-integration must replace/gate that ticking and connect cancellation, job creation
-and read-only polling before exposing this runner in the browser.
+Fixture ownership now excludes these jobs from legacy demo ticks. Background
+submission/cancellation, read-only polling and sample preview/download are
+implemented outside this runner; see [dispatch](fixture-dispatch.md) and the
+[current ledger](current-build-status.md).
 
 Focused verification:
 

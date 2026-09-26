@@ -1,6 +1,29 @@
 # Prompt Image Generator Starter
 
+**Agent entry:** [short resume](docs/RESUME.md) → current phase only.
+See [reading index](docs/plan/INDEX.md); do not load the full master plan for routine work.
+
+**Current milestone:** Local Phase 1 and Phase 2 / 2.10 PASS (2026-09-16).
+See the [Phase 2 gate report](docs/phase-2-final-gate-2026-09-16.md).
+See the [final gate report](docs/phase-1-final-gate-2026-09-15.md) and
+[current work ledger](docs/current-build-status.md). Real AI generation and the
+prompt planner remain future work.
+
+
 This project creates a stylized image from a text prompt using Python and Pillow.
+
+## Start the local Studio
+
+After the backend setup below and `npm --prefix apps/web ci`, start both servers:
+
+```bash
+python3 scripts/dev.py
+```
+
+Open **http://127.0.0.1:5173** after the ready message. **Ctrl+C** stops both
+the API and web server. Busy ports produce a clear error. This Linux launcher
+uses the existing `.venv` and frontend dependencies; see the
+[startup guide](docs/local-development.md) for settings and troubleshooting.
 
 ## Local backend setup
 
@@ -11,7 +34,6 @@ separately; this setup does not install AI models or GPU libraries.
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
 .venv/bin/python -m pip check
-.venv/bin/python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 8000
 ```
 
 For runtime only, install `requirements.txt`. Media tests also require system
@@ -21,8 +43,39 @@ For runtime only, install `requirements.txt`. Media tests also require system
 DISABLE_REAL_PIPE=1 .venv/bin/python -m pytest -q
 ```
 
-The FastAPI app and the legacy `web_app.py` server both use port 8000 by
-default; run one at a time. The React client is in `apps/web`.
+To run the API separately, use:
+
+```bash
+.venv/bin/python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 8000
+```
+
+The combined launcher, this separate API command and the legacy `web_app.py`
+server use port 8000; run one of them at a time. The React client is in `apps/web`.
+
+### Versioned contracts
+
+Versioned Project, Character, Voice, persisted Shot and RenderJob baseline schemas are available under the web app's
+`/schemas/v1/` path. Check generated contracts with
+`.venv/bin/python -m scripts.export_schemas --check`; see the
+[Project contract](docs/contracts/project-v1.md) and
+[Character contract](docs/contracts/character-v1.md) and
+[Voice contract](docs/contracts/voice-v1.md) and
+[Shot contract](docs/contracts/shot-v1.md) and
+[RenderJob contract](docs/contracts/render-job-v1.md) for fields and compatibility limits.
+
+### Formatting
+
+Read-only formatter checks run separately from lint and tests:
+
+```bash
+.venv/bin/python scripts/check_format.py backend
+npm --prefix apps/web run format:check
+```
+
+New and edited files must pass Ruff/Prettier. Exact existing formatting debt is
+recorded so adoption does not rewrite unrelated source. See
+[formatting commands and baseline limits](docs/formatting.md), including strict
+checks that also report legacy debt.
 
 ### Studio sample media
 
@@ -35,6 +88,15 @@ attachment. These are fixed sample files. See the
 Completed samples also show image, video and silent-audio previews in the Studio,
 with per-file download and retry controls. See the
 [web usage notes](apps/web/README.md#sample-generation-and-media).
+
+### Pipeline logs
+
+The FastAPI app emits JSON lifecycle events to stderr with job, project, shot
+and step context. Events describe committed progress/outcomes; cancellation
+requests and worker/storage failures are distinguished. Prompt/media details,
+tokens and raw exceptions are omitted from these events. No log directory or
+new setting is required. See the [logging contract](docs/pipeline-logging.md)
+for event names, embedded-runner setup and diagnostic limits.
 
 ### Database migrations
 

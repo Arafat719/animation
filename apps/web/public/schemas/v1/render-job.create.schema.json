@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:animation-studio:contracts:v1:render-job.create",
+  "properties": {
+    "current_step": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "queued",
+      "title": "Current Step"
+    }
+  },
+  "title": "JobCreate",
+  "type": "object"
+}

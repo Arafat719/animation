@@ -1,0 +1,13 @@
+{
+  "checked_on": "2026-09-26",
+  "reference": "ghcr.io/arafat719/animation-gpu-health@sha256:00d8030ad886682f972486d7700b7d7e5c3c8df23c4baf3d8c38b9fdbf9b568b",
+  "manifest_sha256_verified": true,
+  "config_digest": "sha256:45b4d841a9a333f8d3be70dba655d17c474e607ea930a1b4d6e8eeaae6a45cef",
+  "layer_count": 7,
+  "verification": "Registry manifest bytes recovered from Podman single-image parse error; SHA256 equals pushed digest; config matches tested image",
+  "limitation": "Podman manifest inspect exited nonzero; no layer pull/GPU run; visibility not checked",
+  "anonymous_access_check": {
+    "result": "HTTP 401",
+    "scope": "Unauthenticated GHCR pull-token request denied; package UI visibility not queried"
+  }
+}

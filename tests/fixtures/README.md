@@ -27,3 +27,10 @@ with open('/tmp/reproduced-silence.wav', 'xb') as output:
 
 The provider checks full sample count and zero-valued samples, not merely the
 presence of an audio stream. Its tests also reject the older non-silent audio.
+
+## Phase 2 composer fixtures
+
+Use [composer/](composer/README.md) for the source-documented Phase 2 media pack.
+Its local generator creates geometric shapes, synthetic tone and an H.264 clip;
+provenance and hashes are recorded. The older files above are retained for Phase 1
+regression compatibility and still have the historical provenance limits noted.

@@ -1,0 +1,10 @@
+{
+  "source": "Locally generated geometric shapes and mathematical sine wave; no external assets, recordings or AI.",
+  "generator": "scripts/generate_composer_fixtures.py",
+  "ffmpeg_version": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+  "files": {
+    "shapes.png": "96b02a8a1b0cb73e81d10a85995217bec3f640fa75f4ba3d1c7a8dfb1c96b140",
+    "tone.wav": "fdaa83fb4e9f92c4c49d4a06609eafbe62c353f3630367720a7791ab5eb77ad0",
+    "shapes.mp4": "11a5fde21a9b7eb03f9f58356723e86d0eb84586ef18b18286c1a23f7ceb21ee"
+  }
+}

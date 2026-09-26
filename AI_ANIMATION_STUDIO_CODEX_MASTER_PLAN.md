@@ -1,13 +1,18 @@
-# AI Animation Studio — Codex Master Build Plan V2.3 (Sample preview completed)
+# AI Animation Studio — Codex Master Build Plan V2.8 (Character baseline contract completed)
 
 **Document type:** Implementation specification for Codex  
 **Target:** Private V1, then public-ready architecture  
-**Last updated:** 2026-09-10 (V2.3: step 1.13 completed; next step 1.14)  
+**Last updated:** 2026-09-19 (V2.25: 3.3 duration splitter PASS; next 3.4)
+
 **Owner:** Arafat Khan
 
 ---
 
 ## 1. Codex: read this first
+
+Routine entry: read `AGENTS.md` and `docs/RESUME.md`, then only the current phase
+excerpt under `docs/plan/`. This replaces the old full-plan startup reading below.
+The master remains the requirements source; regenerate excerpts after edits.
 
 You are building a real, modular AI animation system. Do not attempt to finish the entire product in one pass.
 
@@ -21,7 +26,7 @@ Follow these rules:
    - test results;
    - current limitations;
    - the next phase.
-4. Do not start the next phase until its prerequisites pass and the owner approves it. Existing authorization in the conversation counts; do not ask again for an already authorized action. A plan revision is not approval to implement the next feature.
+4. Do not start the next phase until its prerequisites pass and the owner approves it. Existing authorization in the conversation counts; do not ask again for an already authorized action. A plan revision is not approval to implement the next feature. The owner-approved Phase 4 mock-only prerequisite exception below applies; existing Phase 4 implementation authorization remains valid.
 5. Do not activate a paid GPU, create a billable cloud resource, or download a model larger than 2 GB without explicit approval.
 6. Never commit API keys, cloud tokens, personal voice samples, reference images, model weights, generated media, or `.env` files.
 7. Prefer replaceable provider interfaces. No UI or orchestration code may depend directly on one AI model or one cloud vendor.
@@ -42,14 +47,12 @@ Codex must communicate with the owner in **বাংলা হরফে**, not B
 - বড় log পুরোটা দেখাবে না; দরকারি error অংশ এবং তার বাংলা ব্যাখ্যা দেখাবে।
 - মালিক ইংরেজি না চাইলে পুরো উত্তর ইংরেজিতে লেখা যাবে না।
 
-### বর্তমান অবস্থান ও resume নিয়ম — ২০২৬-০৯-১০
+### বর্তমান অবস্থান ও resume নিয়ম — ২০২৬-০৯-১৬
 
-- ২০২৬-০৯-০৯-এর পরিকল্পনা সংশোধন সম্পন্ন ছিল। মালিকের কাজ চালানোর নির্দেশ অনুযায়ী 1.12-এর পরে **1.13 — sample preview/download UI সম্পন্ন হয়েছে**; [checkpoint](docs/sample-preview-checkpoint.md)।
-- Repository ও working web/API আগে থেকেই আছে। **`0.1` থেকে আবার শুরু করবে না।** Phase 0-এর পুরোনো discovery/installation নির্দেশ নতুন করে চালানোর আদেশ নয়।
-- **বর্তমান phase: Phase 1 — PARTIAL।** 1.1–1.10-এর ভিত্তি এবং 1.11-এর পূর্ববর্তী regression check আছে; পরে settings, pages, fixture provider, runner, background dispatch ও web integration সম্পন্ন হয়েছে।
-- সর্বশেষ বাস্তবায়ন: **sample preview/download UI**। সংরক্ষিত image/audio/video browser-এ দেখা, শোনা, download ও retry করা যায়। Sample media prompt-specific AI animation নয়; audio silent এবং বর্তমান video এক-frame-এর।
-- সর্বশেষ frontend যাচাই: typecheck/build/lint ও পূর্ণ browser regression PASS; [sample preview checkpoint](docs/sample-preview-checkpoint.md)। সর্বশেষ backend যাচাই **২০৬ tests PASS**, যার ৩৪টি artifact API check; [1.12 checkpoint](docs/artifact-api-checkpoint.md)। 1.13-এ backend অপরিবর্তিত, Python suite পুনরায় চালানো হয়নি।
-- **পরবর্তী implementation candidate: 1.14 — structured pipeline logging।** 1.12–1.13 আবার বানাবে না; বিদ্যমান dispatcher logging-এর প্রমাণ দেখে শুধু বাকি scope সম্পূর্ণ করবে।
+- **Local Phase 1 ও Phase 2 PASS**: [Phase 2 gate report](docs/phase-2-final-gate-2026-09-16.md)।
+- ৩৮৬ backend tests PASS; manifest-driven exact replay ও audio/video sync যাচাই হয়েছে। পূর্ণ V1/real AI complete নয়।
+- **3.1 StoryPlan ও planning ShotPlan schemas সম্পন্ন**; **3.2 fixed mock planner সম্পন্ন**; **3.3 duration splitter সম্পন্ন**; পরবর্তী bounded কাজ 3.4 character traits injection।
+- [বর্তমান ledger](docs/current-build-status.md) অনুসরণ করবে; completed Phase 1/2 বা 0.1 restart নয়। পুরোনো checkpoint-এর next/PARTIAL ঐতিহাসিক।
 
 প্রমাণ ও নির্দেশের ব্যবহার:
 
@@ -61,7 +64,7 @@ Codex must communicate with the owner in **বাংলা হরফে**, not B
 
 ### নতুন session-এ প্রথম কাজ
 
-> এই plan, `docs/current-build-status.md` এবং সর্বশেষ প্রাসঙ্গিক checkpoint পড়ো। মালিকের বর্তমান অনুরোধ অনুযায়ী কাজ করো। সম্পন্ন step পুনরায় implement করবে না। শুধু plan review চাইলে শুধু নথি ঠিক করো; implementation চালাতে বললে ledger-এর প্রথম অসম্পূর্ণ, অনুমোদিত step ও তার prerequisite থেকে চালিয়ে যাও। `0.1`-কে default starting point ধরবে না।
+> প্রথমে `AGENTS.md` ও `docs/RESUME.md`, তারপর শুধু বর্তমান phase excerpt ও প্রয়োজনীয় evidence পড়ো। মালিকের বর্তমান অনুরোধ অনুযায়ী কাজ করো। সম্পন্ন step পুনরায় implement করবে না। শুধু plan review চাইলে শুধু নথি ঠিক করো; implementation চালাতে বললে ledger-এর প্রথম অসম্পূর্ণ, অনুমোদিত step ও তার prerequisite থেকে চালিয়ে যাও। `0.1`-কে default starting point ধরবে না।
 
 ---
 
@@ -306,13 +309,13 @@ Phase 2-এর কিছু media helper আগে তৈরি হয়েছে�
 | 1.16 | এক-command local startup ও usage documentation যোগ করবে | fresh local invocation-এ API/web চালু, port conflict পরিষ্কার, stop করলে দুই process বন্ধ; real AI/GPU নয় |
 | 1.17 | পূর্ণ Section 7 Phase 1 scope audit ও regression gate | required tasks, migration/schema scope, 1.12–1.16 ও applicable checks সব complete; unresolved requirement থাকলে PARTIAL, Phase 2 নয় |
 
-**বর্তমান completion:** 1.12–1.13-এর checks PASS; [artifact API](docs/artifact-api-checkpoint.md) ও [preview UI](docs/sample-preview-checkpoint.md)। 1.14–1.17 অসম্পূর্ণ।
+**বর্তমান completion:** 1.12–1.16-এর checks PASS; [artifact API](docs/artifact-api-checkpoint.md), [preview UI](docs/sample-preview-checkpoint.md) ও [logging](docs/pipeline-logging-checkpoint.md), [formatter](docs/formatting-checkpoint.md) ও [startup](docs/startup-checkpoint.md)। Formatter-এর strict legacy-debt check এখনও exit 1। 1.17a Project ও 1.17b Character baseline সম্পন্ন; [Project](docs/project-contract-checkpoint.md), [Character](docs/character-contract-checkpoint.md)। অন্য baseline/compatibility gaps-ও সমাধান হয়েছে; [পূর্ণ 1.17 local gate PASS](docs/phase-1-final-gate-2026-09-15.md)।
 
 **1.17-এর schema সীমা:** initial পাঁচটি table ও migration আছে, কিন্তু Section 5-এর পূর্ণ canonical contracts নেই। Phase 1-এ বর্তমান persisted/API fields-এর versioned typed baseline, matching JSON Schema, এবং migration/backward-read guarantees যাচাই করতে হবে; শুধু table আছে বা পরে করব লেখা এই check পাস করায় না। baseline-এর অবশিষ্ট কাজ এক contract করে `1.17a`, `1.17b` ইত্যাদি sub-step-এ বন্ধ করে 1.17 rerun করবে। Strict StoryPlan এবং planning ShotPlan 3.1-এ; character/voice/provider-dependent fields তাদের feature phase-এ। [নির্দিষ্ট baseline ও পরবর্তী field mapping](docs/current-build-status.md) অনুসরণ করবে; এটি full V1 contract সম্পন্ন হওয়ার ঘোষণা নয়।
 
 ### Phase 2 — AI ছাড়া video জোড়া দেওয়া
 
-বর্তমান scope: 2.1/2.3-এর helper ও tests আছে; 2.2 provenance এবং 2.4 normalization acceptance আংশিক; 2.5-এর সাধারণ concat/duration check আছে, path handling উন্নতি বাকি। 2.6–2.10 gate সম্পন্ন নয়। Phase 1-এর পর এগোনোর অনুমতি পেলে আগে এই gaps বন্ধ করবে, তারপর 2.6 onward। Background audio/fades ও insufficient-disk handling Section 7 অনুযায়ী যথাক্রমে 2.6/2.9-এর আলাদা sub-step-এ রাখবে; ছোট row দেখে সেগুলো বাদ দেবে না।
+বর্তমান scope: 2.1 helper এবং 2.2–2.5 fixture/playback/normalization/concat acceptance সম্পন্ন। পরবর্তী 2.6 dialogue audio mixing; background audio/fades-ও 2.6-এর scope। 2.7–2.10 ও insufficient-disk UI handling বাকি। [বর্তমান ledger](docs/current-build-status.md) ও dated checkpoints অনুসরণ করবে।
 
 | Step | Codex শুধু এই কাজ করবে | Pass check |
 |---|---|---|
@@ -331,9 +334,9 @@ Phase 2-এর কিছু media helper আগে তৈরি হয়েছে�
 
 | Step | Codex শুধু এই কাজ করবে | Pass check |
 |---|---|---|
-| 3.1 | StoryPlan ও ShotPlan schema বানাবে | valid fixture accepted, invalid fixture rejected |
-| 3.2 | fixed mock planner বানাবে | same input gives same output |
-| 3.3 | duration splitter বানাবে | 30–60 seconds becomes valid 3–6 second shots |
+| 3.1 | সম্পন্ন: strict StoryPlan ও ShotPlan schemas | valid/invalid fixtures PASS; [contract](docs/contracts/story-plan-v1.md) |
+| 3.2 | সম্পন্ন: fixed mock planner ও PlannerProvider | deterministic valid output PASS; [checkpoint](docs/mock-planner-checkpoint.md) |
+| 3.3 | সম্পন্ন: duration splitter ও mock integration | 30–60s → valid 3–6s shots PASS; [checkpoint](docs/duration-splitter-checkpoint.md) |
 | 3.4 | character traits প্রতিটি relevant shot-এ inject করবে | schema snapshot test pass |
 | 3.5 | pipeline state machine বানাবে | legal/illegal transition tests pass |
 | 3.6 | একটি step ইচ্ছা করে fail করাবে | resume failed step থেকেই হয় |
@@ -343,6 +346,17 @@ Phase 2-এর কিছু media helper আগে তৈরি হয়েছে�
 | 3.10 | approved হলে real planner adapter যোগ করবে | strict JSON output test set pass |
 
 ### Phase 4 — cloud GPU connection, আগে mock পরে real
+
+**Owner-approved phase-order revision (2026-09-25):** Phase 3 integrated offline
+acceptance PASS হলে Phase 4-এর local/mock steps 4.1–4.6 এগোতে পারবে; real planner
+3.10 এই সীমিত কাজের prerequisite নয়। Owner-এর আগের Phase 4 implementation
+অনুমোদন বহাল; একবারে একটি অসম্পূর্ণ micro-step, শুরু 4.1। এটি শুধু prerequisite
+শিথিল করছে, Phase 3 সম্পূর্ণ ঘোষণা বা তার real acceptance বাদ দিচ্ছে না।
+Phase 3 real adapter, strict output test set, Bengali/duration/traits/repeatability,
+provider lifecycle ও real-stage recovery evidence deferred এবং এখনও বাধ্যতামূলক।
+4.7 শুধু cost/action proposal; 4.8–4.10 real execution এই exception-এর বাইরে,
+প্রাসঙ্গিক prerequisites ও পৃথক paid-resource approval প্রয়োজন। Phase 4-এর পূর্ণ
+acceptance এবং পরের phase-এর gates অপরিবর্তিত। নতুন model run/download অনুমোদিত নয়।
 
 | Step | Codex শুধু এই কাজ করবে | Pass check |
 |---|---|---|
@@ -904,8 +918,8 @@ Use this content after each implementation micro-step; at a phase boundary also 
 
 ## 16. Immediate next action
 
-**বর্তমান অবস্থান: 1.13 সম্পন্ন; পরবর্তী কাজ 1.14।** এই ফাইল পাওয়া মানেই কোনো step চালু করার অনুমতি নয়। মালিকের বর্তমান নির্দেশ, ledger ও প্রাসঙ্গিক evidence অনুযায়ী কাজ করবে; ২০২৬-০৯-০৯-এর plan-only scope আজকের নির্দেশকে অতিক্রম করে না।
+**বর্তমান অবস্থান: local Phase 1 ও Phase 2 PASS; 3.1–3.3 সম্পন্ন; পরবর্তী 3.4।** এই ফাইল পাওয়া মানেই কোনো step চালু করার অনুমতি নয়। মালিকের বর্তমান নির্দেশ, ledger ও প্রাসঙ্গিক evidence অনুযায়ী কাজ করবে; ২০২৬-০৯-০৯-এর plan-only scope আজকের নির্দেশকে অতিক্রম করে না।
 
 পরে মালিক implementation চালাতে বললে ব্যবহারযোগ্য resume নির্দেশ:
 
-> `AI_ANIMATION_STUDIO_CODEX_MASTER_PLAN.md`, `docs/current-build-status.md` ও সর্বশেষ প্রাসঙ্গিক checkpoint পড়ে চলতি source-এর সঙ্গে মিলিয়ে নাও। সম্পন্ন কাজ আবার করবে না। বর্তমান planned candidate `1.14` — structured pipeline logging; ledger-এ এর পরের কোনো সম্পন্ন কাজ থাকলে সেটিও বাদ দিয়ে প্রথম অসম্পূর্ণ অনুমোদিত step বেছে নাও। একবারে একটি bounded step করো, তার checks ও সীমাবদ্ধতা বাংলায় জানাও। Phase 1 পূর্ণ হয়েছে ধরে Phase 2 বা real AI/GPU কাজ শুরু করবে না।
+> `AGENTS.md`, `docs/RESUME.md` ও বর্তমান phase excerpt পড়ে প্রাসঙ্গিক source-এর সঙ্গে মিলিয়ে নাও। সম্পন্ন কাজ আবার করবে না। বর্তমান planned candidate 3.4 character traits injection; ledger-এ এর পরের কোনো সম্পন্ন কাজ থাকলে সেটিও বাদ দিয়ে প্রথম অসম্পূর্ণ অনুমোদিত step বেছে নাও। একবারে একটি bounded step করো, তার checks ও সীমাবদ্ধতা বাংলায় জানাও। Phase 1 local gate PASS হলেও পরের phase-এর authorization ও real AI/GPU action gates মানবে।

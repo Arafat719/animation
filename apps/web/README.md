@@ -2,6 +2,12 @@
 
 ## Local development
 
+After backend setup and `npm ci` here, run `python3 scripts/dev.py` from the
+repository root to start API and web together. Open **http://127.0.0.1:5173**;
+**Ctrl+C** stops both. See the [startup guide](../../docs/local-development.md).
+
+To run the web server separately:
+
 Use Node.js 22.12 or newer. From `apps/web`:
 
 ```bash
@@ -132,3 +138,12 @@ strings are forwarded intact. Controlled 410 responses exercise missing-media UI
 the Python artifact tests cover actual missing files. Browser forwarding does not
 test production CORS configuration. Screenshots and test downloads are written
 only to the disposable directory printed by the script.
+
+## Formatting
+
+Run `npm run format:check` for the incremental Prettier gate, separately from
+`npm run lint`. This uses Python 3.11+ and Git through the repository check helper.
+Run `npm run format:check:all` to include existing formatting debt (currently
+expected to fail). Format an individual edited file with
+`npm run format -- src/path/to/file.tsx`. See the
+[shared formatting guide](../../docs/formatting.md) for scope and baseline rules.

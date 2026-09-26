@@ -1,0 +1,16 @@
+{
+  "checked_on": "2026-09-26",
+  "registry_selected": "ghcr.io",
+  "namespace": "arafat719",
+  "publication": "owner uploaded; registry manifest hash/config verified",
+  "archive_path": "/tmp/animation-gpu-health-45b4d841.oci.tar",
+  "archive_sha256": "5640b341576a83a16bfc6965a64c0fff18f58c17732bcadd1459a3d3c60c8b21",
+  "archive_bytes": 53340160,
+  "manifest_digest": "sha256:00d8030ad886682f972486d7700b7d7e5c3c8df23c4baf3d8c38b9fdbf9b568b",
+  "image_id": "45b4d841a9a333f8d3be70dba655d17c474e607ea930a1b4d6e8eeaae6a45cef",
+  "layer_count": 7,
+  "platform": "linux/amd64",
+  "verified": "manifest/config/all layer descriptor sizes and SHA256",
+  "proposed_reference": "ghcr.io/arafat719/animation-gpu-health:health-45b4d841a9a3",
+  "registry_reference": "ghcr.io/arafat719/animation-gpu-health@sha256:00d8030ad886682f972486d7700b7d7e5c3c8df23c4baf3d8c38b9fdbf9b568b"
+}

@@ -1,0 +1,10 @@
+**/node_modules/
+**/dist/
+.venv/
+output/
+data/
+tests/fixtures/
+**/package-lock.json
+.format-baseline.json
+# Generated from Pydantic; checked by scripts.export_schemas, not hand-formatted.
+apps/web/public/schemas/

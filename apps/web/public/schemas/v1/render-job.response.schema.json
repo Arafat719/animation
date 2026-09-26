@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:animation-studio:contracts:v1:render-job.response",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "integer"
+    },
+    "project_id": {
+      "title": "Project Id",
+      "type": "integer"
+    },
+    "current_step": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "queued",
+      "title": "Current Step"
+    },
+    "current_shot": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Current Shot"
+    },
+    "state": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "running",
+      "title": "State"
+    },
+    "progress": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 0,
+      "title": "Progress"
+    }
+  },
+  "required": [
+    "id",
+    "project_id"
+  ],
+  "title": "RenderJob",
+  "type": "object"
+}

@@ -35,7 +35,7 @@ def test_init_db_creates_expected_tables(tmp_path):
         assert 'shots' in names
         assert 'render_jobs' in names
         assert 'job_results' in names
-        assert conn.execute('SELECT version_num FROM alembic_version').fetchall() == [('0003_fixture_jobs',)]
+        assert conn.execute('SELECT version_num FROM alembic_version').fetchall() == [('0004_plan_approval',)]
     finally:
         conn.close()
 
@@ -58,7 +58,7 @@ def test_legacy_migration_preserves_all_rows_and_api_reads(tmp_path, monkeypatch
     with closing(sqlite3.connect(target)) as connection:
         after = {name: connection.execute(f'SELECT * FROM {name}').fetchall() for name in tables}
         assert after == before
-        assert connection.execute('SELECT version_num FROM alembic_version').fetchall() == [('0003_fixture_jobs',)]
+        assert connection.execute('SELECT version_num FROM alembic_version').fetchall() == [('0004_plan_approval',)]
 
     monkeypatch.setenv('ANIMATION_DB_PATH', target)
     with TestClient(app) as client:
@@ -107,7 +107,7 @@ def test_failed_migration_rolls_back_version_and_can_retry(tmp_path, monkeypatch
 
     init_db(target)
     with closing(sqlite3.connect(target)) as connection:
-        assert connection.execute('SELECT version_num FROM alembic_version').fetchone() == ('0003_fixture_jobs',)
+        assert connection.execute('SELECT version_num FROM alembic_version').fetchone() == ('0004_plan_approval',)
 
 
 def test_unknown_database_revision_is_not_overwritten(tmp_path):
@@ -128,7 +128,7 @@ def test_parallel_initialization_is_repeatable(tmp_path):
     with ThreadPoolExecutor(max_workers=4) as pool:
         assert list(pool.map(init_db, [target] * 4)) == [target] * 4
     with closing(sqlite3.connect(target)) as connection:
-        assert connection.execute('SELECT version_num FROM alembic_version').fetchall() == [('0003_fixture_jobs',)]
+        assert connection.execute('SELECT version_num FROM alembic_version').fetchall() == [('0004_plan_approval',)]
 
 
 def test_database_path_with_spaces_and_url_characters(tmp_path):

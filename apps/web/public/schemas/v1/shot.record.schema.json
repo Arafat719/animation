@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:animation-studio:contracts:v1:shot.record",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "integer"
+    },
+    "project_id": {
+      "title": "Project Id",
+      "type": "integer"
+    },
+    "order_index": {
+      "title": "Order Index",
+      "type": "integer"
+    },
+    "duration_seconds": {
+      "title": "Duration Seconds",
+      "type": "number"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "type": "string"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Status"
+    }
+  },
+  "required": [
+    "id",
+    "project_id",
+    "order_index",
+    "duration_seconds",
+    "prompt",
+    "status"
+  ],
+  "title": "ShotRecord",
+  "type": "object"
+}

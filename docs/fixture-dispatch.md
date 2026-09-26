@@ -45,10 +45,13 @@ durable request idempotency: retrying after completion can create another job.
 Inspect the job list after an ambiguous POST response.
 
 Provider failures become stored failed outcomes. Unexpected worker storage/state
-exceptions are logged with job/project/shot/step context and may leave a
+exceptions are logged as safe structured events with job/project/shot/step context and may leave a
 nonterminal job without an outcome. Abrupt process termination and storage errors
 do not automatically resume. Inspect logs/database before manual recovery.
 Cancel can mark an orphan cancelled but cannot finalize it without a worker.
+The logs distinguish the committed `job_cancel_requested` API update from a
+saved `job_cancelled` outcome. See [pipeline logging](pipeline-logging.md) for
+the lifecycle/error contract and privacy limits.
 No leases, automatic startup dispatch, retry or orphan reconciliation are added.
 
 Use one API process for immediate Event cancellation and the stated queue limit.

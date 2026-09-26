@@ -9,10 +9,10 @@
 > ledger determine today's work. Real AI remains a later phase.
 >
 > The React/FastAPI/SQLite fixture pipeline has since been added. Latest recorded
-> backend validation is 206 tests from [step 1.12](docs/artifact-api-checkpoint.md),
-> 2026-09-10; frontend/browser checks passed in
+> backend validation is 230 tests from [step 1.14](docs/pipeline-logging-checkpoint.md),
+> checked 2026-09-10 and documented on resume 2026-09-11; frontend/browser checks passed in
 > [step 1.13](docs/sample-preview-checkpoint.md). Next candidate:
-> **1.14, structured pipeline logging**, not discovery 0.1 or real-model setup.
+> **1.15, formatter configuration/check**, not discovery 0.1 or real-model setup.
 
 ## Legacy state recorded at the time
 

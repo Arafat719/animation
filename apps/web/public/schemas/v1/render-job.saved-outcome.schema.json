@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:animation-studio:contracts:v1:render-job.saved-outcome",
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "image",
+            "audio",
+            "video"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "format": "path",
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Seconds"
+        }
+      },
+      "required": [
+        "kind",
+        "path",
+        "sha256"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "FakeResult": {
+      "additionalProperties": false,
+      "properties": {
+        "provider_name": {
+          "const": "fake",
+          "default": "fake",
+          "title": "Provider Name",
+          "type": "string"
+        },
+        "provider_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Provider Version",
+          "type": "string"
+        },
+        "model_name": {
+          "const": "fixture-media",
+          "default": "fixture-media",
+          "title": "Model Name",
+          "type": "string"
+        },
+        "model_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Model Version",
+          "type": "string"
+        },
+        "seed": {
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "image": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "audio": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "video": {
+          "$ref": "#/$defs/Artifact"
+        }
+      },
+      "required": [
+        "seed",
+        "image",
+        "audio",
+        "video"
+      ],
+      "title": "FakeResult",
+      "type": "object"
+    },
+    "StoredError": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_input",
+            "fixture_missing",
+            "fixture_invalid",
+            "dependency_missing",
+            "io_error",
+            "cancelled",
+            "timeout",
+            "provider_error"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "StoredError",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "result": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FakeResult"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "error": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/StoredError"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "job_id": {
+      "exclusiveMinimum": 0,
+      "title": "Job Id",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "job_id",
+    "schema_version",
+    "created_at"
+  ],
+  "title": "SavedOutcome",
+  "type": "object"
+}

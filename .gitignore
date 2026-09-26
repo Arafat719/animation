@@ -5,6 +5,7 @@ venv/
 # Python cache
 __pycache__/
 *.py[cod]
+.ruff_cache/
 
 # Editor dirs
 .vscode/
@@ -21,3 +22,4 @@ logs/
 
 # OS files
 .DS_Store
+.git-corrupted/
