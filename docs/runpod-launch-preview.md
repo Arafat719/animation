@@ -7,6 +7,36 @@
 GHCR publication ও mock REST watchdog সম্পন্ন; নিচের price estimate পুরোনো draft,
 বর্তমান quote নয়। Live readiness এখনও অসম্পূর্ণ।
 
+## সর্বশেষ owner নির্দেশ: RunPod স্থগিত
+
+Owner আপাতত RunPod ছাড়া local কাজ করতে বলেছেন। নিচের preview পুনরারম্ভের
+নোট historical; quote/screenshot অনুরোধ আর pending নয়। Paid launch/payment নয়।
+
+## 2026-09-27: preview পুনরারম্ভ
+
+Owner-এর পরের-কাজ নির্দেশে শুধু non-billable 4.7 preview আবার চলছে। Paid launch,
+top-up, credential creation ও CPU model experiment অনুমোদিত হয়নি।
+[Official public pricing](https://www.runpod.io/pricing) পুনরায় যাচাই: RTX A5000
+24 GB $0.27/hr এখনও দেখায়। 15 মিনিট compute $0.0675; নিচের provisional disk
+assumption-সহ প্রায় $0.068195 before tax। এটি account quote বা guaranteed total নয়।
+[Pod pricing](https://docs.runpod.io/pods/pricing) অনুযায়ী exact GPU price deployment
+console-এ; on-demand launch-এর জন্য নির্বাচিত configuration-এর অন্তত এক ঘণ্টার
+credit লাগে। স্বল্প session cost এবং required account funding আলাদা।
+
+Completed: local image/GHCR identity, mock lifecycle/watchdog/supervisor ও durable
+session/report; [handoff](gpu-mock-handoff.md)। পুরোনো next-supervisor নির্দেশ সম্পন্ন।
+Execution path-এর প্রস্তাব [attended manual health](gpu-attended-health-proposal.md);
+এটি approved live execution বা unattended protection নয়।
+
+পরের required input: owner console-এ বর্তমানে দেখানো GPU name/VRAM, cloud tier,
+region, hourly compute rate, disk sizes ও storage/total quote। Agent-এর authenticated
+RunPod console access নেই। Account-specific তথ্য ছাড়া final preview শেষ করা যাবে না।
+কোনো Deploy/top-up নয়; token/card/password পাঠানোর প্রয়োজন নেই। Quote পেলে existing
+image digest/command/port এবং startup/test/cleanup window দিয়ে final sheet পূরণ হবে;
+phase-order, private pull, alternate operator access ও paid approval gates বহাল।
+
+এই update-এ public sources/arithmetic ও docs consistency checks PASS; app tests নয়।
+
 ## নির্বাচিত প্রাথমিক scope
 
 প্রথম paid session-এর প্রস্তাব শুধু 4.8 authenticated GPU health: এক Pod, এক GPU,

@@ -372,7 +372,7 @@ def create_fixture_job(
 
 
 @app.get('/jobs/{job_id}', response_model=RenderJob)
-def get_job(job_id: Annotated[int, Path(gt=0)]):
+def get_job(job_id: Annotated[int, Path(gt=0, le=2**63 - 1)]):
     conn = get_connection()
     try:
         row = conn.execute('SELECT * FROM render_jobs WHERE id = ?', (job_id,)).fetchone()
@@ -384,7 +384,7 @@ def get_job(job_id: Annotated[int, Path(gt=0)]):
 
 
 @app.get('/jobs/{job_id}/result', response_model=SavedOutcome | None)
-def get_job_result(job_id: Annotated[int, Path(gt=0)]):
+def get_job_result(job_id: Annotated[int, Path(gt=0, le=2**63 - 1)]):
     repository = JobResultRepository(get_db_path())
     try:
         return repository.get(job_id)
@@ -426,7 +426,7 @@ def get_job_artifact(
 
 
 @app.post('/jobs/{job_id}/tick', response_model=RenderJob)
-def tick_job(job_id: int):
+def tick_job(job_id: Annotated[int, Path(gt=0, le=2**63 - 1)]):
     conn = get_connection()
     try:
         row = conn.execute('SELECT * FROM render_jobs WHERE id = ?', (job_id,)).fetchone()
@@ -468,7 +468,7 @@ def tick_job(job_id: int):
 
 
 @app.post('/jobs/{job_id}/cancel', response_model=RenderJob)
-def cancel_job(job_id: int, request: Request):
+def cancel_job(job_id: Annotated[int, Path(gt=0, le=2**63 - 1)], request: Request):
     conn = get_connection()
     try:
         row = conn.execute('SELECT * FROM render_jobs WHERE id = ?', (job_id,)).fetchone()

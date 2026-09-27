@@ -584,3 +584,215 @@ access/non-billable configuration preview handoff। No install/account mutation
 সম্পন্ন। Official manage-Pods flow দেখে GPU selection/rate-only handoff দেওয়া
 হয়েছে; final Deploy On-Demand/top-up নয়। Account quote/private pull/paid gate
 এখনও pending; কোনো agent account access বা paid action হয়নি।
+
+**GPU quote সংগ্রহের handoff (2026-09-27):** পরের কাজ শুরু করার নির্দেশে বর্তমান
+4.7 prerequisites ও pending quote যাচাই। Available tools-এ owner-এর authenticated
+RunPod browser access নেই; তাই actual account availability/rate সংগ্রহ অসম্পূর্ণ।
+Owner-এর GPU selection screenshot অথবা GPU name/VRAM/hourly rate/region প্রয়োজন;
+দেখানো storage/total estimate থাকলে সেটিও quote-এ রাখতে হবে। Deploy/payment নয়।
+RESUME ও status update; whitespace/RESUME length checks PASS। Source অপরিবর্তিত,
+app tests পুনরায় চালানো হয়নি। তথ্য এলে একই অনুমোদিত quote micro-step চলবে;
+final paid launch-এর পৃথক approval এখনও বাকি।
+
+**Owner budget/payment constraint (2026-09-27):** Owner জানিয়েছেন এখন GPU rental-এর
+টাকা ও international payment card নেই। Paid GPU execution এবং RunPod quote/
+screenshot/payment handoff স্থগিত; আগের screenshot অনুরোধ আর pending requirement নয়।
+Owner পুনরায় GPU কাজ চাইলে এই পথ বিবেচিত হবে। Completed mock evidence বহাল;
+real GPU acceptance অসম্পূর্ণই থাকবে। পরের কাজ বিনা খরচে local/offline অসম্পূর্ণ
+scope review; নতুন phase অনুমোদন বা স্থগিত CPU experiment restart অনুমান করা নয়।
+এটি operational deferral, feature requirements/acceptance gate পরিবর্তন নয়।
+RESUME/status-only update; whitespace ও RESUME length checks PASS; app tests
+প্রয়োজন হয়নি। কোনো install/download/payment/cloud mutation হয়নি।
+
+**Local/offline scope review সম্পন্ন (2026-09-27):**
+[Review](local-offline-scope-review.md)। Budget source/tests ও cleanup journal দেখে
+নিশ্চিত: planned attempt preflight আছে, durable shot dispatch accounting নেই;
+cleanup retry count এই gap পূরণ করে না। পরের micro-step ledger-only durable
+shot-attempt reservation; identity conflict, duplicate key, restart, contention,
+write failure ও conservative crash accounting pass criteria নির্দিষ্ট। Existing
+Phase 4 local/mock authorization বহাল; নতুন phase বা paid execution নয়। Source
+বদলায়নি; docs links/plan drift/whitespace/RESUME length PASS; app tests নয়।
+
+**Local durable shot-attempt ledger সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-attempt-ledger-checkpoint.md)। নতুন `gpu_attempts.py`-তে strict v1
+ledger, immutable render workload/budget identity, global attempt-key replay/conflict,
+planned shot cap ও fsync/atomic replace/nonblocking process lock। Raw payload persist
+হয় না। No dispatch/refund; missing/corrupt state fail closed। Baseline 79 PASS;
+ledger/budget/provider 100 PASS, Ruff/docs checks PASS। Spawned process exit,
+concurrent last-slot ও injected durable write failure tested। Existing source/API/DB
+অপরিবর্তিত; owner-এর docs edits retained। Next authorized local/mock step: guarded
+mock dispatch integration, duplicate/ambiguous request-এ দ্বিতীয় submit নয়। Paid
+GPU ও model experiments স্থগিত; no install/download/cloud call/commit।
+
+**Ledger যুক্ত mock-only dispatch সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-mock-dispatch-checkpoint.md)। `_reserve_once` locked freshness
+থেকে fresh durable admission-এ একবার exact mock provider submit। Replay/old v1
+reservation-এ `AttemptAlreadyReserved`; error/crash-এ slot consumed, automatic
+resubmit নেই। Provider/subclass guard mutation-এর আগে; no live transport। New
+dispatch tests সহ ledger/budget/provider 110 PASS; Ruff/docs checks PASS। Concurrent
+same-key processes, crash-before-submit, accept-then-timeout ও fsync failure tested।
+Schema/public reserve unchanged; existing edits retained। Success receipt এখনও
+persist নয়; next authorized local/mock step minimal receipt/read-only outcome lookup।
+Production gate/spend/runtime caps বাকি; no install/payment/cloud call/commit।
+
+**Mock durable receipt/read-only lookup সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-mock-receipt-checkpoint.md)। Successful guarded mock submit-এর
+minimal receipt atomic/fsync writer দিয়ে persist। Lookup reservation absent/unknown/
+submitted আলাদা করে; provider I/O ও write নেই। Optional v1 field backward-read
+tested, legacy reservation unknown থাকে; replay কখনো resubmit নয়। Process-exit,
+accept-then-timeout, receipt sync failure ও corrupt state tests সহ 119 PASS;
+Ruff/docs checks PASS। Mock receipt historical acceptance মাত্র; current provider
+state/completion নয়। Next same-phase authorized local step bounded offline acceptance
+scenario/report। Existing edits retained; no install/paid action/commit।
+
+**Budget→dispatch→receipt offline acceptance সম্পন্ন (2026-09-27):**
+[Report](gpu-offline-acceptance.md)। Integrated two-shot scenario-তে over-budget
+zero calls, accepted receipt, accept-then-timeout unknown, ledger reopen/new provider,
+replay zero additional calls এবং explicit attempt cap PASS। Acceptance + receipt/
+dispatch/ledger/budget/provider suite 120 PASS; Ruff/docs checks PASS। নতুন test ও
+report/status মাত্র; production source/schema/UI অপরিবর্তিত। পূর্ণ Phase 4 বা real
+execution acceptance নয়। Next local micro-step runtime-cap/mock lifecycle scope review;
+completed slice restart নয়। No install/download/cloud call/payment/commit।
+
+**Runtime-cap/mock lifecycle integration scope review সম্পন্ন (2026-09-27):**
+[Scope](gpu-runtime-integration-scope.md)। Budget planned minutes cap এবং existing
+MockSessionController elapsed deadline আলাদাভাবে আছে; guarded dispatch-এর সঙ্গে
+wiring নেই। পরের same-phase authorized micro-step cooperative mock render session:
+fixed budget-derived duration, pre/post submit tick, closed admission, existing
+cleanup ও পৃথক storage result। Deterministic acceptance criteria নির্দিষ্ট;
+watchdog restart/refactor বা live transport নয়। Source অপরিবর্তিত; docs checks PASS,
+prior 120/126-test evidence retained। No install/download/payment/cloud call/commit।
+
+**Cooperative mock render session সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-mock-session-checkpoint.md)। নতুন wrapper fixed budget-derived
+deadline, pre/post dispatch tick, closed admission ও existing lifecycle cleanup
+যুক্ত করে। Exact mock components only; timeout/persistence failure original error
+propagate, replay/cap rejection blanket cleanup নয়। Relevant suite 157 PASS;
+Ruff/docs checks PASS। Caller-driven single-process সীমা; restart session deadline
+এখনও durable নয়। Next local scope review deadline/closed-state persistence;
+existing watchdog restart নয়। Production DB/UI/API অপরিবর্তিত, existing edits
+retained; no install/download/cloud call/payment/commit।
+
+**Mock session restart scope review সম্পন্ন (2026-09-27):**
+[Scope](gpu-session-restart-scope.md)। Existing session-এর constructor deadline reset
+gap ও cleanup journal-এর restart-always-cleanup semantics যাচাই। পরের bounded
+implementation durable admission identity/owner lease/closed intent; restart-এ
+submit disabled এবং original deadline retained। Automatic cross-boot clock resume
+নয়। Legacy used render auto-enrol নয়; receipts backward read, identity/conflict/
+process exit/write failure checks নির্দিষ্ট। Source অপরিবর্তিত; docs checks PASS;
+157/126-test evidence retained। Same-phase local authorization বহাল; no paid action।
+
+**Durable mock session admission সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-durable-session-checkpoint.md)। Optional ledger session record-এ
+identity/original deadline/closed intent/cleanup cap; explicit create/recover,
+ledger-wide lifetime owner lease এবং cooperative session cleanup hook। Restart-এ
+admission বন্ধ, deadline অক্ষত; existing used render create reject। Legacy read
+compatible; receipts retained। 170 relevant tests PASS; Ruff/docs checks PASS।
+Spawned abrupt exit, changed clock, duplicate owner, sync/intent failure, bounded
+cleanup tested। Production DB/API/UI untouched; existing edits retained। Next
+authorized local micro-step durable restart integrated acceptance/report। No
+install/download/cloud call/payment/commit; real acceptance deferred।
+
+**Durable restart integrated offline acceptance সম্পন্ন (2026-09-27):**
+[Report](gpu-durable-offline-acceptance.md)। Spawned owner-এর প্রথম accepted receipt,
+দ্বিতীয় accept-before-exit unknown, active owner rejection ও recovery এক scenario-তে
+verified। Recovered deadline অপরিবর্তিত, old/new submit blocked, receipt lookup
+unchanged; unknown storage complete false। Relevant suite 171 PASS; Ruff/docs checks
+PASS। Source unchanged; new test/report/status only। Next local scope review durable
+cleanup observation retention/recovery reuse; live state দাবি নয়। Real Phase 4
+acceptance deferred; no install/download/cloud call/payment/commit।
+
+**Cleanup outcome scope review সম্পন্ন (2026-09-27):**
+[Scope](gpu-cleanup-outcome-scope.md)। Durable session result memory-only gap
+verified। Next typed per-attempt observation persistence/historical reuse;
+absent/auth-terminal-এ repeated cleanup নয়, stale outcome invalidation ও legacy
+backward-read criteria নির্দিষ্ট। Same-phase local authorization বহাল। Source
+unchanged; docs checks PASS; prior 171-test evidence retained; no paid action।
+
+**Durable cleanup observation সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-cleanup-observation-checkpoint.md)। Typed per-attempt observation
+persist; next intent clears stale data। Absent/auth terminal ও cap saved outcome
+reuse; source current_call/saved/unknown আলাদা, live_state_verified false। Legacy
+optional field backward-read; malformed associations reject। Result-write/fsync ও
+spawned crash tests সহ 183 relevant tests PASS; Ruff/docs checks PASS। Production
+DB/API/UI untouched; no install/paid action। Next local step read-only session/
+cleanup report scope review; completed acceptance পুনরায় নয়।
+
+**Read-only session/cleanup report scope review সম্পন্ন (2026-09-27):**
+[Scope](gpu-session-report-scope.md)। `recover()` cleanup চালাতে পারে এবং existing
+lookup শুধু reservation পড়ে—এই gap verified। পরের authorized local micro-step:
+typed atomic snapshot reader, no owner/mutation lock creation, saved/unknown
+observation ও live_state_verified false। Missing/corrupt file fail-closed; absent
+session None, saved deadline audit-only। Source/schema অপরিবর্তিত; docs consistency,
+links, whitespace ও plan drift PASS; prior 183-test evidence retained। Blocker নেই;
+no install/download/cloud call/payment/commit; real acceptance deferred।
+
+**Read-only session/cleanup report সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-session-report-checkpoint.md)। `session_report(render_id=...)`
+single validated snapshot থেকে immutable typed historical report দেয়; no locks,
+writes, recovery বা cleanup। Missing/legacy session None; corrupt/missing ledger
+error; saved/unknown source ও live_state_verified false। Atomic replacement after
+open সহ নতুন tests ও relevant regression: 201 PASS; Ruff/docs checks PASS। Direct
+pytest launcher stale shebang bypass করতে existing interpreter ব্যবহার; install নয়।
+Source ledger, নতুন test/checkpoint ও status docs ছাড়া পরিবর্তন নেই; persisted
+schema/production API/UI/DB অপরিবর্তিত। Next authorized local micro-step remaining
+mock gap review; completed work restart নয়। Blocker নেই; real acceptance deferred।
+
+**Remaining local/mock gap review সম্পন্ন (2026-09-27):**
+[Review](gpu-mock-remaining-gap-review.md)। Completed reservation/dispatch/session/
+observation/report slices retained। Concrete double-failure gap reproduced: provider
+ timeout-এর পরে cleanup intent write failure হলে top-level OSError, original
+GPUProviderError শুধু context-এ; admission closed থাকে। Next authorized bounded fix:
+original dispatch error identity/code propagate, cleanup error explicit chaining;
+intent/result/dispatch persistence failure tests। Source/test unchanged; local
+fixture reproduction ও docs checks PASS; prior 201-test evidence retained। Blocker
+নেই; production/live/model work deferred; no install/download/cloud call/commit।
+
+**Dispatch/cleanup double-failure fix সম্পন্ন (2026-09-27):**
+[Checkpoint](gpu-double-failure-checkpoint.md)। `MockRenderSession.submit()` original
+exception instance/code top-level রাখে; cleanup exception explicit cause-এ। ছয়টি
+নতুন test আগে FAIL, পরে PASS; relevant regression 207 PASS; lint correction-এর পরে
+ছয়টি targeted test আবার PASS। Ruff/docs checks PASS। Closed admission/no retry ও
+unknown observation verified; standalone cleanup/schema অপরিবর্তিত। Next authorized
+local micro-step completed mock evidence handoff/deferred gates সংক্ষেপে একত্র করা।
+Blocker নেই; no install/download/cloud call/payment/commit; real acceptance deferred।
+
+**Local/mock evidence handoff সম্পন্ন (2026-09-27):**
+[Handoff](gpu-mock-handoff.md)-এ completed slices, latest 207-test evidence,
+separate supervisor evidence, limitations ও deferred gates একত্র। Counts overlap
+করে যোগ নয়; source/test unchanged, regression rerun নয়। Links/status/authorization,
+plan drift/whitespace/RESUME checks PASS। এই bounded local ধারায় আর নির্দিষ্ট
+pending implementation তালিকাভুক্ত নেই; review/feature loop নিজে থেকে নয়। Next
+plan-order step 4.7 final preview owner-deferred; নতুন local scope বা explicit
+restart নির্দেশে পরের কাজ নির্ধারণ। Existing local authorization বহাল; নতুন phase,
+paid/model কাজ auto-start নয়। Handoff blocker নেই; real Phase 3/4 অসম্পূর্ণ।
+No install/download/cloud call/payment/commit; existing owner edits retained।
+
+**4.7 non-billable preview পুনরারম্ভ (2026-09-27):** Owner-এর repeated next-work
+নির্দেশে preview path resumed; paid launch/payment authorization নয়।
+[Draft](runpod-launch-preview.md)-এ official public A5000 24 GB $0.27/hr ও Pod
+pricing পুনরায় যাচাই; provisional 15-minute compute $0.0675। Account quote/region/
+tier/storage/tax অজানা; final approval-ready preview এখনও অসম্পূর্ণ। Existing
+image/mock evidence reuse; পুরোনো next-supervisor step completed হিসেবে স্পষ্ট।
+Next required input owner console quote; authenticated console access agent-এর নেই।
+Docs checks PASS; app tests rerun/install/download/account mutation/payment হয়নি।
+
+**RunPod স্থগিত ও বাংলা local report command সম্পন্ন (2026-09-27):**
+Owner RunPod ছাড়া কাজের নির্দেশে quote/screenshot/payment handoff পুনরায় স্থগিত;
+ওই তথ্য আর pending requirement নয়। [Command checkpoint](gpu-local-report-command.md)।
+Existing session_report-এর read-only CLI বাংলায় historical compute/storage/admission
+ও unknown অবস্থার বার্তা দেয়; exit 0 read-success, 1 no session, 2 error। Raw corrupt
+input echo নয়। CLI/report/durable/observation 56 tests PASS; lint correction-এর পরে
+7 CLI tests PASS; Ruff/docs checks PASS। Existing source/schema/production flow
+অক্ষত; new script/test/docs only। Next authorized local micro-step temporary
+synthetic session-এর reproducible offline demo। No install/cloud/payment/commit।
+
+**Reproducible offline mock demo সম্পন্ন (2026-09-27):**
+[ব্যবহারবিধি](gpu-offline-demo.md)। নতুন module command temporary synthetic ledger/
+mock session বানিয়ে existing বাংলা report দেখায়; unknown → submitted → saved absent/
+retained state। Zero fixture rate/fixed clock; real inference নয়। No existing path
+input; own temporary files removed। Network-disabled/repeated run/user-file retention/
+failure cleanup ও subprocess tests সহ relevant 59 PASS; direct demo exit 0;
+Ruff/docs checks PASS। Source provider/API/UI/DB অপরিবর্তিত; নতুন script/test/docs।
+Blocker নেই। এই demo slice complete; next owner demo/feedback বা concrete local
+scope, নতুন feature/phase auto-start নয়। RunPod স্থগিত; no install/download/commit।
