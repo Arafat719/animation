@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-02",
+  "repository": "https://github.com/Comfy-Org/ComfyUI.git",
+  "version": "v0.38.0",
+  "commit": "6b747c0428c343e1417219641db93a4fb7cb69ae",
+  "source_sha256": {
+    "requirements.txt": "c8325341fcc03b480f7ddb902ce6049e418ecf718232efeaacbfe51aaa79b3fe",
+    "nodes.py": "fe624b0c1b6a3cd124a2214e5700b61337589144c2f0668900a04f8ccc031e38",
+    "comfy/diffusers_load.py": "25af9c4032d11ed63fc974f83e937e562736a358b7eaf176c88edfbfea4c8a3d",
+    "comfy/sd.py": "ad1e6a9ff7b4abb48fb55b6054eace19e33f79359e24a0c4067d94a1a80e0e99",
+    "comfy/sd1_clip.py": "0ef5a50c43999aee97a65d0b38f0a7e070ec3559745fc8bcb2eaeae74a34decf",
+    "comfy/quant_ops.py": "37f0054dfbd8430524ac2c73dafd25b8ad4eabc490a2b7490eeebde8dffbc749",
+    "comfy/cli_args.py": "70be4fb6830ccd7e43df06330f6da31f76c0ad11ee135d04913f5d8c1d9f4cde",
+    "README.md": "9e3730235b5e88ca5db52c62c0116235bd8064c4b2dffb81e410eebb64d0c555"
+  },
+  "python": "3.12",
+  "platform": "Linux x86_64 / Ubuntu 24.04",
+  "torch": "2.14.0+cu130",
+  "cuda": "13.0",
+  "requirements_lock": "requirements-comfy-cu130.lock",
+  "base_requirements_lock": "requirements-sdxl-cu130.lock",
+  "custom_nodes": [],
+  "dependency_metadata": {
+    "source": "https://pypi.org/pypi/{name}/{version}/json",
+    "base_packages": 62,
+    "additional_packages": 45,
+    "active_requirement_checks": 182,
+    "result": "PASS",
+    "exact_wheel_sidecars": {
+      "torch": {
+        "url": "https://download.pytorch.org/whl/cu130/torch-2.14.0%2Bcu130-cp312-cp312-manylinux_2_28_x86_64.whl.metadata",
+        "sha256": "4c3a9ca0bbabfa134a65c45c4c09a890a99da6e0e98c8fcab8026fa236b968ba",
+        "active_constraints_passed": 14
+      },
+      "torchvision": {
+        "url": "https://download.pytorch.org/whl/cu130/torchvision-0.29.1%2Bcu130-cp312-cp312-manylinux_2_28_x86_64.whl.metadata",
+        "sha256": "426387e917f138c777846272a6c46eb70c5de1e8ed5aae98e1dfb8b9891a99e0",
+        "active_constraints_passed": 3
+      }
+    }
+  },
+  "source_checks": [
+    "7 workflow nodes registered",
+    "DiffusersLoader input model_path and MODEL/CLIP/VAE output order",
+    "isolated alias discovery and invalid path rejection",
+    "4 inventoried component filenames selected",
+    "local CLIPTokenizer import"
+  ],
+  "runtime_execution": "NOT VERIFIED: no clean ComfyUI install/server, native extension imports, GPU operation or model load",
+  "launch_args": [
+    "--listen",
+    "127.0.0.1",
+    "--port",
+    "8188",
+    "--disable-all-custom-nodes",
+    "--disable-api-nodes",
+    "--disable-xformers",
+    "--use-pytorch-cross-attention"
+  ]
+}

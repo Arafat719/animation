@@ -1,41 +1,45 @@
 # পরের কাজের সংক্ষিপ্ত অবস্থা
-Updated: 2026-09-27. Keep under 60 lines; replace stale status, do not append logs.
+Updated: 2026-10-04. Keep under 60 lines; replace stale status, do not append logs.
 
 - বর্তমান: Local Phase 1/2 PASS; Phase 3 integrated offline acceptance PASS।
 - Phase 4.1–4.6 mock কাজ সম্পন্ন; 4.7 launch preview draft প্রস্তুত, final নয়।
 - Paid GPU কাজ স্থগিত: owner-এর এখন বাজেট ও international payment card নেই।
-- পরের কাজে [rules](plan/rules.md), [Phase 4](plan/phase-4.md) ও নিচের review পড়ো।
-- Owner image build ও agent CPU/no-GPU container smoke PASS।
-- GHCR upload/manifest identity PASS; RunPod quote এখনও পাওয়া যায়নি।
+- পরের কাজে [rules](plan/rules.md), [Phase 5](plan/phase-5.md) ও [readiness review](comfy-readiness-review.md) পড়ো।
 - REST inspect/stop/terminate adapter mock tests PASS; live calls disabled।
 - Mock REST cleanup/recovery integration PASS; storage status unknown থাকে।
 - Durable mock journal/restart recovery PASS; [checkpoint](gpu-journal-checkpoint.md)।
-- Separate mock watchdog parent-exit/restart PASS; [checkpoint](gpu-watchdog-checkpoint.md)।
 - Auth failure retry-stop/provider codes PASS; [checkpoint](gpu-cleanup-auth-checkpoint.md)।
 - Mock REST watchdog integration PASS; [checkpoint](gpu-watchdog-rest-checkpoint.md)।
 - [Launch gap review](gpu-launch-readiness-review.md) সম্পন্ন; paid readiness অসম্পূর্ণ।
 - Bounded mock supervisor PASS; [checkpoint](gpu-supervisor-checkpoint.md)।
 - Owner server সম্পর্কে অনিশ্চিত; [attended proposal](gpu-attended-health-proposal.md) প্রস্তুত।
-- Owner RunPod dashboard access নিশ্চিত করেছেন; deploy/payment হয়নি বলে ধরে নেওয়া নয়।
 - Owner RunPod আপাতত বাদ দিয়েছেন; quote/screenshot/payment request স্থগিত।
 - [Budget/dispatch offline acceptance](gpu-offline-acceptance.md) PASS; 120 tests PASS।
 - নতুন phase বা স্থগিত CPU model experiment নিজে থেকে শুরু নয়।
 - Owner-approved phase-order exception: offline PASS দিয়ে mock 4.1–4.6 এগোবে।
 - [Durable restart acceptance](gpu-durable-offline-acceptance.md) PASS; 171 tests PASS।
-
 ## সর্বশেষ outcome ও checks
-- Authenticated device-health worker ও Docker recipe/allowlisted packager প্রস্তুত।
-- Supervisor/lifecycle tests 126 PASS; lint PASS; prior 99-test/image evidence retained।
-- Local image digest/size নথিভুক্ত; auth/no-GPU/pip-check/cleanup PASS।
-- Owner preference: সব software/package/dependency install owner করবেন।
-- Agent install করবে না; প্রয়োজন হলে exact command দেবে।
-- [Double-failure fix](gpu-double-failure-checkpoint.md) সম্পন্ন; 207 tests PASS; blocker নেই।
-- [বাংলা local report command](gpu-local-report-command.md) সম্পন্ন; 56 relevant tests PASS।
-- [Offline demo](gpu-offline-demo.md) সম্পন্ন; 59 tests PASS; সরাসরি command run PASS।
-- পরের ব্যবহারিক ধাপ: owner demo/feedback; নতুন concrete scope ছাড়া feature/phase নয়।
-- Context অসংগতি হলে owner-কে জানাও; অনুমান করে source edit নয়।
-- Production API/UI/DB/schema/unrelated edits অক্ষত; install/download/commit নয়।
-
+- Owner সব dependency install করবেন; plan-order next 4.7 final cost/action preview, RunPod স্থগিত বলে blocked।
+- Owner-approved 5.1 inventory সম্পন্ন: SDXL-Turbo F32 snapshot ~12.93 GiB verified।
+- Owner-approved 5.2 ImageProvider mock contract সম্পন্ন; relevant 51 tests PASS।
+- Owner-approved 5.3 offline workflow/validation সম্পন্ন; relevant 51 tests PASS।
+- 5.4 local scope অনুমোদিত; synthetic CPU FP16/BF16 ops PASS, real image হয়নি।
+- [Failure diagnostics](image-load-diagnostics-checkpoint.md) ও [monitor fix](image-monitor-exit-checkpoint.md) সম্পন্ন; 84 tests + 30 synthetic runs PASS।
+- [CLIP key compatibility](image-clip-keys-checkpoint.md) সম্পন্ন; 196 legacy keys verified; 93 tests PASS।
+- [Attempt-5](image-load-attempt-5.md) load PASS: 64.66s/RSS ~7.547 GiB; CPU FP16 encoders/UNet, F32 VAE।
+- [Mixed adapter](image-mixed-adapter-checkpoint.md) সম্পন্ন; 128 test cases PASS; 51 conv weights inventoried।
+- [Inference attempt-3](image-inference-attempt-3.md): UNet/latents PASS; VAE decoding-এ RSS limit, image নেই।
+- [Decode diagnostics](image-decode-diagnostics.md): isolated VAE 1.006→1.964 peak→1.027 GiB; তৃতীয় upsampler conv-এ বড় বৃদ্ধি।
+- Full runs 5/6: denoisers dead; pre-decode 7.225 GiB, retry decode observed max 7.600 GiB; SIGXCPU; 138 tests PASS।
+- [Split-process experiment](image-split-process-experiment.md): generation peak 7.673 GiB; host reserve guard-এ বন্ধ, latent/decode হয়নি; 146 tests PASS।
+- [CUDA preparation](image-cuda-preparation.md): auto CUDA/CPU inference + split decode; 152 distinct lightweight tests PASS; real GPU run হয়নি।
+- [Snapshot portability](image-snapshot-portability.md): REMOTE READY copy source; 18 files/~12.926 GiB, full SHA256/F32 checks PASS; dereferenced copy recipe, বড় duplicate নেই।
+- [CUDA AS policy](image-cuda-address-policy.md): explicit cuda-তে app AS cap নেই/GPU required; default CPU 24 GiB অক্ষত; inherited finite AS rejected; 167 tests PASS।
+- [CUDA runtime lock](image-cuda-runtime.md): torch 2.14.0+cu130 রাখা; Python 3.12/Ubuntu 24.04 image digest, 62 wheel hashes pinned; driver >=580.126.20; 95 dependency constraints ও tiny pread PASS।
+- [ComfyUI Step 1](comfy-runtime.md) সম্পন্ন: v0.38.0/6b747c0428c343e1417219641db93a4fb7cb69ae; built-in DiffusersLoader, custom nodes নেই; 182 metadata checks + 51 regressions PASS।
+- [Durable preflight](comfy-durable-preflight-checkpoint.md) PASS: 226 tests; intent-এর আগে mandatory check, recovery GET-only; offline preflight complete। [Runtime](comfy-local-preflight.md) GPU আসা পর্যন্ত deferred; install owner করবেন।
+- [Mock auth integration](comfy-auth-workflow-checkpoint.md) সম্পন্ন: 541 tests PASS; bounded parsing/preflight/submit/GET-only recovery verified; live বন্ধ, real 5.4 blocked।
+- [Readiness review](comfy-readiness-review.md) হালনাগাদ: mock identity/auth gaps closed; real transport/supervision/runtime/GPU বাকি। Next proposal: offline supervision contract design; owner next-work নির্দেশে design-only, real execution deferred।
 ## প্রকৃত সীমা ও deferred কাজ
 - Mock dispatch/receipt durable; production idempotency memory-only, live outcome অজানা।
 - Timeout per I/O phase; streaming-এর hard wall-clock deadline নয়।
@@ -52,8 +56,5 @@ Updated: 2026-09-27. Keep under 60 lines; replace stale status, do not append lo
 - [Owner model decision](local-planner-owner-decision-review.md): দুই CPU path স্থগিত।
 - Real planner lifecycle/recovery ও Bengali/duration/traits/repeatability বাকি।
 - এই deferred real acceptance Phase 4 mock scope-এর blocker নয়; বাদও নয়।
-- Automatic model experiment restart নয়।
 - Paid resource/>2 GB download-এর আগে পৃথক explicit approval প্রয়োজন।
-- [পূর্ণ status/history](current-build-status.md)
-- [কোন তথ্য কোথায়](plan/INDEX.md)
-- Requirements বদলালে master ও generated excerpts sync করতে হবে।
+- [পূর্ণ status/history](current-build-status.md); [reference map](plan/INDEX.md); requirements বদলালে master/excerpts sync।

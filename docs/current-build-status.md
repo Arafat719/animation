@@ -796,3 +796,650 @@ failure cleanup ও subprocess tests সহ relevant 59 PASS; direct demo exit 0
 Ruff/docs checks PASS। Source provider/API/UI/DB অপরিবর্তিত; নতুন script/test/docs।
 Blocker নেই। এই demo slice complete; next owner demo/feedback বা concrete local
 scope, নতুন feature/phase auto-start নয়। RunPod স্থগিত; no install/download/commit।
+
+**Owner demo handoff ও next-plan check (2026-09-28):** Owner-এর পাঠানো output
+expected unknown → queued → compute absent/storage retained/admission closed,
+attempt 1/incomplete ও temporary cleanup দেখায়; reported error নেই। এটি owner
+output review, নতুন test run বা real GPU evidence নয়। Rules, Phase 4/5, readiness
+review ও latest ledger মিলিয়ে next plan-order step 4.7 final cost/action preview;
+RunPod suspension বহাল বলে এগোনো স্থগিত। 4.8–4.10 real health/inference/cleanup
+ও পূর্ণ acceptance বাকি; Phase 3 real gate-ও deferred। GPU ছাড়া prospective next
+কাজ: explicit scoped phase-order revision-এর পরে 5.1 existing model local
+path/size/identity/license/format inventory (missing হলে missing report), download
+বা model run নয়। এই review ওই revision বা Phase 5 implementation অনুমোদন নয়।
+RESUME/ledger only; requirements/source অপরিবর্তিত। Plan drift ও whitespace
+checks PASS; application tests প্রয়োজন হয়নি।
+
+**5.1 scoped local inventory সম্পন্ন (2026-09-28):** Owner recommendation অনুমোদন
+দেওয়ায় master-এ শুধু 5.1 phase-order exception যোগ; generated excerpts refreshed।
+[Inventory](phase-5-model-inventory.md): SDXL-Turbo revision snapshot উপস্থিত,
+13,878,864,870 bytes; চার F32 safetensors-এর full hash/cache manifest/header/offset
+checks PASS। Official revision card/license reviewed; কিছু media path inaccessible।
+Real runtime/quality নয়; model load/install/download বা paid action হয়নি।
+Next 5.2 mock ImageProvider contract, scoped exception extension প্রয়োজন; 3/4
+real acceptance deferred। Docs drift/whitespace PASS; app tests প্রযোজ্য নয়।
+
+**5.2 ImageProvider mock contract সম্পন্ন (2026-09-28):** Owner next-work নির্দেশে
+master scoped exception 5.2 পর্যন্ত extended; [checkpoint](image-provider-checkpoint.md)।
+New image.py: strict request/result, Protocol, image-only read-only fixture mock,
+verified PNG/dimensions/hash, model/seed/mock metadata ও cancellation/error boundary।
+Baseline FakeProvider 29 PASS; new 22 + regression 29 = 51 PASS; Ruff/format/plan
+drift/whitespace PASS। API/UI/DB/পুরোনো providers অপরিবর্তিত; no install/download/
+model run/cloud/commit। Next 5.3 workflow validation, scoped extension প্রয়োজন।
+
+**5.3 ComfyUI offline workflow সম্পন্ন (2026-09-28):** Owner next-work নির্দেশে
+scoped exception 5.3 পর্যন্ত। [Checkpoint](comfy-workflow-checkpoint.md)। Seven-node
+API JSON, ImageRequest builder ও strict fixed-profile validator; SDXL-Turbo
+Diffusers mapping, 512×512/batch1/step1, prompt/seed retained। Official node/API
+source reviewed; DiffusersLoader deprecated, live compatibility unverified।
+29 workflow + 22 image tests = 51 PASS; Ruff/format/drift/whitespace/links PASS।
+No server validation/inference/install/download/cloud/API/UI/DB change। Next 5.4
+real image requires runtime/model registration preflight ও execution authorization;
+Phase 3/4 gates deferred, RunPod স্থগিত।
+
+**5.4 local runtime preflight সম্পন্ন, image acceptance BLOCKED (2026-09-28):**
+Owner next-work নির্দেশে existing-local-resource 5.4 scope অনুমোদিত; পুনরায় generic
+execution approval নয়। [Preflight](phase-5-image-preflight.md): installed torch/
+diffusers import ও pip check PASS; CUDA unavailable, ComfyUI searched roots-এ
+মেলেনি; listener query permission denied। RAM ~10 GiB available বনাম existing
+F32 snapshot ~12.93 GiB; safe bounded load route প্রতিষ্ঠিত নয়। Legacy app path
+read only; online-capable/1024px/unseeded call চালানো হয়নি। Next resolve usable
+runtime/hardware route within existing scope; install owner-only, no paid/new
+download authorization। Master/excerpts/RESUME updated; docs checks PASS।
+Model run/install/download/cloud call হয়নি; 5.4 incomplete, 5.5 শুরু নয়।
+
+**5.4 reduced-precision CPU feasibility সম্পন্ন (2026-09-28):**
+[Evidence](phase-5-cpu-feasibility.md)। Existing torch synthetic FP32/FP16/BF16
+conv/norm/attention/interpolation finite outputs PASS under 45s/CPU/AS limits;
+peak RSS ~499 MiB, model run নয়। Header-based FP16 encoder/UNet + F32 VAE weight
+estimate 6.617 GiB; transient/runtime memory অমাপা। Installed loader dtype path
+verified; accelerator CPU-offload method এই CPU-only route নয়। Correct process
+cgroup found, shared memory.max=max and not writable; isolated hard RSS cap নেই।
+Next authorized 5.4 micro-step: bounded offline load-only harness and synthetic
+guard tests, then load readiness; real image acceptance still incomplete।
+Docs-only updates, no model load/install/download/cloud; docs checks PASS।
+
+**5.4 bounded load-only harness সম্পন্ন (2026-09-28):**
+[Checkpoint](image-load-harness-checkpoint.md)। New isolated script: 300s wall/CPU,
+24 GiB hard virtual address cap, sampled 8 GiB child RSS/2 GiB host reserve,
+kill/reap, offline Python socket guard/local-files-only, exact snapshot, FP16
+encoders/UNet + F32 VAE, stage/result evidence, no inference/retry। Synthetic ও
+stubbed-runtime tests 16 + image/workflow 51 = 67 PASS; Ruff/docs checks PASS।
+Actual model load হয়নি; AS/import/load feasibility still unmeasured; RSS guard
+not hard allocation ceiling। Next authorized micro-step one bounded actual
+load-only attempt after fresh memory/runtime-license preflight; 5.4 incomplete।
+No install/download/cloud/commit, existing unrelated work retained।
+
+**5.4 actual load-only attempt 1 FAIL (2026-09-28):**
+[Result/preflight](image-load-attempt-1.md)। Fresh memory/disk ও runtime/license
+checks-এর পরে একবার exact existing local snapshot load। 18.7836s-এ sampled RSS
+8,602,546,176 bytes (~8.012 GiB) > 8 GiB guard; stage loading_pipeline; child -9
+killed/reaped, subsequent /proc absent, CLI exit 1। No inference/output, retry বা
+limit increase। Weight estimate excludes transient loading overhead; allocation
+root cause not yet measured। Next authorized step inspect/test load-memory
+reduction under same limits before another real run। Source unchanged, prior
+67 tests retained; docs checks PASS। No install/download/paid action/commit।
+
+**5.4 tensor-at-a-time loader change সম্পন্ন (2026-09-28):**
+[Checkpoint](image-stream-load-checkpoint.md)। Existing unsharded loader retains
+F32 source state_dict during conversion; overlap candidate, attempt-1 exact
+allocation attribution unproven। New image_stream_load helper validates meta
+model keys/shapes/F32, loads/copies/releases each tensor, supplies four components
+to probe pipeline। Same offline/resource limits; no checkpoint rewrite/download।
+10 new helper + 16 probe + 51 image/workflow = 77 PASS, including small real
+UNet/VAE/CLIP config/weight roundtrip; Ruff/docs checks PASS। No full SDXL load
+this turn; next authorized fresh memory check + one attempt-2 under same bounds।
+Prior attempt-1 failure retained; 5.4 real image incomplete; no API/UI/DB/install。
+
+
+**5.4 streaming load-only attempt 2 FAIL (2026-09-29):**
+[Result/preflight](image-load-attempt-2.md)। Fresh available RAM ~11.34 GiB;
+one run under unchanged bounds, attempt-1 preserved। 15.8094s, sampled peak
+RSS 1,146,662,912 bytes (~1.068 GiB), child/CLI exit 1, child_failed/RuntimeError।
+Supervisor waited/reaped। Previous operation/message/traceback not retained by
+harness, root cause unknown। No reported memory guard breach; no full-load
+success/image, retry or limit increase। Prior 77 tests reused, source unchanged;
+docs checks PASS। Next proposed owner-directed step: diagnostic retention and
+synthetic tests only; another real load not automatically authorized। No install,
+download, paid resource, commit or API/UI/DB changes।
+
+
+**5.4 bounded load diagnostics সম্পন্ন (2026-09-29):**
+[Checkpoint](image-load-diagnostics-checkpoint.md)। Last operation/error message/
+last 12 traceback frames retained with text bounds; no locals/source capture।
+TypeError failure covered, snapshot/runtime/validation stages explicit।
+80 relevant tests PASS; final handler-scope recheck 18 PASS/1 FAIL: synthetic-error
+returned monitor_error:ValueError; unchanged rerun 19 PASS। Intermittent RSS/status
+observation issue suspected, unresolved; no test skipped।
+Ruff/docs checks PASS। No SDXL run, install/download/resource-limit change।
+Attempt-2 root cause still unknown; diagnostic evidence cannot recover old errors।
+Next proposed owner-directed step: synthetic monitor diagnosis/fix; attempt-3 deferred;
+no automatic retry/inference; real 5.4 acceptance remains incomplete।
+
+
+**5.4 RSS monitor exit race fix সম্পন্ন (2026-09-29):**
+[Checkpoint](image-monitor-exit-checkpoint.md)। Synthetic child exit-এ R state
+ও missing VmRSS captured; original failure snapshot unavailable। Missing RSS
+এখন <=50ms/remaining-deadline bounded wait দিয়ে exit confirm করে; still-live
+child monitor failure + kill/reap, completed child ordinary result classification।
+Regression reproduced before fix; 84 relevant tests PASS, 30 synthetic real
+subprocess success/failure exits ও cleanup PASS; Ruff/docs checks PASS।
+Attempt-2 RuntimeError এখনও অজানা; no SDXL load/install/download/limit increase।
+Next proposed owner-directed micro-step: fresh memory preflight + one diagnostic
+attempt-3 under same limits, no automatic retry; 5.4 image acceptance incomplete।
+
+
+**5.4 diagnostic load-only attempt 3 FAIL (2026-09-29):**
+[Result/preflight](image-load-attempt-3.md)। Fresh RAM ~11.18 GiB, unchanged
+limits, one run only। 7.7068s, sampled RSS 1,116,200,960 bytes (~1.040 GiB),
+child/CLI exit 1; loading_unet RuntimeError: unable to mmap 10270077736 bytes,
+Cannot allocate memory (12), header-validation safe_open line 44। No reported
+RSS/host reserve/timeout guard breach; supervisor completed wait/reap।
+Virtual-address pressure is a candidate, exact mappings/usage unmeasured;
+not proof of physical RAM exhaustion। Diagnostics worked; no monitor error।
+Prior 84 tests/30 synthetic checks reused; docs checks PASS। No retry/inference,
+install/download/limit increase/paid resource/commit। Next proposed owner-directed
+step: installed mapping-path inspection + bounded synthetic address-space
+measurement, evidence-led adjustment/tests under same limits; 5.4 incomplete।
+
+
+**5.4 pread mapping-pressure adjustment সম্পন্ন (2026-09-29):**
+[Checkpoint](image-pread-checkpoint.md)। Installed safetensors supports pread;
+64 MiB fixture retained mappings mmap=1/pread=0। +32 MiB virtual headroom-এ
+দুটোই fail; +96 MiB-এ mmap fail/pread shape+small value PASS। Thus pread still
+needs transient opening space but reduces measured pressure। Loader validation
+ও per-tensor read now pread; unchanged copy/dtype/schema/offline/resource bounds।
+85 relevant tests PASS, including actual mapping regression and small component
+roundtrip; Ruff/docs checks PASS। No full model run/install/download/commit।
+Next proposed owner-directed step: fresh memory check + one bounded attempt-4,
+no auto retry; full-model load/image acceptance remains unmeasured/incomplete।
+
+
+**5.4 pread load-only attempt 4 FAIL (2026-09-29):**
+[Result/preflight](image-load-attempt-4.md)। Fresh available RAM ~11.16 GiB,
+one run under unchanged limits। VAE/UNet load returned; loading_text_encoder
+ValueError: Checkpoint/model keys differ (image_stream_load.py:36)। 53.0912s,
+sampled RSS 6,447,804,416 bytes (~6.005 GiB), child/CLI exit 1, supervisor reaped।
+No reported memory/timeout/monitor breach। Earlier UNet mapping blocker passed
+in this run; full pipeline/inference still unproven, no image/retry। Prior 85 tests
+reused; docs checks PASS। No install/download/limit increase/paid resource/commit।
+Next proposed owner-directed step: encoder checkpoint header/meta-model schema
+comparison and evidence-led compatibility correction/tests; no full-model run
+or silent key dropping। Phase 5.4 real image acceptance remains incomplete।
+
+
+**5.4 legacy CLIP key compatibility সম্পন্ন (2026-09-29):**
+[Checkpoint](image-clip-keys-checkpoint.md)। Local header/meta-model comparison:
+first encoder 196 keys exact match after text_model prefix removal, second 517
+native matches; all shapes/F32 match। Installed Transformers conversion mapping
+confirms CLIPTextModel migration। Loader permits only complete bijective legacy
+prefix correspondence for exact CLIPTextModel, retaining full shape/dtype checks
+and rejection of missing/extra/mixed keys; no checkpoint rewriting।
+93 relevant tests PASS including 8 new compatibility/forward/rejection cases;
+Ruff/docs checks PASS। No full-model load/install/download/limit change/commit।
+Next proposed owner-directed step: fresh memory check + one bounded attempt-5;
+no auto retry/inference; Phase 5.4 real image acceptance incomplete।
+
+
+**5.4 full pipeline load attempt 5 PASS (2026-09-29):**
+[Result/preflight](image-load-attempt-5.md)। Fresh RAM ~11.19 GiB; one load-only
+run under unchanged bounds। Final loaded, reason null, child/CLI exit 0;
+64.6570s, sampled peak RSS 8,104,144,896 bytes (~7.547 GiB), child peak
+7,913,636 KiB। CPU checks passed, UNet/both encoders FP16, VAE F32; supervisor
+wait/reap complete। Load feasibility proven for this run; no inference/image,
+activation memory unmeasured, sampled peak margin ~0.453 GiB। Prior 93 tests
+reused; docs checks PASS। No retry/install/download/paid resource/commit।
+Next proposed owner-directed step: bounded single-image inference harness with
+metadata/finite output/PNG validation and synthetic tests only; actual inference
+needs subsequent readiness/run। 5.4 image acceptance incomplete; 5.5 not started।
+
+
+**5.4 bounded inference harness সম্পন্ন (2026-09-29):**
+[Checkpoint](image-inference-harness-checkpoint.md)। Explicit --infer in existing
+guarded probe; same total time/memory/offline limits, no retry। Fixed 512x512,
+one step/guidance 0/seed 42 anime prompt; finite latent + F32 VAE raw decode checks,
+normalized RGB PNG verification/checksum/metadata; parent independently validates
+artifact before success। 104 relevant tests PASS, Ruff/docs checks PASS।
+Initial incomplete parent test stub corrected; no test skips। No real model run,
+image inference/install/download/paid resource/API/UI changes। Load headroom only
+~0.453 GiB; inference feasibility unknown। Next proposed owner-directed step:
+fresh readiness + one bounded --infer attempt-1, verify and visually review if
+successful; no retry/limit increase। Phase 5.4 acceptance remains incomplete।
+
+**5.4 existing inference attempt-1 reconciliation (2026-09-30):**
+[Evidence](image-inference-attempt-1.md)। Fresh readiness found attempt-1 already
+exists, so no model run/retry occurred. Saved result reports timeout at denoising,
+300.8881s, sampled peak 8,114,016,256 bytes (~7.557 GiB), returncode -9; stage agrees.
+No PNG/metadata exists. Prior execution not observed this turn; root cause beyond
+reported timeout unknown. RAM 12,318,494,720 bytes available; expected weights
+present; ignored evidence preserved. Source unchanged; prior 104 tests reused.
+Next proposed step: read-only timeout diagnosis, no retry/limit increase.
+Phase 5.4 real image acceptance incomplete; 5.5 not started.
+
+**5.4 read-only inference timeout diagnosis (2026-09-30):**
+[Findings/proposal](image-inference-timeout-diagnosis.md)। `denoising` wraps the
+whole pipeline call, including text encoding; UNet entry is not established.
+300s budget includes imports/load/inference; prior load-only timing cannot be
+used as this run's timing. Atomic last-stage record has no event history/CPU
+timings. Root bottleneck unresolved; no dtype/thread/budget change justified.
+Next proposed micro-step: bounded timing log and temporary component hooks,
+synthetic/stub tests only, preserving all inference settings/guards. No real
+run/retry/source edit/install occurred. Prior 104 tests reused; docs checks PASS.
+5.4 real image acceptance remains incomplete; 5.5 not started.
+
+**5.4 bounded inference timing সম্পন্ন (2026-09-30):**
+[Checkpoint](image-inference-timing-checkpoint.md)। Additive elapsed/process CPU
+timing in stage.json; exclusive payload-free events.jsonl capped at 128 entries.
+Temporary encoder/UNet hooks and explicit pipeline/latent/decode markers, with
+cleanup on exceptions/partial registration; no tensor replacements. Existing
+settings/limits/offline/artifact checks unchanged. 109 relevant tests PASS;
+Ruff/docs checks PASS. No real load/inference/install/download/commit.
+Next proposed owner-directed step: fresh readiness + one instrumented attempt-2
+under unchanged bounds, no automatic retry. 5.4 real acceptance incomplete.
+
+
+**5.4 instrumented inference attempt-2 FAIL (2026-09-30):**
+[Evidence](image-inference-attempt-2.md)। One authorized run; timeout 300.5893s,
+child -9/CLI 1, sampled RSS ~7.5565 GiB. Load and both encoders completed;
+UNet entered 75.7511s without return. 17 events agree with final evidence;
+no PNG/metadata. No retry/limit change. Prior 109 tests reused; docs checks PASS.
+Next proposed: read-only UNet CPU-path/hardware review. 5.4 incomplete; 5.5 not started.
+
+
+**5.4 read-only UNet CPU review (2026-09-30):**
+[Review/proposal](image-unet-cpu-review.md)। i7-4790S, 4 cores/8 threads, AVX2;
+PyTorch reports no AVX512 FP16/BF16 or AMX FP16/BF16, MKLDNN enabled. Local
+UNet config/source reviewed; exact executed kernel and slow operator unknown.
+Full F32 UNet payload alone exceeds 8 GiB guard; no speculative dtype switch.
+Next proposed: bounded synthetic representative conv/linear dtype benchmark,
+with tested guards, no checkpoint/full model load. No inference/source change;
+prior 109 tests reused, docs checks PASS. 5.4 incomplete; 5.5 not started.
+
+
+**5.4 guarded operator probe (2026-09-30):**
+[Checkpoint](image-operator-probe-checkpoint.md)। Harness added using existing guards;
+114 tests PASS, Ruff/docs checks PASS. Actual suite stopped after F32 conv PASS
+(warm ~0.047s) and FP16 first-call SIGXCPU (-24); no BF16/linear or retry.
+Some regression tests overlapped FP16 case: no uncontended speed ratio claim.
+No model load/image/install. Next proposed: isolated bounded synthetic
+FP16-storage/F32-conv wrapper comparison/tests; full UNet fit unproven.
+5.4 remains incomplete; 5.5 not started.
+
+
+**5.4 synthetic mixed convolution PASS (2026-09-30):**
+[Checkpoint](image-mixed-conv-checkpoint.md)। Added --mixed two-case guarded suite;
+116 tests PASS before actual isolated run. F32/mixed both PASS (~0.054/~0.053s
+warm), mixed relative L2 0.000359475; conversion included. Process memory and
+explicit conversion payload recorded with limits on attribution. No full UNet
+fit/latency/quality claim. Next proposed: opt-in Conv2d adapter/tests and local
+shape inventory; no full model run. Ruff/docs checks PASS; 5.4 incomplete.
+
+
+**5.4 opt-in mixed Conv2d adapter সম্পন্ন (2026-09-30):**
+[Checkpoint](image-mixed-adapter-checkpoint.md)। Temporary CPU F32 conv compute
+with unchanged FP16 storage; semantic/cleanup/rejection tests and explicit
+--infer-mixed harness/metadata wiring. 128 relevant cases PASS over completed
+runs; Ruff/docs checks PASS. Header-only inventory: 51 conv weights; largest
+F32 weight+bias ~112.505 MiB, full-model fit unproven. No real model run.
+Next proposed: fresh readiness + one bounded mixed attempt-3, no retries/limit
+increase. Phase 5.4 incomplete; 5.5 not started.
+
+
+**5.4 mixed inference attempt-3 FAIL at decode RSS guard (2026-09-30):**
+[Evidence](image-inference-attempt-3.md)। One authorized run under unchanged
+limits. UNet completes ~102.87s, finite latents PASS; decode starts ~176.27s.
+RSS guard stops run at 188.64s, sampled peak 8,591,810,560 bytes; child -9/CLI 1.
+No PNG/metadata. 21 events consistent; prior 128 tests reused, docs checks PASS.
+No retry/limit increase. Next proposed: decode object-lifetime/options review
+and one synthetic-tested memory reduction; no full run. 5.4 incomplete.
+
+
+**5.4 release denoisers before decode সম্পন্ন (2026-09-30):**
+[Checkpoint](image-decode-release-checkpoint.md)। Loader/validation aliases dropped;
+timing/mixed contexts close before clearing pipeline UNet/encoders and collecting
+cycles. Single-use pipeline; VAE math/settings unchanged. 131 tests PASS including
+weakref collection before decode and failure handling; Ruff/docs checks PASS.
+No full run; real RSS reduction unmeasured. Next proposed: fresh readiness plus
+one bounded mixed attempt-4, same limits/no retry. 5.4 incomplete; 5.5 not started.
+
+
+**5.4 mixed inference attempt-4 FAIL at decode RSS guard (2026-09-30):**
+[Evidence](image-inference-attempt-4.md)। Fresh readiness PASS; one authorized
+run with unchanged limits. UNet ~104.05s, finite latents and denoisers_released
+event PASS; decode still crosses RSS guard at 210.043s. Sampled peak
+8,592,891,904 bytes; child -9/CLI 1. All 22 events agree, no PNG/metadata.
+Release-path execution is not proof of real object collection/OS memory return;
+no per-stage RSS attribution. Prior 131 tests reused; docs checks PASS.
+No source edit, retry, install/download, paid resource or commit. Next proposed:
+read-only decode memory diagnosis before another change/run. 5.4 incomplete;
+5.5 not started, awaiting owner direction.
+
+
+**5.4 read-only decode memory review সম্পন্ন (2026-09-30):**
+[Review](image-decode-memory-review.md)। No new obvious permanent denoiser
+owner found in reviewed paths; runtime collection/storage release unproven.
+Batch-1 slicing inactive; default tile threshold 128 exceeds 64x64 latents,
+so enabling tiling alone is ineffective. Third upsample F32 tensor payload
+256 MiB, not total peak attribution. Existing event JSONL drops extra values;
+next proposed: bounded persistent RSS/weakref/VAE-stage diagnostics with
+synthetic tests only. No source change/full run/retry/install. Docs checks PASS;
+prior 131 tests reused. 5.4 incomplete; next step awaits owner direction.
+
+**5.4 VAE memory diagnostics সম্পন্ন (2026-10-01):**
+[পূর্ণ ফল](image-decode-diagnostics.md)। Owner-এর diagnostics-only নির্দেশে scalar
+RSS/HWM/anonymous/file-backed JSONL, denoiser root/parameter/buffer weakrefs ও
+VAE leaf hooks যোগ। Isolated existing F32 VAE/zero latents PASS: before
+1.0055 GiB, sampled peak 1.9641 GiB, after 1.0267 GiB; সবচেয়ে বড় HWM jump
+তৃতীয় upsampler convolution-এ (~511 MiB)। VAE payload 319.11 MiB।
+Fresh readiness-এর পরে এক full mixed run: ~6.31 GiB denoiser tracked tensors
+ও roots dead, কিন্তু RSS 7.5642→7.2246 GiB; anonymous 6.9269 GiB থাকে।
+সম্ভাব্য allocator/native retention + decoder workspace pressure; exact native
+allocation ownership অপ্রমাণিত। Full decode mid-block-এ SIGXCPU (-24), CPU
+~300s; supervisor reason monitor_error:ValueError (existing exit race)।
+Full after-decode/peak জানা যায়নি; isolated result দিয়ে প্রতিস্থাপন করা হয়নি।
+138 relevant tests PASS; Ruff lint/format, excerpt drift ও whitespace PASS।
+কোনো limit/algorithm change, major fix, retry, download/install/paid কাজ নয়।
+Phase 5.4 incomplete; next proposed retained-native-memory/isolated real-latent
+investigation; 5.5 বা major fix শুরু নয়। Existing unrelated edits preserved।
+
+**5.4 owner-requested diagnostic retry সম্পন্ন (2026-10-01):**
+“ok try again” নির্দেশে same-code/limits attempt-6; readiness PASS। UNet দ্রুত
+শেষ হলেও decode CPU budget-এ SIGXCPU (-24), 217.36s; third up-block-এর
+resnets.2.conv2 সর্বশেষ event। Pre-decode RSS 7.2248 GiB, recorded decode
+boundary maximum 7.6003 GiB; after-decode unavailable। Denoiser roots ও tracked
+tensors আবার dead, VAE 319.11 MiB; native/allocator retention hypothesis বহাল।
+[মাপ/সীমা](image-decode-diagnostics.md)। No further retry/fix; unchanged-code
+138-test evidence reused। Next: পৃথক real-latent decode/native memory diagnosis,
+owner নির্দেশ প্রয়োজন; Phase 5.4 অসম্পূর্ণ।
+
+**5.4 one split-process experiment সম্পন্ন; real outcome incomplete (2026-10-01):**
+[পূর্ণ checkpoint](image-split-process-experiment.md)। Owner একটি experiment-এর
+নির্দেশ দিয়েছেন। Temporary latent-only save + separate VAE decode harness,
+checksum/provenance ও parent/combined RAM sampling যোগ; production architecture
+অপরিবর্তিত। Generation successful exit/reap ছাড়া decoder শুরু হয় না।
+146 distinct relevant tests PASS (145-suite + 1 নতুন branch test); Ruff PASS।
+এক real run: initial readiness PASS, generation UNet-এ available host RAM 2 GiB
+reserve-এর নিচে নামায় `host_memory`, child -9/reaped, 129.275s। Generation peak
+7.6732 GiB, supervisor 18.46 MiB, combined 7.6912 GiB; 8 GiB guard ভাঙেনি।
+Real latent/image নেই, decode subprocess শুরু হয়নি; decode RAM/সফলতা অজানা।
+এক-experiment scope মেনে retry/guard reduction/install/download/major fix নয়।
+Next: বেশি available host RAM-এ owner-directed নতুন attempt; 5.4 incomplete।
+
+**5.4 CUDA source preparation সম্পন্ন (2026-10-01):**
+[পরিবর্তন/হ্যান্ডঅফ](image-cuda-preparation.md)। Auto CUDA selection ও device-only
+pipeline/VAE transfer; seeded generator/latent device matching; F32 VAE বহাল;
+CPU-only mixed convolution CUDA-তে bypass; CPU fallback বজায়। Split experiment-এর
+real decode-ও device-aware; device metadata/JSONL এবং local snapshot env override।
+Existing 8 GiB RSS/2 GiB reserve/24 GiB AS/300s/offline/cleanup guards অক্ষত।
+152 distinct lightweight tests PASS (151 regression + expanded 12-case subset,
+একটি নতুন parameter case); Ruff/format/plan drift/whitespace PASS। No heavy model
+load/generation, actual CUDA allocation, install/download/deploy/paid GPU।
+Source প্রস্তুত; first RunPod launch unconditional ready নয়: CUDA runtime/model
+preflight এবং unchanged RLIMIT_AS compatibility verification বাকি; paid approval
+নেই। GPU VRAM cap/peak measurement যোগ হয়নি। Phase 5.4 acceptance incomplete।
+
+**5.4 RunPod preflight review সম্পন্ন (2026-10-01): NOT READY।**
+[সম্পূর্ণ findings/sources](image-runpod-preflight-review.md)। Source/guards অপরিবর্তিত;
+কোনো heavy load/generation/deploy/install/cloud call নয়। Local torch 2.14.0+cu130,
+diffusers 0.40.0 ও pipeline imports/pip check PASS; CUDA unavailable। Model headers,
+sizes/configs/tokenizers PASS; weight symlinks remote copy-তে targets লাগবে।
+Blockers: unconditional pre-import 24 GiB RLIMIT_AS-এর GPU compatibility অপ্রমাণিত;
+selected CUDA image/dependency lock/driver match (cu130 হলে normal driver 580+);
+paid-test CUDA-required allocation gate ও actual Pod memory/VRAM preflight;
+remote full F32 snapshot provisioning/verification। NVIDIA old 40-bit reservation
+example আধুনিক GPU-তে নিশ্চিত failure-এর প্রমাণ হিসেবে ব্যবহার করা হয়নি।
+152 existing lightweight tests reused; source unchanged। Docs/drift/whitespace
+checks PASS। Next owner-directed blocker resolution; Phase 5.4 incomplete।
+
+**5.4 CUDA-specific AS policy সম্পন্ন (2026-10-02):**
+[পূর্ণ checkpoint](image-cuda-address-policy.md)। Explicit `--address-policy cuda`
+application RLIMIT_AS cap বসায় না; inherited finite soft/hard limit হলে fail,
+বাইরের limit বাড়ায় না। Guarded child-এ model load-এর আগে CUDA required latch;
+GPU unavailable হলে CPU fallback নয়। Default cpu policy আগের 24 GiB soft/hard
+cap imports-এর আগে বসায়। CPU-only modes-এ CUDA-policy bypass rejected।
+Supervisor/CLI→child এবং split experiment-এর দুই child-এ policy forward/persist।
+8 GiB RSS/2 GiB reserve/CPU+wall time/core/offline/kill-wait guards অপরিবর্তিত।
+167 lightweight tests PASS (14.78s), Ruff lint/format, plan drift/whitespace PASS।
+Private PROT_NONE virtual reservation test কোনো physical 32 GiB allocation নয়;
+CUDA runtime mocked; real hardware/generation/deployment/paid GPU হয়নি।
+Application AS blocker policy-তে resolved; next pinned CUDA runtime/driver ও tiny
+allocation preflight; Pod resources/remote snapshot-ও বাকি। Phase 5.4 incomplete।
+
+**5.4 CUDA runtime definition সম্পন্ন (2026-10-02):**
+[Runtime checkpoint](image-cuda-runtime.md) এবং `requirements-sdxl-cu130.lock` যোগ।
+বর্তমান torch 2.14.0+cu130/diffusers 0.40.0/transformers 5.16.1/accelerate 1.14.0/
+safetensors 0.8.0 অপরিবর্তিত; Python 3.12/Linux amd64, Ubuntu 24.04 RunPod base
+CUDA 13.0.0 image registry digest verified। Wheel toolkit 13.0.3.0/runtime
+13.0.96; নির্বাচিত Linux host driver >=580.126.20। 62 wheel version/hash pin এবং
+95 active dependency constraints PASS; tiny 84-byte safetensors pread tensor/slice
+read ও pipeline import PASS। Public metadata-only network review; কোনো binary,
+model/image download, install, deployment বা GPU allocation/generation হয়নি।
+Torch sidecar HTTP 403; dependency evidence installed/PyPI metadata, cu130 binary
+পুনরায় extract নয়। Clean install/resolver ও hardware compatibility এখনো unverified।
+Source/architecture/guards অপরিবর্তিত। Next clean locked install, tiny CUDA
+operation/library/resource preflight, এরপর remote snapshot verification;
+paid launch-এর অনুমোদন নেই। Phase 5.4 acceptance incomplete।
+
+**5.4 snapshot portability সম্পন্ন (2026-10-02):**
+[Checkpoint/copy recipe](image-snapshot-portability.md), 18-file SHA256 manifest
+ও explicit copy list যোগ। Existing revision 71153311d3dbb46851df1931d3ca6e939de83304:
+18 symlink-এর সব target present; full content 13,878,864,870 bytes (~12.926 GiB)।
+সব file streaming SHA256, JSON parse ও চার F32 safetensors header/shape/offset/
+length PASS; weight hashes existing blob/inventory identity-র সঙ্গে মেলে।
+Portable `rsync -aL --files-from` recipe blob dependency দূর করে remote final copy
+বানাবে; কোনো local huge duplicate/cache edit/custom loader নয়। Tiny fixture-এ
+dereference copy, source blob ছাড়া checksum PASS, corruption/missing rejection PASS।
+Manifest/list coverage ও docs checks PASS। REMOTE READY মানে verified copy source;
+remote transfer/checksum হয়নি। কোনো download/deploy/GPU/heavy generation হয়নি।
+Next clean locked runtime install + tiny CUDA/library/resource preflight এবং remote
+destination checksum; paid resource authorization নেই। Phase 5.4 incomplete।
+
+**5.4 remaining original plan — Step 1 runtime specification সম্পন্ন (2026-10-02):**
+[ComfyUI checkpoint](comfy-runtime.md), machine-readable source manifest ও additive
+`requirements-comfy-cu130.lock` যোগ। v0.38.0 commit
+`6b747c0428c343e1417219641db93a4fb7cb69ae` pinned; built-in deprecated
+DiffusersLoader ও সাত workflow node present; custom nodes নেই। Existing 62-package
+CUDA/torch lock অপরিবর্তিত, 45 additional wheels/version/hash pinned। 182 active
+metadata checks/Python constraints/platform wheel availability PASS; exact official
+torch ও torchvision cu130 sidecars PASS (আগের r2 403 metadata সীমা resolved)।
+Source isolated fixture checks: schema/alias/path rejection/four weight filenames
+PASS; actual CLIPTokenizer import PASS; existing workflow/provider 51 tests PASS।
+Source/metadata compatibility verified; clean install, native ABI/server/GPU/model
+execution unverified। Step 1 definition complete; full Phase 5.4 incomplete।
+কোনো install/binary/model download/ImageProvider edit/RunPod/heavy generation হয়নি।
+Next Step 2 ImageProvider request-এর বাইরে; owner install ও tiny runtime preflight
+pending, paid resource authorization নেই।
+
+**5.4 runtime prerequisite check BLOCKED (2026-10-03):** Owner next-work নির্দেশে
+[local preflight](comfy-local-preflight.md) করা হয়েছে। Existing `.venv` Python
+3.12.3-এ torch import PASS/CUDA build 13.0; torchvision, comfy-kitchen, comfy-aimdo
+ও frontend package metadata নেই; comfy import spec ও পাঁচটি expected install path
+অনুপস্থিত। CUDA available False/device count 0; nvidia-smi PATH-এ নেই; inherited
+AS unlimited। Probe exit 0, runtime acceptance নয়। Native/server/tiny CUDA checks
+blocked; owner-installed runtime path প্রয়োজন। Install/download/model load,
+paid deployment ও adapter implementation হয়নি। Next pending runtime verification;
+Phase 5.4 real image acceptance অসম্পূর্ণ।
+
+**5.4 offline ComfyImageProvider adapter সম্পন্ন (2026-10-03):** Owner GPU ছাড়া
+করা যায় এমন development চালানোর অনুমোদন দিয়েছেন। [Checkpoint](comfy-image-adapter-checkpoint.md)।
+Injected executor → existing graph → verified bounded 512x512 PNG → unique saved
+ImageResult; seed/model/checksum ও explicit mock provenance retained। Unsupported
+request, timeout, execution/save I/O failure ও cancellation handled; retries নেই।
+Baseline 51 PASS; shared mock/adapter contracts ও workflow/failure tests 74 PASS;
+Ruff lint/format ও plan drift PASS। Install/download/live executor/GPU generation
+হয়নি; next bounded transport with fake HTTP tests existing offline scope-এ।
+Runtime preflight GPU আসা পর্যন্ত deferred; Phase 5.4 real acceptance অসম্পূর্ণ।
+
+**5.4 bounded mock Comfy HTTP transport সম্পন্ন (2026-10-03):**
+[Checkpoint](comfy-http-checkpoint.md)। New `comfy_http.py` executor exact injected
+MockTransport-only; one submit, bounded history polling, verified node 7 output
+download। 1 MiB JSON/16 MiB image caps, MIME/path/receipt/history validation,
+cooperative deadlines/cancellation ও stream closure; no retry/redirect/live network।
+Full fake HTTP→ImageProvider path mock provenance ও valid saved PNG verified।
+123 tests PASS (49 new transport tests), Ruff lint/format, plan drift ও docs checks
+PASS। Local cancellation server work stop করে না; ambiguous outcome/restart
+recovery deferred। Next prompt-scoped cancellation/receipt handling, offline
+owner-authorized scope। No install/GPU/model load; Phase 5.4 incomplete।
+
+**5.4 prompt-scoped Comfy cancellation/receipt সম্পন্ন (2026-10-03):**
+[Checkpoint](comfy-cancellation-checkpoint.md)। Validated immutable in-memory
+receipt retained on execution errors; cancellation/timeout sends one targeted
+`/api/jobs/{id}/cancel` with independent 5s cooperative cleanup budget। Strict
+dispatch/no-op/unknown observations পৃথক, cleanup failure original error ঢাকে না।
+Receipt missing/invalid হলে cancel নয়; reused executor-এ stale receipt নেই।
+Submit চলাকালে local cancellation receipt read শেষ হওয়া পর্যন্ত bounded defer হয়।
+123 baseline/141 final tests PASS; Ruff lint/format, plan drift ও docs checks PASS।
+No live transport/install/GPU generation; acknowledgement execution stop-এর proof
+নয়। Next durable submission intent/receipt recovery within approved offline scope;
+Phase 5.4 real image acceptance এখনও incomplete।
+
+**5.4 durable Comfy intent/receipt recovery সম্পন্ন (2026-10-03):**
+[Checkpoint](comfy-journal-checkpoint.md)। `comfy_journal.py` mock-only wrapper
+private local journal-এ intent fsync করে submit; accepted receipt persist করে poll।
+Existing journal blocks re-submit, flock prevents concurrent owners; schema/hash
+validation-এর পরে explicit GET-only recovery। Receipt callback failure typed
+io_error with receipt; unknown/corrupt records never trigger network submission।
+141 baseline/166 final tests PASS, including actual subprocess abrupt exit/restart
+with one POST total; Ruff lint/format, plan drift ও docs checks PASS। Existing DB
+অপরিবর্তিত, independent v1 journal। No install/live GPU; raw executor bypass করলে
+durable protection নেই, caller একই job-এর journal path retain করবেন। Next durable
+ImageProvider integration/verified-result acceptance within approved offline scope।
+
+**5.4 durable ImageProvider recovery integration সম্পন্ন (2026-10-03):**
+[Checkpoint](comfy-durable-image-checkpoint.md)। New `comfy_durable_image.py`
+explicit generate/recover composition দিয়ে durable journal ও existing identical
+PNG validation/save path যুক্ত করে। Recovery GET-only; unique verified ImageResult,
+checksum/model/seed/mock provenance preserved। Corrupt media/cancellation/save
+failure coverage; previous output/journal preserved, re-submit blocked। Shared
+provider contracts durable implementation-এও চলে। 166 baseline/189 final tests
+PASS, including abrupt subprocess exit → fresh-process verified image recovery
+with one submit; Ruff lint/format, drift/docs checks PASS। No schema/install/GPU/UI
+change; Phase 5.4 real image gate pending। Next node/model preflight mock contract
+within existing offline scope; installed GPU/runtime validation deferred।
+
+**5.4 Comfy node/model inventory preflight সম্পন্ন (2026-10-03):**
+[Checkpoint](comfy-preflight-checkpoint.md)। New `comfy_preflight.py` validates six
+unique node schemas/ports/selected model alias; HTTP executor-এর bounded read-only
+preflight ও new `CheckedComfyExecutor` opt-in dispatch gate। Missing/incompatible
+inventory/HTTP/timeout/cancel blocks submit; successes cached নয়। Synthetic fixture
+ও checked ImageProvider flow covered। 189 baseline/219 final tests PASS, Ruff
+lint/format, drift/docs checks PASS। Raw/durable path automatic gating বাকি; numeric
+constraints/custom validation/GPU/weights identity proof নয়। No install/live/GPU
+run। Next durable preflight integration within approved offline scope।
+
+**5.4 durable preflight integration সম্পন্ন (2026-10-03):**
+[Checkpoint](comfy-durable-preflight-checkpoint.md)। Durable executor lock-এর
+মধ্যে existing-journal guard-এর পরে এবং intent fsync-এর আগে mandatory inventory
+preflight চালায়; post-preflight cancellation check। Failure leaves no intent/POST,
+explicit corrected retry allowed। Recovery remains history/download GET-only,
+inventory unavailable হলেও blocked নয়। Shared synthetic object_info fixture দিয়ে
+durable/image/real subprocess tests updated; previous raw executor behavior intact।
+219 baseline/226 final tests PASS, Ruff lint/format, drift/docs checks PASS। No
+schema/install/live GPU change। Next offline readiness/gap review; real Phase 5.4
+acceptance/runtime/GPU gates deferred।
+
+**5.4 offline readiness/gap review সম্পন্ন (2026-10-04):**
+[Review](comfy-readiness-review.md)। Relevant source ও checkpoints মিলিয়ে mock
+workflow/HTTP/image/durable/preflight completion এবং real execution-এর পাঁচটি gate
+লেখা হয়েছে: installed runtime/GPU, model/server validation, live transport/durable
+identity, supervision/recovery, verified real image। Latest 226 PASS evidence reused;
+docs-only review-তে app tests পুনরায় নয়। Runtime/GPU সর্বশেষ evidence-এ unavailable;
+owner installation ও RunPod suspension বহাল। Next authorized offline micro-step:
+live transport/durable identity contract design; live enable/5.5/new phase নয়।
+Local documentation links/whitespace, RESUME length ও plan excerpt drift PASS।
+
+**5.4 live transport/durable identity offline contract সম্পন্ন (2026-10-04):**
+[Design checkpoint](comfy-live-contract.md)। Explicit HTTPS/auth/provenance boundary,
+v2 job/origin/deployment/runtime/model identity, deterministic same-job journal path,
+v1 mock-only backward read/no implicit promotion এবং receipt-less no-resubmit policy
+নির্দিষ্ট। Future acceptance matrix যোগ; source/schema/runtime পরিবর্তন হয়নি।
+Existing 226 PASS mock baseline reused, নতুন app test run নয়। Next authorized
+GPU-independent micro-step: offline v2 identity record/versioned reader ও tests;
+writer migration/live factory/dispatch নয়। Real runtime/GPU/5.4 gates deferred।
+Documentation links/whitespace, RESUME ≤60 lines ও plan excerpt drift PASS।
+
+**5.4 offline v2 identity record/versioned parser সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-identity-checkpoint.md)। New strict/frozen v2 identity model,
+HTTPS origin canonicalization ও bounded bytes version dispatcher; v1 stays v1,
+no live promotion/writes/network। 72 new identity + 226 existing regressions =
+298 PASS; Ruff lint/format PASS। Existing executor/v1 writer untouched, DB schema
+অপরিবর্তিত। Next authorized offline context-matching helper/mismatch tests;
+v2 writer/live transport/runtime/GPU integration deferred, real 5.4 incomplete।
+Plan drift, documentation links/whitespace ও RESUME length checks PASS।
+
+**5.4 offline execution-context matching সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-context-checkpoint.md)। Strict/frozen independent execution
+context ও bounded v2 match helper; all seven identity fields exact-match, invalid
+context পুনরায় validated, v1 rejected without promotion, intent unchanged।
+39 new cases + 298 regressions = 337 PASS; Ruff lint/format PASS। No writer/DB/live
+integration। Next authorized offline deterministic job-ID v2 storage/atomic writes
+ও tests; execution wiring পৃথক। Real 5.4/runtime/GPU gates deferred।
+Plan drift, docs links/whitespace ও RESUME length checks PASS।
+
+**5.4 deterministic v2 mock journal storage সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-storage-checkpoint.md)। New ComfyJournalStore: private root/job-ID
+path, permanent flock/thread ownership, bounded identity-matched read, create-only
+intent ও intent→accepted atomic write/fsync। Existing v1/corrupt record preserved;
+live rejected। 20 new + 337 prior tests = 357 PASS, including actual process exit,
+fsync/replace failures ও no-recreate। Next authorized mock v2 durable executor
+integration; storage এখনও dispatch-এ wired নয়, real runtime/GPU/5.4 deferred।
+Ruff lint/format, plan drift, docs links/whitespace ও RESUME length PASS।
+
+**5.4 mock v2 durable executor integration সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-v2-executor-checkpoint.md)। New v2 executor lock/preflight/intent/
+single-submit/receipt persistence এবং identity-matched GET-only recovery যুক্ত করে।
+V1 unchanged; live rejected, unknown intent no-resubmit। 21 new + 357 prior =
+378 tests PASS, including actual process crash/restart at submit/download। Ruff
+lint/format PASS। Next authorized offline v2 durable ImageProvider composition ও
+verified-image tests; live/runtime/GPU/real 5.4 gates deferred।
+Plan drift, docs links/whitespace ও RESUME length checks PASS।
+
+**5.4 v2 durable ImageProvider composition সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-v2-image-checkpoint.md)। Existing durable provider exact v1/v2
+executor গ্রহণ করে; একই PNG verification/save, accurate mock metadata ও GET-only
+recovery। Existing v1 tests বজায় রেখে v2 parameterization/shared contracts যোগ।
+378 + 23 = 401 tests PASS; actual crash/fresh-process saved-result verification,
+one submit, corrupt media/cancel/save failure checks PASS। Ruff lint/format PASS।
+Next authorized offline endpoint/auth configuration validation ও secret-safe tests;
+client/network creation নয়। Real runtime/GPU/5.4 ও 5.5 gates deferred।
+Plan drift, docs links/whitespace ও RESUME length checks PASS।
+
+**5.4 offline endpoint/auth configuration সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-config-checkpoint.md)। New frozen ComfyEndpointConfig canonical
+HTTPS origin ও explicit SecretStr validate করে; token excluded from repr/public
+export/equality, fixed policy metadata ও sanitized errors। No client/network/env
+loading। 39 new + 111 identity/context = 150 tests PASS; unchanged full 401 baseline
+reused। Ruff lint/format PASS। Next authorized mock-only authenticated request
+boundary/tests; real transport activation/runtime/GPU/5.4 gates deferred।
+Plan drift, docs links/whitespace ও RESUME length PASS।
+
+**5.4 mock-only authenticated request boundary সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-auth-checkpoint.md)। New selected-origin bearer mock client,
+narrow routes, no redirects/retry/proxy discovery, sanitized status/transport errors,
+16 MiB cap। Existing executors untouched; no real network。 23 new + 150 config/
+identity = 173 tests PASS; previous unchanged 401 baseline reused। Ruff lint/format
+PASS। Next authorized bounded workflow/auth mock integration + view validation;
+live/runtime/GPU/real 5.4 deferred।
+Plan drift, docs links/whitespace ও RESUME length PASS।
+
+**5.4 authenticated mock workflow integration সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-auth-workflow-checkpoint.md)। Existing partial integration verified
+and completed: selected origin binding, shared bounded HTTP parsing, mandatory safe
+view parameters। Shared plain/auth HTTP contracts এবং durable auth failures cover
+preflight-before-intent, one ambiguous submit/no retry, GET-only recovery, unchanged
+journal and secret-free errors। 541 relevant tests PASS; Ruff lint/format PASS।
+Initial new test lock misuse corrected; old byte-cap test moved to a valid inventory
+route after mandatory view validation। No live network/install/GPU/model run।
+Next offline readiness/gap review; additional implementation scope pending;
+real 5.4/runtime/GPU and later phase gates remain deferred।
+
+**5.4 post-auth readiness/gap review সম্পন্ন (2026-10-04):**
+[Review](comfy-readiness-review.md) বর্তমান source/checkpoint-এর সঙ্গে মিলিয়ে
+হালনাগাদ: v2 identity/storage, selected-origin auth ও workflow integration এখন
+সম্পন্ন; fixed-host ও arbitrary-filename gap-এর পুরোনো বর্ণনা সংশোধিত। Previous
+541 PASS evidence reused; docs-only step-এ app tests/runtime probe নয়। Real
+TLS/auth/provenance, supervision/cleanup, target model registration ও native
+runtime/GPU gates এখনও pending; real image নেই। Docs links, RESUME length,
+whitespace ও plan excerpt drift PASS। Next proposal: owner next-work নির্দেশে
+শুধু offline Comfy supervision contract design; existing runtime verification
+prerequisites আসা পর্যন্ত deferred। Source/requirements বা phase scope বদলায়নি।

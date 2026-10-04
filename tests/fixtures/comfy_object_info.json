@@ -1,0 +1,157 @@
+{
+  "DiffusersLoader": {
+    "input": {
+      "required": {
+        "model_path": [
+          [
+            "other-model",
+            "sdxl-turbo"
+          ]
+        ]
+      }
+    },
+    "output": [
+      "MODEL",
+      "CLIP",
+      "VAE"
+    ],
+    "output_node": false,
+    "is_input_list": false,
+    "output_is_list": [
+      false,
+      false,
+      false
+    ]
+  },
+  "CLIPTextEncode": {
+    "input": {
+      "required": {
+        "text": [
+          "STRING",
+          {
+            "multiline": true
+          }
+        ],
+        "clip": [
+          "CLIP"
+        ]
+      }
+    },
+    "output": [
+      "CONDITIONING"
+    ],
+    "output_node": false,
+    "is_input_list": false,
+    "output_is_list": [
+      false
+    ]
+  },
+  "EmptyLatentImage": {
+    "input": {
+      "required": {
+        "width": [
+          "INT"
+        ],
+        "height": [
+          "INT"
+        ],
+        "batch_size": [
+          "INT"
+        ]
+      }
+    },
+    "output": [
+      "LATENT"
+    ],
+    "output_node": false,
+    "is_input_list": false,
+    "output_is_list": [
+      false
+    ]
+  },
+  "KSampler": {
+    "input": {
+      "required": {
+        "model": [
+          "MODEL"
+        ],
+        "positive": [
+          "CONDITIONING"
+        ],
+        "negative": [
+          "CONDITIONING"
+        ],
+        "latent_image": [
+          "LATENT"
+        ],
+        "seed": [
+          "INT"
+        ],
+        "steps": [
+          "INT"
+        ],
+        "cfg": [
+          "FLOAT"
+        ],
+        "sampler_name": [
+          [
+            "euler",
+            "other"
+          ]
+        ],
+        "scheduler": [
+          [
+            "normal"
+          ]
+        ],
+        "denoise": [
+          "FLOAT"
+        ]
+      }
+    },
+    "output": [
+      "LATENT"
+    ],
+    "output_node": false,
+    "is_input_list": false,
+    "output_is_list": [
+      false
+    ]
+  },
+  "VAEDecode": {
+    "input": {
+      "required": {
+        "samples": [
+          "LATENT"
+        ],
+        "vae": [
+          "VAE"
+        ]
+      }
+    },
+    "output": [
+      "IMAGE"
+    ],
+    "output_node": false,
+    "is_input_list": false,
+    "output_is_list": [
+      false
+    ]
+  },
+  "SaveImage": {
+    "input": {
+      "required": {
+        "images": [
+          "IMAGE"
+        ],
+        "filename_prefix": [
+          "STRING"
+        ]
+      }
+    },
+    "output": [],
+    "output_node": true,
+    "is_input_list": false,
+    "output_is_list": []
+  }
+}

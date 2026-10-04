@@ -373,6 +373,18 @@ acceptance এবং পরের phase-এর gates অপরিবর্তি
 
 ### Phase 5 — প্রথম real anime image, তারপর character consistency
 
+**Owner-approved scoped exception (2026-09-28):** Phase 3 real acceptance ও
+Phase 4 real GPU gates deferred থাকলেও 5.1 local model inventory ও owner-এর
+পরবর্তী নির্দেশে 5.2 ImageProvider mock contract/tests এবং 5.3 ComfyUI API-format
+workflow-এর offline construction/validation অনুমোদিত।
+এতে existing files-এর path/size/identity/license/format ও completeness যাচাই হবে;
+Owner-এর পরবর্তী next-work নির্দেশে 5.4 existing-local-resource image কাজ ও
+তার runtime/hardware preflight অনুমোদিত; readiness checks pass ছাড়া model load নয়।
+Install owner করবেন; নতুন download/paid resource ও 5.5 onward অনুমোদিত নয়।
+স্থগিত CPU planner experiments এই image scope-এর অন্তর্ভুক্ত নয়।
+5.3 offline profile validation live ComfyUI validation বা inference evidence নয়।
+এই exception Phase 3/4 সম্পূর্ণ ঘোষণা করে না; তাদের acceptance gates বহাল।
+
 | Step | Codex শুধু এই কাজ করবে | Pass check |
 |---|---|---|
 | 5.1 | আগে উল্লেখ করা প্রায় 13 GB model এখনও পাওয়া গেলে তার exact path/size/identity/license/format verify করবে; না পেলে missing হিসেবে report করবে | উপস্থিতি অনুমান নয়; duplicate download নয়; findings documented |

@@ -1,0 +1,50 @@
+# ComfyUI v0.38.0 additive lock; CPython 3.12 / Linux x86_64.
+# Includes the unchanged CUDA 13.0 / torch 2.14.0+cu130 base.
+# See docs/comfy-runtime.md for source pin and verification limits.
+-r requirements-sdxl-cu130.lock
+
+aiohappyeyeballs==2.7.1 --hash=sha256:9243213661e29250eb41368e5daa826fc017156c3b8a11440826b2e3ed376472
+aiohttp==3.14.3 --hash=sha256:543906c127fb1d929b95076db19b83fa2d46751006ff1e23b093aa5ac4d8db42
+aiosignal==1.4.0 --hash=sha256:053243f8b92b990551949e63930a839ff0cf0b0ebbe0597b0f3fb19e1a0fe82e
+alembic==1.19.2 --hash=sha256:32d553dcd577e6fe5c3c63e91468526d35e4dcecafe865d7db4e9b328fa93cb2
+annotated-types==0.8.0 --hash=sha256:f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0
+attrs==26.1.0 --hash=sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309
+av==19.0.0 --hash=sha256:9cd9f692c28990ee234ddde69f72725bbff93831ffa6d2492518d4b193dda0c8
+blake3==1.0.10 --hash=sha256:ecc21ec144cb7c1ce14450d6bc7ba161d15ce21a1843885ff486b9af6beac3d0
+comfy-aimdo==0.5.5 --hash=sha256:7a4dc76831273a2f837f67cf49c9e507e778b19aff17e6ef8a34a6e9694fd86a
+comfy-angle==0.1.1 --hash=sha256:3d2fcab9386ebbb5653d66696fa8bcad329c1d1852ea4b61f286ea99485a840a
+comfy-kitchen==0.2.36 --hash=sha256:a333a0f64fb42362b2ab0221fdab3fabddbcc702a44a6d50937dfe8625e62c39
+comfyui-embedded-docs==0.5.12 --hash=sha256:90429d8d17ea5d85f9de00bcc25cd4e2bc614aa3d6c03ccebf32aec65b107a80
+comfyui-frontend-package==1.53.6 --hash=sha256:8b9616452c8bc693a4a77f63d05c8c690e9ef2b279f330d8d957541d69c6c452
+comfyui-workflow-templates==0.11.70 --hash=sha256:561e4656c73b6f6fe94d2b45d6e85685a9e6ba5fd832a425a5b59ba805ae5b98
+comfyui-workflow-templates-core==0.3.361 --hash=sha256:9e819723b2953247f5d9e231938c917028596b95d9ed0a8d0d6357799931368e
+comfyui-workflow-templates-json==0.1.96 --hash=sha256:1e063d88c03160fe56121a50b3e34cd9b2bc90ee855bee30f3a062f7950b47b5
+comfyui-workflow-templates-media-api==0.3.84 --hash=sha256:c2d6a5999ac39e4f37f47ae231c92557defe5addb2cc6ab5c11410b4d5a2910a
+comfyui-workflow-templates-media-assets-01==0.1.48 --hash=sha256:7733ed12867e95e6b8b39be20bcc73579c28e97e5a44086ffb977cc2c1c78c43
+comfyui-workflow-templates-media-assets-02==0.1.6 --hash=sha256:c618904e5c799306d131115012fc7525aaf3c49b619a9f5120d52b4188cc94a4
+comfyui-workflow-templates-media-image==0.3.160 --hash=sha256:d4a5c5541c7088f6adb1c7da41f5d7c1c14a037eda6a61cd8b4b76c251faaa93
+comfyui-workflow-templates-media-other==0.3.229 --hash=sha256:ce3d98fa9d84b914c335fe5c9bc903cfefbe1932b1bc3cb6baef7f371b4bd435
+comfyui-workflow-templates-media-video==0.3.101 --hash=sha256:6270fd61c8c3931b6f0031abac7d4c90ced624de6c7918bff85b89e6c3d7493c
+einops==0.8.2 --hash=sha256:54058201ac7087911181bfec4af6091bb59380360f069276601256a76af08193
+frozenlist==1.8.0 --hash=sha256:494a5952b1c597ba44e0e78113a7266e656b9794eec897b19ead706bd7074383
+greenlet==3.5.5 --hash=sha256:147b25a42e5ca5be3d42356e8f608b37af715a1c196e9bf9d1627f3341adfe1d
+kornia==0.8.3 --hash=sha256:0b15f5d359aeafd7ff54ea631ed1943a3eb295c4a6dae3f745ddeada25e33289
+kornia-rs==0.2.0 --hash=sha256:a5ccc43e7b54a845c4250dee107b62d221b4a76f6812a8041196784f4add342a
+mako==1.4.1 --hash=sha256:a359d9a94a541213958742b2698d0a7757bb83551767bc468a74b9905aba9617
+multidict==6.9.1 --hash=sha256:976fd7689d69ec78d67d31d38d396d8adb562f7e8368279f76aed4aa451fa06d
+propcache==0.5.4 --hash=sha256:2814ecd8e818f487bee4b0f921bc4d1c176cc5fc71ac0f072d0fa67eda4ac14b
+pydantic==2.13.5 --hash=sha256:346a034f080da3755d8e9cb5e00e8b07de1d39e4f6e2c87d8ab7cafa0b269a73
+pydantic-core==2.46.5 --hash=sha256:0fc5be0abd4a407e200d844b404e33639a554e7bd0d448e7b9ae181be4789ac2
+pydantic-settings==2.15.0 --hash=sha256:0ba092c291c94baceb5eff768aa0d56400a457585bc0175925a5a5510303da42
+pyopengl==3.1.10 --hash=sha256:794a943daced39300879e4e47bd94525280685f42dbb5a998d336cfff151d74f
+python-dotenv==1.2.3 --hash=sha256:904552145e8bfed22162c09dab1c2b9b54fefa7b23ba780f4f26ca0316b0f0d9
+scipy==1.18.1 --hash=sha256:f55fa87b6c612ecd6b058f167c53231b1d14e412efe361d3d6e38b3631c73218
+sentencepiece==0.2.2 --hash=sha256:c8a168b040bc61681293f79a949b5d911c8e25086f4260285b8d97ab5f1195da
+simpleeval==1.0.8 --hash=sha256:c9c4ff42879ebf0c05f6562cb81031869948916be343bcc950b81fcc081fe9ce
+spandrel==0.4.2 --hash=sha256:6c93e3ecbeb0e548fd2df45a605472b34c1614287c56b51bb33cdef7ae5235b5
+sqlalchemy==2.0.48 --hash=sha256:34634e196f620c7a61d18d5cf7dc841ca6daa7961aed75d532b7e58b309ac894
+torchsde==0.2.6 --hash=sha256:19bf7ff02eec7e8e46ba1cdb4aa0f9db1c51d492524a16975234b467f7fc463b
+torchvision @ https://download-r2.pytorch.org/whl/cu130/torchvision-0.29.1%2Bcu130-cp312-cp312-manylinux_2_28_x86_64.whl --hash=sha256:ce6b51d5ffad41eb1d22ff61cb304415a95c1bfa431dc00a80c8ece06822c3b7
+trampoline==0.1.2 --hash=sha256:36cc9a4ff9811843d177fc0e0740efbd7da39eadfe6e50c9e2937cbc06d899d9
+typing-inspection==0.4.4 --hash=sha256:65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147
+yarl==1.25.1 --hash=sha256:c6f117789d22dce188e5754e8bc65b7e6ebf8cb73963b9fa761f672a5883769d
