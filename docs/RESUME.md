@@ -1,12 +1,10 @@
 # পরের কাজের সংক্ষিপ্ত অবস্থা
-Updated: 2026-10-04. Keep under 60 lines; replace stale status, do not append logs.
-
+Updated: 2026-10-08. Keep under 60 lines; replace stale status, do not append logs.
 - বর্তমান: Local Phase 1/2 PASS; Phase 3 integrated offline acceptance PASS।
 - Phase 4.1–4.6 mock কাজ সম্পন্ন; 4.7 launch preview draft প্রস্তুত, final নয়।
 - Paid GPU কাজ স্থগিত: owner-এর এখন বাজেট ও international payment card নেই।
-- পরের কাজে [rules](plan/rules.md), [Phase 5](plan/phase-5.md) ও [readiness review](comfy-readiness-review.md) পড়ো।
-- REST inspect/stop/terminate adapter mock tests PASS; live calls disabled।
-- Mock REST cleanup/recovery integration PASS; storage status unknown থাকে।
+- পরের কাজে [rules](plan/rules.md), [Phase 5](plan/phase-5.md) ও [live transport contract](comfy-live-transport-contract.md) ও [A2 checkpoint](comfy-admission-integration-checkpoint.md) পড়ো।
+- REST inspect/stop/terminate ও cleanup/recovery mock PASS; live disabled, storage unknown।
 - Durable mock journal/restart recovery PASS; [checkpoint](gpu-journal-checkpoint.md)।
 - Auth failure retry-stop/provider codes PASS; [checkpoint](gpu-cleanup-auth-checkpoint.md)।
 - Mock REST watchdog integration PASS; [checkpoint](gpu-watchdog-rest-checkpoint.md)।
@@ -39,15 +37,16 @@ Updated: 2026-10-04. Keep under 60 lines; replace stale status, do not append lo
 - [ComfyUI Step 1](comfy-runtime.md) সম্পন্ন: v0.38.0/6b747c0428c343e1417219641db93a4fb7cb69ae; built-in DiffusersLoader, custom nodes নেই; 182 metadata checks + 51 regressions PASS।
 - [Durable preflight](comfy-durable-preflight-checkpoint.md) PASS: 226 tests; intent-এর আগে mandatory check, recovery GET-only; offline preflight complete। [Runtime](comfy-local-preflight.md) GPU আসা পর্যন্ত deferred; install owner করবেন।
 - [Mock auth integration](comfy-auth-workflow-checkpoint.md) সম্পন্ন: 541 tests PASS; bounded parsing/preflight/submit/GET-only recovery verified; live বন্ধ, real 5.4 blocked।
-- [Readiness review](comfy-readiness-review.md) হালনাগাদ: mock identity/auth gaps closed; real transport/supervision/runtime/GPU বাকি। Next proposal: offline supervision contract design; owner next-work নির্দেশে design-only, real execution deferred।
+- [Readiness review](comfy-readiness-review.md) হালনাগাদ: mock identity/auth gaps closed; real transport/supervision/runtime/GPU বাকি। [Cancel crash acceptance](comfy-cancel-crash-checkpoint.md) সম্পন্ন: 56 targeted PASS, prior 671 baseline reused; [runtime recheck](comfy-local-preflight.md) BLOCKED: owner install verified: 107 locked versions + pip check + 4 native imports PASS; CUDA False/count 0, GPU gate BLOCKED।
+- [C3 cleanup fix](comfy-cpu-cleanup-checkpoint.md) সম্পন্ন: 320 tests PASS; exceptional ownership gap closed। Next authorized GPU/native preflight environment পাওয়া পর্যন্ত blocked; unchanged GPU probe পুনরায় নয়।
+- Owner GPU নেই নিশ্চিত করেছেন; [L2 transport factory/lifecycle](comfy-transport-checkpoint.md) সম্পন্ন: 271 tests PASS। L3 PASS: 590 tests। [L4.1 storage](comfy-live-storage-checkpoint.md) PASS: 290 tests; [L4.2 supervision](comfy-live-supervision-checkpoint.md) PASS: 337 tests; [L4.3 offline session](comfy-offline-session-checkpoint.md) PASS: 113 tests; [L4.4 review](comfy-live-admission-review.md) সম্পন্ন; [A1 admission](comfy-admission-checkpoint.md) সম্পন্ন: 460 tests PASS; [A2 integration](comfy-admission-integration-checkpoint.md) সম্পন্ন: 237 tests PASS; next owner-directed A3 mock resource admission/recheck। Real GPU preflight blocked; unchanged probe নয়।
 ## প্রকৃত সীমা ও deferred কাজ
 - Mock dispatch/receipt durable; production idempotency memory-only, live outcome অজানা।
 - Timeout per I/O phase; streaming-এর hard wall-clock deadline নয়।
 - Ambiguous submit আবার করলে caller-কে আগের key ব্যবহার করতে হবে।
 - Budget preflight compute-only; storage/egress/tax/live pricing অন্তর্ভুক্ত নয়।
 - Durable mock recovery submit বন্ধ রাখে; live runtime/spend/production wiring বাকি।
-- Redaction configured handlers-এ; নতুন handler-এ পুনরায় configure করতে হবে।
-- Raw LogRecords/print/unregistered secrets covered নয়; expiry service নেই।
+- Redaction configured handlers-এ; নতুন handler configure করতে হবে; raw logs/print/unregistered secrets ও expiry uncovered।
 - Local build/GHCR metadata PASS; visibility/private pull/remote GPU/lifecycle বাকি।
 - 4.7 proposal paid launch approval নয়; 4.8–4.10 আলাদা prerequisites/approval।
 - Mock success real inference/media evidence নয়; পূর্ণ Phase 4 অসম্পূর্ণ।

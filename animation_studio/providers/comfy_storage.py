@@ -1,4 +1,8 @@
-"""Linux-local v2 mock journal storage; no executor or network integration."""
+"""Linux-local v2 journal storage; no executor or network integration.
+
+Mock and live records have separate constructors and share the same job lock.
+Live storage is bookkeeping only, never permission to dispatch a workflow.
+"""
 
 import fcntl
 import os
@@ -25,11 +29,14 @@ class ComfyJournalStore:
     """
 
     def __init__(self, root: Path, context: ComfyExecutionContext):
+        self._initialize(root, context, expected_mode='mock')
+
+    def _initialize(self, root, context, *, expected_mode):
         if type(context) is not ComfyExecutionContext:
             raise ValueError('Expected execution context')
         self._context = ComfyExecutionContext.model_validate(context.model_dump())
-        if self._context.mode != 'mock':
-            raise ValueError('Only mock journal storage is enabled')
+        if self._context.mode != expected_mode:
+            raise ValueError('Journal storage mode mismatch')
         self._root = Path(root).absolute()
         self._active = None
 
@@ -112,3 +119,15 @@ class ComfyJournalStore:
         finally:
             if os.path.lexists(name):
                 os.unlink(name)
+
+
+class LiveComfyJournalStore(ComfyJournalStore):
+    """Explicit live-mode v2 persistence, with no transport or supervision wiring.
+
+    Context is independently supplied syntax, not deployment attestation. Existing
+    v1/mock files are rejected unchanged: there is no relabel or automatic upgrade.
+    Reusing the job path/lock prevents a mode switch from bypassing an old intent.
+    """
+
+    def __init__(self, root: Path, context: ComfyExecutionContext):
+        self._initialize(root, context, expected_mode='live')

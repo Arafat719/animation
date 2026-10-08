@@ -90,7 +90,7 @@ class Server:
         return httpx.Response(200, headers={'content-type': 'image/png'}, content=self.png)
 
 
-@pytest.fixture(params=['plain', 'auth'])
+@pytest.fixture(params=['plain', 'auth', 'bounded'])
 def setup(graph, request):
     server = Server(graph)
     if request.param == 'plain':
@@ -103,11 +103,26 @@ def setup(graph, request):
         from animation_studio.providers.comfy_auth import MockComfyAuthenticatedClient
         from animation_studio.providers.comfy_config import ComfyEndpointConfig
 
-        client = MockComfyAuthenticatedClient(
-            ComfyEndpointConfig(origin='https://selected.invalid', token=SecretStr('test-token')),
-            transport=httpx.MockTransport(server),
-        )
-        executor = ComfyHTTPExecutor(authenticated_client=client, poll_interval=0.001, max_polls=3)
+        if request.param == 'bounded':
+            from animation_studio.providers.comfy_transport import create_mock_comfy_transport
+
+            client = create_mock_comfy_transport(
+                ComfyEndpointConfig(
+                    origin='https://selected.invalid', token=SecretStr('test-token')
+                ),
+                transport=httpx.MockTransport(server),
+            )
+            executor = ComfyHTTPExecutor(transport_client=client, poll_interval=0.001, max_polls=3)
+        else:
+            client = MockComfyAuthenticatedClient(
+                ComfyEndpointConfig(
+                    origin='https://selected.invalid', token=SecretStr('test-token')
+                ),
+                transport=httpx.MockTransport(server),
+            )
+            executor = ComfyHTTPExecutor(
+                authenticated_client=client, poll_interval=0.001, max_polls=3
+            )
     yield server, executor
     executor.close()
 
@@ -557,3 +572,28 @@ def test_non_cancel_failure_retains_receipt_without_cleanup(setup, graph):
     with pytest.raises(FrozenInstanceError):
         caught.value.receipt.prompt_id = 'different'
     assert len(server.calls) == 2
+
+
+@pytest.mark.parametrize(
+    'method,path,params',
+    [
+        ('GET', 'https://foreign.invalid/history', None),
+        ('POST', 'interrupt', None),
+        ('GET', 'view', {'filename': '../private.png', 'subfolder': '', 'type': 'output'}),
+    ],
+)
+def test_shared_request_policy_rejects_before_dispatch(setup, method, path, params):
+    import time
+
+    server, executor = setup
+    with pytest.raises(ImageProviderError):
+        executor._read(
+            method,
+            path,
+            params=params,
+            cancel=None,
+            deadline=time.monotonic() + 10,
+            limit=1024,
+            mime='application/json',
+        )
+    assert server.calls == []

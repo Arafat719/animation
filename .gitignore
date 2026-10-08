@@ -23,3 +23,7 @@ logs/
 # OS files
 .DS_Store
 .git-corrupted/
+
+.venv-comfy/
+
+ComfyUI/

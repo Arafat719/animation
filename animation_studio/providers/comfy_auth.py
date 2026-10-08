@@ -1,11 +1,11 @@
 """Selected-origin bearer request boundary, restricted to mock transport."""
 
-import re
 from contextlib import contextmanager
 
 import httpx
 
 from animation_studio.providers.comfy_config import ComfyEndpointConfig
+from animation_studio.providers.comfy_request_policy import validate_comfy_request
 from animation_studio.providers.image import ImageProviderError
 
 
@@ -42,29 +42,14 @@ class MockComfyAuthenticatedClient:
     @contextmanager
     def stream(self, method, path, *, timeout=10, json=None, params=None):
         payload = json
-        # Narrow relative route grammar prevents authority/query/fragment injection.
-        if type(path) is not str or not re.fullmatch(
-            r'(?:prompt|view|object_info/[A-Za-z][A-Za-z0-9_]*|history/[a-f0-9-]{36}|api/jobs/[a-f0-9-]{36}/cancel)',
-            path,
-        ):
-            raise ImageProviderError('unsupported', 'Invalid Comfy route')
-        expected = 'POST' if path == 'prompt' or path.endswith('/cancel') else 'GET'
-        if method != expected or (
-            payload is not None and (path != 'prompt' or type(payload) is not dict)
-        ):
-            raise ImageProviderError('unsupported', 'Invalid Comfy request')
-        if (path == 'view' or params is not None) and (
-            path != 'view'
-            or type(params) is not dict
-            or set(params) != {'filename', 'subfolder', 'type'}
-            or params['subfolder'] != ''
-            or params['type'] != 'output'
-            or type(params['filename']) is not str
-            or not re.fullmatch(
-                r'animation_sdxl_turbo_[A-Za-z0-9_-]{1,100}\.png', params['filename']
-            )
-        ):
-            raise ImageProviderError('unsupported', 'Invalid Comfy view parameters')
+        validate_comfy_request(
+            origin=self.origin,
+            method=method,
+            path=path,
+            timeout=timeout,
+            payload=payload,
+            params=params,
+        )
         try:
             with self._client.stream(
                 method,

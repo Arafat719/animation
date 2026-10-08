@@ -15,11 +15,23 @@ from animation_studio.providers.image import ImageProviderError
 graph = graph_fixture
 
 
-@pytest.fixture
-def setup(tmp_path, graph):
+@pytest.fixture(params=['plain', 'bounded'])
+def setup(tmp_path, graph, request):
     tmp_path.chmod(0o700)
     server = Server(graph)
-    client = ComfyHTTPExecutor(transport=httpx.MockTransport(server), max_polls=1)
+    if request.param == 'plain':
+        client = ComfyHTTPExecutor(transport=httpx.MockTransport(server), max_polls=1)
+    else:
+        from pydantic import SecretStr
+
+        from animation_studio.providers.comfy_config import ComfyEndpointConfig
+        from animation_studio.providers.comfy_transport import create_mock_comfy_transport
+
+        boundary = create_mock_comfy_transport(
+            ComfyEndpointConfig(origin='https://comfy.invalid', token=SecretStr('synthetic-token')),
+            transport=httpx.MockTransport(server),
+        )
+        client = ComfyHTTPExecutor(transport_client=boundary, max_polls=1)
     context = ComfyExecutionContext(
         mode='mock',
         job_id=PROMPT_ID,
@@ -242,3 +254,65 @@ DurableComfyExecutorV2(client, root, ComfyExecutionContext(**context)).execute(g
         with pytest.raises(ImageProviderError):
             executor.recover(graph)
         assert server.calls == []
+
+
+@pytest.mark.parametrize('ack', [True, False, None])
+def test_durable_cancel_intent_before_dispatch_and_recovery(setup, graph, ack):
+    server, executor, context = setup
+    server.pending = 1
+
+    def inspect(request):
+        if request.url.path.endswith('/cancel'):
+            saved = executor.supervision.read()
+            assert saved.cleanup_phase == 'intent' and saved.attempt_count == 1
+            assert saved.prompt_id == PROMPT_ID
+            return (
+                httpx.Response(403) if ack is None else httpx.Response(200, json={'cancelled': ack})
+            )
+
+    server.override = inspect
+    with pytest.raises(ComfyExecutionError) as caught:
+        executor.execute(graph)
+    assert caught.value.code == 'timeout'
+    assert caught.value.cancellation.dispatched is ack
+    with executor.store.locked():
+        saved = executor.supervision.read()
+        assert saved.cleanup_phase == ('unknown' if ack is None else 'observed')
+        assert saved.compute_status == 'unknown'
+    sidecar = executor.supervision.path.read_bytes()
+    restarted = DurableComfyExecutorV2(executor.executor, executor.store.path.parent, context)
+    server.calls.clear()
+    assert restarted.recover(graph) == server.png
+    assert all(r.method == 'GET' for r in server.calls)
+    assert executor.supervision.path.read_bytes() == sidecar
+
+
+@pytest.mark.parametrize('failure', ['create', 'intent', 'result'])
+def test_cleanup_write_failure_preserves_primary_and_no_fallback(
+    setup, graph, monkeypatch, failure
+):
+    server, executor, _context = setup
+    server.pending = 1
+    transition = executor.supervision.transition
+
+    def fail_create(record):
+        raise OSError('synthetic secret error')
+
+    def fail_transition(record):
+        if (record.cleanup_phase == 'intent') == (failure == 'intent'):
+            raise OSError('synthetic secret error')
+        return transition(record)
+
+    if failure == 'create':
+        monkeypatch.setattr(executor.supervision, 'create', fail_create)
+    else:
+        monkeypatch.setattr(executor.supervision, 'transition', fail_transition)
+    with pytest.raises(ComfyExecutionError) as caught:
+        executor.execute(graph)
+    assert caught.value.code == 'timeout'
+    assert caught.value.cancellation.error_code == 'io_error'
+    assert 'secret' not in str(caught.value)
+    assert sum(r.url.path.endswith('/cancel') for r in server.calls) == (failure == 'result')
+    if failure == 'result':
+        with executor.store.locked():
+            assert executor.supervision.read().cleanup_phase == 'intent'

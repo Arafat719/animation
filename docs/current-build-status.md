@@ -1443,3 +1443,281 @@ runtime/GPU gates এখনও pending; real image নেই। Docs links, RESU
 whitespace ও plan excerpt drift PASS। Next proposal: owner next-work নির্দেশে
 শুধু offline Comfy supervision contract design; existing runtime verification
 prerequisites আসা পর্যন্ত deferred। Source/requirements বা phase scope বদলায়নি।
+
+**5.4 offline Comfy supervision contract সম্পন্ন (2026-10-04):**
+[Design](comfy-supervision-contract.md): RAM/VRAM/time capability boundaries,
+separate proposed cleanup sidecar, intent-before-action/no automatic retry,
+receipt-less unknown, GET-only recovery ও independent job/worker/compute/storage
+stop evidence নির্দিষ্ট। Current cancellation ও existing GPU supervisor source/
+checkpoint সীমা মিলিয়ে দেখা হয়েছে। Source/schema/requirements বদলায়নি। Docs
+links/RESUME length/whitespace/plan drift PASS; previous 541 PASS reused, new app
+run নয়। Next proposed owner-authorized micro-step: pure offline supervision
+policy/observation schema validation/tests; writer/launcher/live integration নয়।
+Runtime/GPU ও real 5.4 deferred; নতুন phase বা paid action অনুমোদিত নয়।
+
+**5.4 offline supervision policy/observation schema সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-supervision-schema-checkpoint.md)। New strict/frozen pure policy
+and mock-only observation models, bounded sanitized parser, original identity
+matching ও independent cleanup statuses। Nested context schema, evidence digest
+reference validation; evidence verification/stop proof নয়। 262 targeted tests PASS
+(supervision, identity, journal, storage); Ruff lint/format, docs links/RESUME
+length/plan drift/whitespace PASS। Previous unchanged 541 workflow baseline reused।
+No writer/process/network/model run; current persisted formats unchanged। Next
+proposed owner-directed micro-step: bounded mock sidecar storage/read compatibility,
+same-job lock ও generation-journal preservation; live/runtime/GPU gates বহাল।
+
+**5.4 mock supervision sidecar storage সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-supervision-storage-checkpoint.md)। Create-only deterministic
+sidecar uses same generation job lock; absent means unknown, corrupt/mismatched
+records fail closed। Bounded no-follow reads, 0600 atomic write/file+directory fsync;
+v1/v2 generation bytes preserved। 275 targeted tests PASS (13 new); lint/format,
+docs links/RESUME length/plan drift/whitespace PASS। No source refactor/live I/O।
+Update/transition/attempt guard ও accepted receipt matching deferred to next
+owner-directed micro-step; no cleanup dispatch/process launch authorization।
+Real runtime/GPU/5.4 gates remain pending।
+
+**5.4 guarded mock cleanup transitions সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-supervision-transitions-checkpoint.md)। Same-lock transition
+not_requested→intent→observed/unknown, one-attempt guard, accepted generation receipt
+matching, immutable primary outcome/created time ও nondecreasing update time। Atomic
+writer reuse; generation bytes preserved। 287 relevant tests PASS (12 new), Ruff
+lint/format এবং docs/plan checks PASS। No cleanup dispatch/live run। Next owner-
+directed step: durable cancellation integration with existing mock executor;
+real runtime/GPU/5.4 gates বহাল।
+
+**5.4 mock durable cancellation integration সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-durable-cancel-checkpoint.md)। Per-call HTTP cancellation handler
+V2 same-lock sidecar create/intent→single cancel→observation persist চালায়;
+default fallback নেই। Pre-dispatch persistence failure zero cancel, post-dispatch
+write failure primary error retain করে cleanup io_error দেয়। Recovery GET-only,
+ack is not stop proof। 671 Comfy/image tests PASS (6 new), Ruff ও docs/plan checks
+PASS। Next owner-directed step: local subprocess crash acceptance for cancellation;
+no real runtime/GPU/live activation।
+
+**5.4 cancellation process-crash acceptance সম্পন্ন (2026-10-04):**
+[Checkpoint](comfy-cancel-crash-checkpoint.md)। Four subprocess exit boundaries:
+initial/intent/ack/observed। প্রতিটির পরে দুই fresh recovery process-এ no duplicate
+submit/cancel, GET-only reads, preserved journal/sidecar bytes ও lock release PASS।
+56 targeted tests PASS; prior unchanged 671 baseline reused। Ruff ও docs/plan checks
+PASS। Test-only changes; host crash/live stop evidence নয়। Cancellation chain done;
+next authorized native runtime/GPU verification prerequisites deferred। Telemetry/
+outer supervision implementation scope separately unresolved; no new phase/live run।
+
+**5.4 next runtime prerequisite recheck (2026-10-04): BLOCKED।**
+[Evidence](comfy-local-preflight.md)। চার required package metadata missing,
+পাঁচ known checkout/interpreter path absent, nvidia-smi unavailable। Read-only probe
+exit 0; native imports/CUDA/model execution হয়নি। Owner-installed alternate runtime
+path requested; installation owner-এর দায়িত্ব। Source/test বদলায়নি; app tests নয়।
+Next: supplied runtime path-এ authorized native verification; new phase নয়।
+
+**5.4 runtime prerequisite recheck (2026-10-05): BLOCKED।**
+[Evidence](comfy-local-preflight.md)। Local ComfyUI checkout এখন উপস্থিত, pinned
+HEAD মেলে এবং checkout clean। Project .venv-এ চার required package এখনও missing;
+বাকি চার known path absent; nvidia-smi unavailable। Metadata probe exit 0;
+native/GPU/model execution হয়নি। Source/tests অপরিবর্তিত; app tests প্রয়োজন নেই।
+Next: owner-installed interpreter পেলে existing authorized native preflight।
+
+**5.4 owner-installed dependency verification (2026-10-05): dependency PASS।**
+[Evidence](comfy-local-preflight.md)। 107 locked package versions match; pip check
+ও torch/torchvision/comfy_kitchen/comfy_aimdo imports PASS। Pinned ComfyUI checkout
+clean। Bounded import probe exit 0 (~9.1s); CUDA build 13.0 কিন্তু available False,
+device count 0; nvidia-smi নেই। GPU gate BLOCKED; tiny CUDA/server/model execution
+হয়নি। Alternate interpreter request resolved; no dependency/source/test changes।
+Next authorized native/CUDA verification needs available GPU; paid launch নয়।
+
+**5.4 GPU-independent resource guard design (2026-10-05): সম্পন্ন।**
+[Design/checkpoint](comfy-resource-guard-design.md)। Existing policy/cancellation
+পুনর্ব্যবহার করে telemetry identity/freshness/RAM/VRAM boundaries, shared monotonic
+deadline এবং admission/running decisions নির্ধারিত। R1–R7 pure tests ও পৃথক future
+dummy-process/integration acceptance matrix লেখা হয়েছে; tests চালানো হয়নি।
+Source/requirements অপরিবর্তিত; docs links/RESUME length/plan drift/whitespace checks।
+Next owner-directed micro-step: pure evaluator + R1–R7; GPU blocker এই কাজে নেই।
+বর্তমান design authorization process launcher/live/new phase অন্তর্ভুক্ত করে না।
+
+**5.4 pure resource/deadline evaluator (2026-10-05): সম্পন্ন।**
+[Checkpoint](comfy-resource-guard-checkpoint.md)। Existing policy reuse, strict mock
+sample identity/freshness, RAM/VRAM/reserve boundaries, shared deadlines, deterministic
+deny/abort reasons; clock/I/O/process/GPU execution নেই। New 72 tests; relevant
+combined 223 PASS। Ruff lint/format ও docs/plan checks PASS। No storage schema or
+executor changes। Next owner-directed step: owned dummy-child supervisor/P1–P3;
+durable integration/live/real image আলাদা pending।
+
+**5.4 owned dummy-child supervisor/P1–P3 (2026-10-05): সম্পন্ন।**
+[Checkpoint](comfy-dummy-supervisor-checkpoint.md)। Fixed dummy modes, synthetic
+telemetry admission/abort, shared deadline, cooperative SIGTERM→SIGKILL→bounded
+reap; unknown remote status, no relaunch/arbitrary PID/command। New 15 tests include
+real subprocess cleanup, disappearing telemetry, unrelated child isolation, simulated
+exit race/reap failure ও setup-exception cleanup। Relevant 238 PASS; Ruff/docs checks
+PASS। No existing executor/journal schema edits, real GPU/model/server run নেই।
+Next owner-directed step: I1 mock durable child-exit acceptance; live wiring নয়।
+
+**5.4 I1 supervised mock child-exit recovery acceptance (2026-10-05): সম্পন্ন।**
+[Checkpoint](comfy-supervised-recovery-checkpoint.md)। Actual dummy supervisor-এ
+test-only fixed executor child substitution; intent/submitted/accepted/cancel-observed
+boundaries-এ telemetry abort→kill/reap। Two fresh recovery processes per case;
+no duplicate submit/cancel, accepted GET-only, intent-only no requests; journal/
+sidecar bytes preserved। Initial relevant combined 75 PASS; strengthened new cases
+4 PASS; Ruff/docs checks PASS। Production source unchanged। Next owner-directed
+step: consolidated readiness/gap review; no repeated completed tests/GPU probes।
+
+**5.4 consolidated readiness/gap review (2026-10-05): সম্পন্ন।**
+[Review/next scope](comfy-readiness-review.md)। Stale missing-dependency ও non-durable
+cancellation claims corrected; R1–R7/P1–P3/I1 completed evidence এবং production
+composition/telemetry/enforcement gaps আলাদা। Existing 238/75/4 PASS evidence reused,
+counts যোগ নয়; docs-only links/RESUME length/plan drift/whitespace checks PASS।
+Next owner-directed micro-step: bounded local RAM reader/tests, owned direct-child
+identity/RSS + host MemAvailable; no fake VRAM/tree coverage or live wiring।
+Master requirements/source unchanged; GPU পুনরায় probe হয়নি।
+
+**5.4 bounded local RAM telemetry reader (2026-10-05): সম্পন্ন।**
+[Checkpoint](comfy-ram-telemetry-checkpoint.md)। Owned direct-child PID/parent/start
+ticks, bounded procfs reads, VmRSS/MemAvailable byte conversion, explicit unknown
+failure/VRAM এবং local/direct-child provenance। 37 new cases, relevant 124 PASS;
+Ruff/docs checks PASS। Small child read-only measurement/exit tests; no model/GPU।
+Next owner-directed scope: CPU-only dummy telemetry integration contract; no fake
+VRAM/full admission, live launcher বা process-tree enforcement।
+
+**5.4 CPU telemetry/dummy supervision contract (2026-10-05): সম্পন্ন।**
+[Contract](comfy-cpu-supervision-contract.md)। Partial CPU-only guard, strict reading
+validation, unknown VRAM, first-sample bootstrap, single in-flight sampler এবং
+independent parent deadline/late-result/bounded-join semantics নির্ধারিত। Stuck
+sampler fully-closed নয়; direct child coverage only। Source/tests/master unchanged;
+124 PASS evidence reused; docs links/length/drift/whitespace PASS। Next owner-directed
+scope C1 pure CPU guard/tests; C2 sampler ও C3 fixed dummy wiring পৃথক steps।
+
+**5.4 C1 pure CPU guard (2026-10-05): সম্পন্ন।**
+[Checkpoint](comfy-cpu-guard-checkpoint.md)। Strict LocalRamReading identity/type/
+provenance validation, explicit CPU-only/unknown VRAM, RAM/reserve/stale/deadline
+abort, deterministic multi-reasons ও frozen result। 65 new cases, relevant combined
+273 PASS; Ruff lint/format ও docs checks PASS। No existing source/schema/live changes।
+Next owner-directed step: C2 single-read sampler lifecycle/tests; C3 wiring পৃথক।
+
+**5.4 C2 RAM sampler lifecycle (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-ram-sampler-checkpoint.md)। Existing unfinished source/tests
+যাচাই; serialized read, single latest slot, preserved read-start timestamp,
+one-shot lifecycle, stop/late-publication suppression ও deadline-bounded join।
+Late exception stop-এর পরে state বদলাত—সংশোধিত ও regression covered।
+22 sampler cases; relevant combined 295 PASS, Ruff/docs checks PASS। Stuck read
+unknown/manual cleanup obligation; C3 supervisor wiring নেই। No GPU/model/live run।
+Next owner-directed micro-step C3 fixed dummy integration; নতুন phase নয়।
+
+**5.4 C3 fixed CPU dummy integration (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-cpu-dummy-checkpoint.md)। Real owned-child RAM sampler/CPU guard,
+bounded bootstrap, first failure retention, independent stop/kill/reap এবং
+parent-confirmed normal exit। Unknown cleanup handles retained; worker cleanup
+sampler join-এর আগে। Existing unfinished source সংশোধিত; 20 new tests,
+combined 315 PASS; Ruff/docs checks PASS। No GPU/model/live run/install।
+Next owner-directed readiness review; real 5.4 GPU gate blocked, নতুন phase নয়।
+
+**5.4 post-C3 readiness review (2026-10-08): সম্পন্ন।**
+[Review](comfy-readiness-review.md)। Reader/C1–C3 completion ও GPU/live gaps sync;
+RESUME-এর stale C3-next entry সংশোধিত। Existing 315 PASS evidence reused; source/
+tests cross-check-এ exceptional cleanup ownership gap: parent exception-এর পরে
+unknown sampler/worker handle result দিয়ে ফেরে না; cleanup action failure-এ বাকি
+cleanup বাদ পড়তে পারে। নতুন fault injection হয়নি; normal-path acceptance বহাল।
+Next owner-directed একক bug fix + targeted regressions নির্ধারিত; implementation
+নয়। Docs links/length/drift/whitespace PASS; no runtime probe/install/model/GPU।
+
+**5.4 C3 exceptional cleanup ownership fix (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-cpu-cleanup-checkpoint.md)। Original exception-এ retained child/
+sampler session, deadline/status/bounded codes; independent cleanup attempts,
+original error identity preserved। Five regression cases, combined 320 PASS;
+Ruff/docs checks PASS। Review finding closed; no install/model/GPU/live run।
+Next existing-authorized GPU/native preflight available environment পর্যন্ত blocked;
+একই GPU probe পুনরায় নয়; 5.5/new phase অনুমোদিত নয়।
+
+**5.4 live transport offline contract/design (2026-10-08): সম্পন্ন।**
+[Contract](comfy-live-transport-contract.md)। Owner GPU absent confirmed; offline
+design authorized। Selected HTTPS/TLS/auth, narrow routes, no retry/redirect,
+cooperative deadline, ownership/cleanup, ambiguous submit/GET-only recovery ও
+live provenance/durable/supervision gates নির্ধারিত। Source/requirements unchanged।
+Docs links/length/drift/whitespace PASS; no app test/server/network/model/GPU run।
+Next owner-directed L1 pure request-policy validator/tests; implementation এখনও
+অনুমোদিত নয়। Live dispatch/new phase/paid approval এতে অন্তর্ভুক্ত নয়।
+
+**5.4 L1 pure request-policy validator (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-request-policy-checkpoint.md)। Canonical origin reuse, strict
+route/method/view/payload-shape ও finite positive timeout; bounded typed errors।
+64 new cases, combined 237 PASS; forbidden socket/DNS/client fixture, Ruff/docs PASS।
+Existing mock/auth/executor/storage gates unchanged; no live/network/GPU/install।
+Next owner-directed L2 transport factory/lifecycle offline failure tests।
+
+**5.4 L2 explicit transport factory/lifecycle (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-transport-checkpoint.md)। Standalone verified HTTPS/no ambient
+proxy/no retry factory, separate mock injection, L1 policy, response cap/deadline/
+cancellation checks, retained cleanup failures। 34 new cases; combined 271 PASS;
+Ruff/docs PASS। Factory construction only, requests mock; no actual network/GPU।
+Existing executor/storage live gates intact। Next owner-directed L3 offline shared
+executor composition/provenance tests; per-I/O timeout hard total deadline নয়।
+
+**5.4 L3 offline executor composition/provenance (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-transport-composition-checkpoint.md)। Existing partial composition
+preserved/completed; shared request policy all executor paths, bounded transport
+MIME/caps, mock admission/recheck, shared JSON/media parser ও retained cleanup handle।
+Baseline 520 PASS; final 590 PASS, Ruff/format/excerpt checks PASS। Initial circular
+import fixed with deferred policy import। No live/network/GPU run; mock durable
+recovery tested, live storage unchanged। Next owner-directed L4; implementation
+শুরু হয়নি, actual target/GPU acceptance blocked।
+
+**5.4 L4.1 standalone live-mode journal storage (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-live-storage-checkpoint.md)। Owner L4 next-work authorization-এ
+প্রথম একক অংশ; explicit LiveComfyJournalStore, existing mock constructor gate,
+same-job path/lock/context isolation ও atomic persistence reuse। Existing v2 schema
+অপরিবর্তিত; v1 mock remains readable/no upgrade, v2 bytes no rewrite/relabel।
+Baseline 242 PASS; final 290 PASS (+48); Ruff/format/drift/docs checks PASS।
+No live workflow/supervision admission, network/server/GPU/model run বা install।
+পূর্ণ L4 incomplete; next L4.2 offline live supervision contract/storage existing
+L4 scope-এ authorized, actual target/GPU ও supervised acceptance blocked/pending।
+
+**5.4 L4.2 offline live supervision contract/storage (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-live-supervision-checkpoint.md)। Separate live schema v2/parser/
+store, strict bounded context/source validation, existing mock v1 backward-read
+ও rejected cross-mode migration; same job lock/atomic writes/receipt-matched
+one-attempt transitions reuse। Baseline 254, final 337 PASS (+83); শেষ validator
+naming edit-এর পরে schema 147 PASS; Ruff/format/drift/docs PASS। Synthetic tests
+real stop evidence নয়; no live network/GPU/dispatch। Next L4.3 offline durable
+composition/failure/recovery tests existing L4 authorization-এ; full L4 incomplete।
+
+**5.4 L4.3 owned offline durable composition (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-offline-session-checkpoint.md)। Explicit mock-only session composes
+bounded transport/HTTP/durable executor; ordering, GET-only restart, one cancel,
+fixture provenance ও constructor/context-exit cleanup ownership verified। 20 new
+cases; combined 113 PASS; Ruff/format/drift/docs PASS। Live schemas-এ synthetic
+receipt/ack লেখা হয় না; live durable integration ও remote supervision বাকি।
+No install/network/GPU/model run। Next L4.4 remaining live admission/supervision
+prerequisite review current L4 scope-এ; full L4 incomplete, actual GPU gate blocked।
+
+**5.4 L4.4 live admission/remote supervision review (2026-10-08): সম্পন্ন।**
+[Review](comfy-live-admission-review.md)। Stale readiness matrix corrected: standalone
+live transport/storage present, HTTP/durable/session still mock-only; target runtime/
+TLS/model/ownership/telemetry/enforcement ও production composition gaps explicit।
+Docs links/length/drift/whitespace PASS; prior checkpoint test evidence reused,
+no source/test/runtime/GPU/network change। Full L4/5.4 incomplete। Next existing-
+authorized bounded native/GPU preflight blocked until selected target available;
+no repeated unchanged probe, no new phase/live/paid approval implied।
+
+**5.4 GPU-free admission scope/design (2026-10-08): সম্পন্ন।**
+[Contract](comfy-admission-contract.md)। Owner next-work নির্দেশে offline কাজের scope
+নির্বাচন: required capability/context/worker/device/policy/source/freshness validation;
+caller claims actual attestation নয়, pure result execution permission নয়। Next A1
+schema/evaluator/tests owner next-work নির্দেশে; এই turn implementation নয়।
+Docs links/length/drift/whitespace PASS; no source/app tests/network/GPU changes।
+Real target preflight blocked; existing live gates ও paid/new-phase limits বহাল।
+
+**5.4 A1 pure offline admission evaluator (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-admission-checkpoint.md)। Five required capability claims,
+context/worker/device/policy/source/clock-session binding, explicit freshness ও
+bounded deny reasons; immutable schema/snapshot/decision, no I/O বা dispatch।
+Model-copy extra field serialization gap corrected with raw mapping revalidation।
+Baseline 282, 85 new tests, final combined 460 PASS; Ruff/format/drift/docs PASS।
+Existing live gates/schema unchanged। Next proposed owner-directed A2 fixture-only
+session admission/recheck before intent; live target/GPU acceptance blocked।
+
+**5.4 A2 offline session admission integration (2026-10-08): সম্পন্ন।**
+[Checkpoint](comfy-admission-integration-checkpoint.md)। Explicit fixture snapshot,
+same-lock admission before/after preflight, no snapshot/stale/mismatch/clock failure
+→ no intent/POST; accepted recovery no admission/clock and GET-only। Raw legacy
+mock durable callback optional; session mandatory। 22 new session cases, final
+combined 237 PASS; Ruff/format/drift/docs PASS। No live/schema/install/GPU changes।
+Next proposed owner-directed A3 existing mock resource evaluator integration/recheck;
+actual target evidence/remote enforcement/full L4/5.4 এখনও অসম্পূর্ণ।

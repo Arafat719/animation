@@ -43,6 +43,8 @@ class ComfyExecutionError(ImageProviderError):
 
     def __init__(self, primary, *, receipt=None, cancellation=None):
         super().__init__(primary.code, str(primary))
+        if hasattr(primary, 'cleanup_handle'):
+            self.cleanup_handle = primary.cleanup_handle
         self.receipt: ComfyReceipt | None = receipt
         self.cancellation: ComfyCancellation | None = cancellation
 
@@ -55,12 +57,23 @@ class ComfyHTTPExecutor:
         *,
         transport: httpx.MockTransport | None = None,
         authenticated_client=None,
+        transport_client=None,
         timeout_seconds: float = 60,
         poll_interval: float = 0.25,
         max_polls: int = 240,
     ):
         # Local import avoids config/identity/journal module initialization cycle.
-        if authenticated_client is not None:
+        if transport_client is not None:
+            from animation_studio.providers.comfy_transport import ComfyTransport
+
+            if (
+                type(transport_client) is not ComfyTransport
+                or transport is not None
+                or authenticated_client is not None
+            ):
+                raise TypeError('Expected one offline transport client')
+            transport_client.require_mock()
+        elif authenticated_client is not None:
             from animation_studio.providers.comfy_auth import MockComfyAuthenticatedClient
 
             if (
@@ -78,11 +91,18 @@ class ComfyHTTPExecutor:
         self.timeout_seconds = timeout_seconds
         self.poll_interval = poll_interval
         self.max_polls = max_polls
+        self._transport_client = transport_client
         self._origin = (
-            authenticated_client.origin if authenticated_client else 'https://comfy.invalid:443/'
+            transport_client.origin
+            if transport_client is not None
+            else authenticated_client.origin
+            if authenticated_client
+            else 'https://comfy.invalid:443/'
         )
         self._client = (
-            authenticated_client
+            transport_client
+            if transport_client is not None
+            else authenticated_client
             if authenticated_client is not None
             else httpx.Client(
                 base_url='https://comfy.invalid/',
@@ -112,7 +132,33 @@ class ComfyHTTPExecutor:
         return remaining
 
     def _read(self, method, path, *, cancel, deadline, limit, mime, **kwargs):
+        # Identity imports the journal/executor; defer policy import until dispatch.
+        from animation_studio.providers.comfy_request_policy import validate_comfy_request
+
         remaining = self._check(cancel, deadline)
+        validate_comfy_request(
+            origin=self.origin,
+            method=method,
+            path=path,
+            timeout=min(10, remaining),
+            payload=kwargs.get('json'),
+            params=kwargs.get('params'),
+        )
+        if self._transport_client is not None:
+            self._transport_client.require_mock()
+            response = self._transport_client.request(
+                method,
+                path,
+                deadline=deadline,
+                timeout=min(10, remaining),
+                cancel=cancel,
+                limit=limit,
+                mime=mime,
+                payload=kwargs.get('json'),
+                params=kwargs.get('params'),
+            )
+            self._check(cancel, deadline)
+            return response.content
         try:
             with self._client.stream(
                 method, path, timeout=min(10, remaining), **kwargs
@@ -239,6 +285,7 @@ class ComfyHTTPExecutor:
         *,
         cancel: Event | None = None,
         on_receipt: Callable[[ComfyReceipt], None] | None = None,
+        on_cancel: Callable[[ComfyReceipt, ImageProviderError], ComfyCancellation] | None = None,
     ) -> bytes:
         validate_image_workflow(graph)
         deadline = time.monotonic() + self.timeout_seconds
@@ -270,7 +317,11 @@ class ComfyHTTPExecutor:
         except ImageProviderError as primary:
             cancellation = None
             if receipt is not None and primary.code in ('cancelled', 'timeout'):
-                cancellation = self._cancel_receipt(receipt)
+                cancellation = (
+                    on_cancel(receipt, primary)
+                    if on_cancel is not None
+                    else self._cancel_receipt(receipt)
+                )
             raise ComfyExecutionError(
                 primary, receipt=receipt, cancellation=cancellation
             ) from primary

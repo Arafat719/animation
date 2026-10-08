@@ -8,15 +8,15 @@ import pytest
 
 from animation_studio.providers import comfy_storage
 from animation_studio.providers.comfy_identity import ComfyExecutionContext
-from animation_studio.providers.comfy_storage import ComfyJournalStore
+from animation_studio.providers.comfy_storage import ComfyJournalStore, LiveComfyJournalStore
 
 UUID = '12345678-1234-5678-9abc-123456789abc'
 
 
-@pytest.fixture
-def context():
+@pytest.fixture(params=['mock', 'live'])
+def context(request):
     return ComfyExecutionContext(
-        mode='mock',
+        mode=request.param,
         job_id=UUID,
         graph_sha256='a' * 64,
         origin='https://comfy.invalid:443/',
@@ -29,7 +29,9 @@ def context():
 @pytest.fixture
 def store(tmp_path, context):
     tmp_path.chmod(0o700)
-    return ComfyJournalStore(tmp_path, context)
+    return (ComfyJournalStore if context.mode == 'mock' else LiveComfyJournalStore)(
+        tmp_path, context
+    )
 
 
 def test_deterministic_roundtrip_and_permissions(store, context):
@@ -38,7 +40,7 @@ def test_deterministic_roundtrip_and_permissions(store, context):
         assert store.create_intent().state == 'intent'
         assert store.accept(UUID).prompt_id == UUID
     saved = store.path.read_bytes()
-    with ComfyJournalStore(store.path.parent, context).locked() as restarted:
+    with type(store)(store.path.parent, context).locked() as restarted:
         assert restarted.read().prompt_id == UUID
         with pytest.raises(ValueError):
             restarted.create_intent()
@@ -56,7 +58,7 @@ def test_requires_lock(store, operation):
 
 
 def test_competing_owner_and_release(store, context):
-    other = ComfyJournalStore(store.path.parent, context)
+    other = type(store)(store.path.parent, context)
     with store.locked():
         with pytest.raises(RuntimeError), store.locked():
             pass
@@ -114,9 +116,7 @@ def test_invalid_receipt_and_context_preserve_intent(store, context):
         saved = store.path.read_bytes()
         with pytest.raises(ValueError):
             store.accept('not-a-uuid')
-    other = ComfyJournalStore(
-        store.path.parent, context.model_copy(update={'graph_sha256': 'd' * 64})
-    )
+    other = type(store)(store.path.parent, context.model_copy(update={'graph_sha256': 'd' * 64}))
     with other.locked(), pytest.raises(ValueError):
         other.accept(UUID)
     assert store.path.read_bytes() == saved
@@ -182,8 +182,11 @@ def store_record(context):
 def test_live_and_unsafe_root_rejected(tmp_path, context):
     with pytest.raises(ValueError):
         ComfyJournalStore(tmp_path, context.model_copy(update={'mode': 'live'}))
+    with pytest.raises(ValueError):
+        LiveComfyJournalStore(tmp_path, context.model_copy(update={'mode': 'mock'}))
     tmp_path.chmod(0o755)
-    with pytest.raises(ValueError), ComfyJournalStore(tmp_path, context).locked():
+    factory = ComfyJournalStore if context.mode == 'mock' else LiveComfyJournalStore
+    with pytest.raises(ValueError), factory(tmp_path, context).locked():
         pass
 
 
@@ -192,8 +195,10 @@ def test_process_exit_releases_lock_and_preserves_intent(store, context):
 import json, os, sys
 from pathlib import Path
 from animation_studio.providers.comfy_identity import ComfyExecutionContext
-from animation_studio.providers.comfy_storage import ComfyJournalStore
-store = ComfyJournalStore(Path(sys.argv[1]), ComfyExecutionContext(**json.loads(sys.argv[2])))
+from animation_studio.providers.comfy_storage import ComfyJournalStore, LiveComfyJournalStore
+context = ComfyExecutionContext(**json.loads(sys.argv[2]))
+factory = ComfyJournalStore if context.mode == 'mock' else LiveComfyJournalStore
+store = factory(Path(sys.argv[1]), context)
 with store.locked():
     store.create_intent()
     os._exit(23)
@@ -240,3 +245,126 @@ def test_failure_before_initial_replace_allows_retry(store, monkeypatch):
         assert not store.path.exists()
         store.create_intent()
         assert store.read().state == 'intent'
+
+
+@pytest.fixture(autouse=True)
+def no_network(monkeypatch):
+    import socket
+
+    def forbidden(*args, **kwargs):
+        pytest.fail('Journal storage must not use network')
+
+    monkeypatch.setattr(socket, 'socket', forbidden)
+    monkeypatch.setattr(socket, 'getaddrinfo', forbidden)
+
+
+@pytest.mark.parametrize('state', ['intent', 'accepted'])
+def test_cross_mode_records_and_lock_never_bypass_existing_job(store, context, state):
+    opposite_mode = 'live' if context.mode == 'mock' else 'mock'
+    factory = LiveComfyJournalStore if opposite_mode == 'live' else ComfyJournalStore
+    other = factory(store.path.parent, context.model_copy(update={'mode': opposite_mode}))
+    assert other.path == store.path
+    with store.locked():
+        store.create_intent()
+        if state == 'accepted':
+            store.accept(UUID)
+        with pytest.raises(BlockingIOError), other.locked():
+            pass
+    saved = store.path.read_bytes()
+    with other.locked():
+        for operation, args in [('read', []), ('create_intent', []), ('accept', [UUID])]:
+            with pytest.raises(ValueError):
+                getattr(other, operation)(*args)
+    assert store.path.read_bytes() == saved
+
+
+@pytest.mark.parametrize('state', ['intent', 'accepted'])
+def test_existing_v2_backward_read_does_not_rewrite(store, context, state):
+    # Old v2 bytes need no migration: mode was already part of this schema.
+    old = dict(context.model_dump(), schema_version=2, state=state)
+    if state == 'accepted':
+        old['prompt_id'] = UUID
+    saved = json.dumps(old, indent=2).encode()
+    store.path.write_bytes(saved)
+    with store.locked():
+        record = store.read()
+        assert record.schema_version == 2 and record.mode == context.mode
+        assert record.state == state
+        with pytest.raises(ValueError):
+            store.create_intent()
+    assert store.path.read_bytes() == saved
+
+
+@pytest.mark.parametrize('state', ['intent', 'accepted'])
+def test_v1_remains_readable_as_mock_and_cannot_migrate_into_v2(store, state):
+    from animation_studio.providers.comfy_identity import parse_job_record
+    from animation_studio.providers.comfy_journal import ComfyJobRecord
+
+    old = {'schema_version': 1, 'mode': 'mock', 'graph_sha256': 'a' * 64, 'state': state}
+    if state == 'accepted':
+        old['prompt_id'] = UUID
+    saved = json.dumps(old).encode()
+    store.path.write_bytes(saved)
+    assert type(parse_job_record(saved, expected_mode='mock')) is ComfyJobRecord
+    with pytest.raises(ValueError):
+        parse_job_record(saved, expected_mode='live')
+    with store.locked():
+        for operation, args in [('read', []), ('create_intent', []), ('accept', [UUID])]:
+            with pytest.raises(ValueError):
+                getattr(store, operation)(*args)
+    assert store.path.read_bytes() == saved
+
+
+@pytest.mark.parametrize(
+    'field,value',
+    [
+        ('job_id', '87654321-1234-5678-9abc-123456789abc'),
+        ('graph_sha256', 'd' * 64),
+        ('origin', 'https://other.invalid:443/'),
+        ('deployment_id', '87654321-1234-5678-9abc-123456789abc'),
+        ('runtime_manifest_sha256', 'd' * 64),
+        ('model_manifest_sha256', 'd' * 64),
+    ],
+)
+def test_each_persisted_identity_mismatch_blocks_receipt_write(store, field, value):
+    with store.locked():
+        store.create_intent()
+    # Simulate a valid record belonging to another execution at this path.
+    body = json.loads(store.path.read_bytes())
+    body[field] = value
+    saved = json.dumps(body).encode()
+    store.path.write_bytes(saved)
+    with store.locked():
+        with pytest.raises(ValueError):
+            store.read()
+        with pytest.raises(ValueError):
+            store.accept(UUID)
+    assert store.path.read_bytes() == saved
+
+
+def test_live_storage_does_not_enable_existing_execution_or_supervision(tmp_path, context):
+    import httpx
+
+    from animation_studio.providers.comfy_http import ComfyHTTPExecutor
+    from animation_studio.providers.comfy_supervision_storage import ComfySupervisionStore
+    from animation_studio.providers.comfy_v2_executor import DurableComfyExecutorV2
+
+    live_context = context.model_copy(update={'mode': 'live'})
+    live = LiveComfyJournalStore(tmp_path, live_context)
+    with pytest.raises(TypeError):
+        ComfySupervisionStore(live)
+    calls = []
+    executor = ComfyHTTPExecutor(transport=httpx.MockTransport(lambda r: calls.append(r)))
+    try:
+        with pytest.raises(ValueError):
+            DurableComfyExecutorV2(executor, tmp_path, live_context)
+    finally:
+        executor.close()
+    assert not calls and not list(tmp_path.iterdir())
+
+
+def test_store_revalidates_forged_context_without_writing(tmp_path, context):
+    factory = ComfyJournalStore if context.mode == 'mock' else LiveComfyJournalStore
+    with pytest.raises(ValueError):
+        factory(tmp_path, context.model_copy(update={'origin': 'http://unsafe.invalid'}))
+    assert not list(tmp_path.iterdir())
