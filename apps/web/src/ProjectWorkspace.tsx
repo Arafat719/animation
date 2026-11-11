@@ -3,6 +3,7 @@ import type { Project } from './App'
 import JobsPanel from './JobsPanel'
 import ComposerExport from './ComposerExport'
 import ShotList from './ShotList'
+import CastPreviewPanel from './CastPreviewPanel'
 import './LibraryPages.css'
 
 export default function ProjectWorkspace({
@@ -98,6 +99,11 @@ export default function ProjectWorkspace({
                   {project.master_prompt?.trim() ? project.master_prompt : 'No prompt saved yet.'}
                 </p>
               </section>
+              <CastPreviewPanel
+                key={`${apiBase}:${project.id}`}
+                apiBase={apiBase}
+                projectId={project.id}
+              />
               <ShotList key={project.id} apiBase={apiBase} projectId={project.id} />
               <ComposerExport apiBase={apiBase} />
               <JobsPanel apiBase={apiBase} projects={[project]} projectId={project.id} />

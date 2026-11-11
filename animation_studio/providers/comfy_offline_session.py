@@ -10,6 +10,7 @@ import httpx
 
 from animation_studio.providers.comfy_admission import ComfyAdmissionObservation, evaluate_admission
 from animation_studio.providers.comfy_config import ComfyEndpointConfig
+from animation_studio.providers.comfy_deadline import ComfyRunBudget
 from animation_studio.providers.comfy_http import ComfyHTTPExecutor
 from animation_studio.providers.comfy_identity import ComfyExecutionContext
 from animation_studio.providers.comfy_resource_guard import (
@@ -28,7 +29,9 @@ class OfflineComfyAdmission:
     """Explicit fixture snapshot; caller owns clock-session identity and policy.
 
     Supply a fresh clock-session ID after process restart, never relabel old
-    observations. Missing snapshots support recovery only. No automatic refresh.
+    observations. Execute requires a run start and resource sample in that same
+    clock domain; both admission checks reuse them without automatic refresh.
+    Missing snapshots or resource data support recovery only.
     """
 
     policy: ComfySupervisionPolicy
@@ -72,6 +75,7 @@ class OfflineDurableComfySession:
         self._admission = admission
         self._clock = clock
         self._last_admission_time = None
+        self._run_budget = None
         self._closed = False
         self._transport = create_mock_comfy_transport(config, transport=transport)
         try:
@@ -100,7 +104,17 @@ class OfflineDurableComfySession:
 
     def execute(self, graph: dict[str, dict], *, cancel: Event | None = None) -> bytes:
         self._check()
-        return self._durable.execute(graph, cancel=cancel, admission_check=self._check_admission)
+        if self._run_budget is not None:
+            raise ImageProviderError('execution_failed', 'Workflow attempt already active')
+        budget = ComfyRunBudget(self._clock)
+        self._run_budget = budget
+        try:
+            with self._http.run_budget(budget):
+                return self._durable.execute(
+                    graph, cancel=cancel, admission_check=self._check_admission
+                )
+        finally:
+            self._run_budget = None
 
     def _check_admission(self):
         self._check()
@@ -108,7 +122,7 @@ class OfflineDurableComfySession:
         if type(snapshot) is not OfflineComfyAdmission:
             raise ImageProviderError('unsupported', 'Offline admission snapshot required')
         try:
-            now = _time(self._clock())
+            now = _time(self._run_budget.now() if self._run_budget is not None else self._clock())
         except Exception:  # noqa: BLE001 — injected clock failures must not expose details.
             raise ImageProviderError(
                 'execution_failed', 'Offline admission clock invalid'
@@ -157,6 +171,17 @@ class OfflineDurableComfySession:
             error = ImageProviderError('execution_failed', 'Offline resource admission rejected')
             error.resource_reasons = resource.reasons
             raise error
+
+        if self._run_budget is not None:
+            self._run_budget.bind(
+                resource,
+                (
+                    snapshot.run_started_at,
+                    snapshot.policy.model_dump_json(),
+                    snapshot.clock_session_id,
+                    snapshot.worker_id,
+                ),
+            )
 
     def recover(self, graph: dict[str, dict], *, cancel: Event | None = None) -> bytes:
         self._check()

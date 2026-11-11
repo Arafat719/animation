@@ -1,0 +1,65 @@
+.cast-preview {
+  margin-block: 2rem;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.cast-preview > a {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+.cast-preview > button {
+  display: block;
+  margin-bottom: 16px;
+}
+.cast-preview fieldset {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  max-height: 320px;
+  overflow: auto;
+  min-width: 0;
+}
+.cast-preview .cast-choice {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  column-gap: 10px;
+  row-gap: 4px;
+  align-items: start;
+  cursor: pointer;
+}
+.cast-preview .cast-choice input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  margin: 2px 0 0;
+}
+.cast-preview-result {
+  margin-top: 24px;
+}
+.cast-preview-shots {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.cast-preview-shots > li {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  min-width: 0;
+}
+.cast-preview-shots dt {
+  font-weight: 600;
+  margin-top: 12px;
+}
+.cast-preview-shots dd {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+}
+.cast-preview .cast-choice small {
+  grid-column: 2;
+}

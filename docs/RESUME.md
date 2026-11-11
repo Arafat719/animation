@@ -1,22 +1,21 @@
 # পরের কাজের সংক্ষিপ্ত অবস্থা
-Updated: 2026-10-08. Keep under 60 lines; replace stale status, do not append logs.
+Updated: 2026-10-12. Keep under 60 lines; replace stale status, do not append logs.
 - বর্তমান: Local Phase 1/2 PASS; Phase 3 integrated offline acceptance PASS।
 - Phase 4.1–4.6 mock কাজ সম্পন্ন; 4.7 launch preview draft প্রস্তুত, final নয়।
 - Paid GPU কাজ স্থগিত: owner-এর এখন বাজেট ও international payment card নেই।
-- পরের কাজে [rules](plan/rules.md), [Phase 5](plan/phase-5.md) ও [live transport contract](comfy-live-transport-contract.md) ও [A2 checkpoint](comfy-admission-integration-checkpoint.md) পড়ো।
+- পরের কাজে [rules](plan/rules.md), [Phase 5](plan/phase-5.md), [5.7o checkpoint](character-reviewed-cast-ui-checkpoint.md) ও [reviewed-save design](character-reviewed-save-design.md) পড়ো। 5.7o cast UI সম্পন্ন; next proposed 5.7p server-owned extraction draft lifecycle design review, owner-এর পরবর্তী next-work নির্দেশে documentation-only; writer implementation নয়।
 - REST inspect/stop/terminate ও cleanup/recovery mock PASS; live disabled, storage unknown।
 - Durable mock journal/restart recovery PASS; [checkpoint](gpu-journal-checkpoint.md)।
 - Auth failure retry-stop/provider codes PASS; [checkpoint](gpu-cleanup-auth-checkpoint.md)।
 - Mock REST watchdog integration PASS; [checkpoint](gpu-watchdog-rest-checkpoint.md)।
 - [Launch gap review](gpu-launch-readiness-review.md) সম্পন্ন; paid readiness অসম্পূর্ণ।
 - Bounded mock supervisor PASS; [checkpoint](gpu-supervisor-checkpoint.md)।
-- Owner server সম্পর্কে অনিশ্চিত; [attended proposal](gpu-attended-health-proposal.md) প্রস্তুত।
 - Owner RunPod আপাতত বাদ দিয়েছেন; quote/screenshot/payment request স্থগিত।
 - [Budget/dispatch offline acceptance](gpu-offline-acceptance.md) PASS; 120 tests PASS।
-- নতুন phase বা স্থগিত CPU model experiment নিজে থেকে শুরু নয়।
 - Owner-approved phase-order exception: offline PASS দিয়ে mock 4.1–4.6 এগোবে।
 - [Durable restart acceptance](gpu-durable-offline-acceptance.md) PASS; 171 tests PASS।
 ## সর্বশেষ outcome ও checks
+- [5.7o reviewed cast UI](character-reviewed-cast-ui-checkpoint.md) সম্পন্ন: 26 browser scenarios, build/format PASS; versioned selection/source/mock labels। [5.7n API](character-reviewed-preview-checkpoint.md) 84 PASS baseline; trusted draft/writer/real extraction বাকি। Existing ShotList lint warning।
 - Owner সব dependency install করবেন; plan-order next 4.7 final cost/action preview, RunPod স্থগিত বলে blocked।
 - Owner-approved 5.1 inventory সম্পন্ন: SDXL-Turbo F32 snapshot ~12.93 GiB verified।
 - Owner-approved 5.2 ImageProvider mock contract সম্পন্ন; relevant 51 tests PASS।
@@ -39,10 +38,12 @@ Updated: 2026-10-08. Keep under 60 lines; replace stale status, do not append lo
 - [Mock auth integration](comfy-auth-workflow-checkpoint.md) সম্পন্ন: 541 tests PASS; bounded parsing/preflight/submit/GET-only recovery verified; live বন্ধ, real 5.4 blocked।
 - [Readiness review](comfy-readiness-review.md) হালনাগাদ: mock identity/auth gaps closed; real transport/supervision/runtime/GPU বাকি। [Cancel crash acceptance](comfy-cancel-crash-checkpoint.md) সম্পন্ন: 56 targeted PASS, prior 671 baseline reused; [runtime recheck](comfy-local-preflight.md) BLOCKED: owner install verified: 107 locked versions + pip check + 4 native imports PASS; CUDA False/count 0, GPU gate BLOCKED।
 - [C3 cleanup fix](comfy-cpu-cleanup-checkpoint.md) সম্পন্ন: 320 tests PASS; exceptional ownership gap closed। Next authorized GPU/native preflight environment পাওয়া পর্যন্ত blocked; unchanged GPU probe পুনরায় নয়।
-- Owner GPU নেই নিশ্চিত করেছেন; [L2 transport factory/lifecycle](comfy-transport-checkpoint.md) সম্পন্ন: 271 tests PASS। L3 PASS: 590 tests। [L4.1 storage](comfy-live-storage-checkpoint.md) PASS: 290 tests; [L4.2 supervision](comfy-live-supervision-checkpoint.md) PASS: 337 tests; [L4.3 offline session](comfy-offline-session-checkpoint.md) PASS: 113 tests; [L4.4 review](comfy-live-admission-review.md) সম্পন্ন; [A1 admission](comfy-admission-checkpoint.md) সম্পন্ন: 460 tests PASS; [A2 integration](comfy-admission-integration-checkpoint.md) সম্পন্ন: 237 tests PASS; next owner-directed A3 mock resource admission/recheck। Real GPU preflight blocked; unchanged probe নয়।
+- Owner GPU নেই নিশ্চিত করেছেন; [L2 transport factory/lifecycle](comfy-transport-checkpoint.md) সম্পন্ন: 271 tests PASS। L3 PASS: 590 tests। [L4.1 storage](comfy-live-storage-checkpoint.md) PASS: 290 tests; [L4.2 supervision](comfy-live-supervision-checkpoint.md) PASS: 337 tests; [L4.3 offline session](comfy-offline-session-checkpoint.md) PASS: 113 tests; [L4.4 review](comfy-live-admission-review.md) সম্পন্ন; [A1 admission](comfy-admission-checkpoint.md) সম্পন্ন: 460 tests PASS; [A2 integration](comfy-admission-integration-checkpoint.md) সম্পন্ন: 237 tests PASS; [A3 resource admission](comfy-resource-admission-checkpoint.md) PASS: 348 tests; [A3-পরবর্তী review](comfy-post-admission-review.md) সম্পন্ন; [D1 shared deadline](comfy-shared-deadline-checkpoint.md) PASS: 598 tests; [D2 supervision design](comfy-independent-supervision-design.md) সম্পন্ন; [D3 fixed session supervision](comfy-session-supervision-checkpoint.md) PASS: 214 tests। [D5 parent RAM admission/monitoring](comfy-session-ram-checkpoint.md) সম্পন্ন; 515 tests PASS। [D6 readiness review](comfy-post-ram-review.md) সম্পন্ন; next authorized GPU/native preflight hardware না থাকায় blocked। GPU-free scope নিচে; unchanged probe নয়।
+- Owner GPU-free কাজ বলেছেন: 5.6 reference upload validation API সম্পন্ন; 28 new PASS। [Migration regression fix](character-migration-test-checkpoint.md) সম্পন্ন: combined 78 PASS; পূর্বের চার failure closed। [5.7a immutable profile contract](character-profile-contract-checkpoint.md) সম্পন্ন: 57 PASS। [5.7b persistence/API](character-profile-persistence-checkpoint.md) সম্পন্ন: 148 PASS। [5.7c planner adapter](character-profile-adapter-checkpoint.md) সম্পন্ন: 71 PASS; full 5.7 semantic extraction অসম্পূর্ণ।
+- [5.7i reviewed-save design](character-reviewed-save-design.md) সম্পন্ন: provenance/conflict/backward-read scope; docs PASS। [5.7h extraction contract/mock](character-extraction-contract-checkpoint.md) সম্পন্ন: 41 new/92 combined tests PASS; real extraction নয়। [5.7f preview UI](character-cast-preview-ui-checkpoint.md) সম্পন্ন: 38 API + 17 browser scenarios + actual SQLite preview PASS; plan/jobs unchanged। [5.7e profile UI](character-profile-ui-checkpoint.md) PASS: 38 API + 13 browser। [5.7d API](character-preview-checkpoint.md) PASS: 118 tests। Build/format PASS; existing ShotList lint warning।
 ## প্রকৃত সীমা ও deferred কাজ
 - Mock dispatch/receipt durable; production idempotency memory-only, live outcome অজানা।
-- Timeout per I/O phase; streaming-এর hard wall-clock deadline নয়।
+- D1 deadlines + D5 direct-child measured RAM monitoring আছে; real worker/target RAM/VRAM enforcement নয়।
 - Ambiguous submit আবার করলে caller-কে আগের key ব্যবহার করতে হবে।
 - Budget preflight compute-only; storage/egress/tax/live pricing অন্তর্ভুক্ত নয়।
 - Durable mock recovery submit বন্ধ রাখে; live runtime/spend/production wiring বাকি।
@@ -50,8 +51,7 @@ Updated: 2026-10-08. Keep under 60 lines; replace stale status, do not append lo
 - Local build/GHCR metadata PASS; visibility/private pull/remote GPU/lifecycle বাকি।
 - 4.7 proposal paid launch approval নয়; 4.8–4.10 আলাদা prerequisites/approval।
 - Mock success real inference/media evidence নয়; পূর্ণ Phase 4 অসম্পূর্ণ।
-- পূর্ণ Phase 3 BLOCKED: 3.10 real adapter/test-set evidence নেই।
-- [Offline acceptance](phase-3-offline-acceptance.md): integrated mock flow PASS।
+- পূর্ণ Phase 3 BLOCKED: 3.10 real adapter/test-set evidence নেই; [offline acceptance](phase-3-offline-acceptance.md) integrated mock flow PASS।
 - [Owner model decision](local-planner-owner-decision-review.md): দুই CPU path স্থগিত।
 - Real planner lifecycle/recovery ও Bengali/duration/traits/repeatability বাকি।
 - এই deferred real acceptance Phase 4 mock scope-এর blocker নয়; বাদও নয়।

@@ -1,6 +1,10 @@
 # Phase 5.4 — Comfy image readiness/gap review
 
-2026-10-08। L4.4 পর্যন্ত consolidated readiness review; [বর্তমান gap review](comfy-live-admission-review.md)।
+2026-10-11। D5-পরবর্তী বর্তমান outcome: [D6 review](comfy-post-ram-review.md)।
+A1–A3 admission, [D1 shared deadline](comfy-shared-deadline-checkpoint.md),
+[D3 fixed child supervision](comfy-session-supervision-checkpoint.md) এবং
+[D5 local RAM monitoring](comfy-session-ram-checkpoint.md) সম্পন্ন। নিচের পুরোনো
+next-scope entries historical; real target supervision ও live composition বাকি।
 **Offline mock path প্রস্তুত; real image execution প্রস্তুত নয়; 5.4 অসম্পূর্ণ।**
 এই review source ও existing checkpoint evidence-এর; নতুন runtime probe বা test run নয়।
 পুরোনো checkpoint-এর “next” ও সীমাগুলো সেই সময়ের অবস্থা; নিচেরটি বর্তমান সংকলন।
@@ -19,6 +23,7 @@
 | Auth integration | Explicit selected HTTPS origin + bearer config, exact mock transport, safe view parameters, shared bounded parser; auth failure/no-retry ও durable GET-only recovery verified; [checkpoint](comfy-auth-workflow-checkpoint.md) |
 | R1–R7 resource decisions | Strict mock identity/freshness, RAM/VRAM boundaries ও shared deadline evaluator; measurement/enforcement নয়; [checkpoint](comfy-resource-guard-checkpoint.md) |
 | P1–P3 dummy supervision | Fixed owned child stop/kill/bounded reap, synthetic telemetry, unrelated child isolation; [checkpoint](comfy-dummy-supervisor-checkpoint.md) |
+| D3/D5 session supervision | Fixed offline child, original deadlines, first RAM allow-এর পরে startup, running procfs guard ও retained child/sampler cleanup; [D5](comfy-session-ram-checkpoint.md), 515 combined PASS |
 | I1 child-exit acceptance | Test-only mock executor substitution; four kill boundaries, fresh GET-only recovery/no duplicate submit/cancel; production composition নয়; [checkpoint](comfy-supervised-recovery-checkpoint.md) |
 
 | Local RAM reader | Owned PID/start ticks, bounded procfs parsing, direct-child RSS/MemAvailable; VRAM unknown; [checkpoint](comfy-ram-telemetry-checkpoint.md) |
@@ -35,7 +40,7 @@ overlapping counts যোগ করা নয়। Latest review-তে test/runti
 | 1. Installed runtime + GPU | Installed dependency ও pin checks PASS; CUDA unavailable/count 0; [local evidence](comfy-local-preflight.md) | Owner-installed interpreter/checkout-এর exact pin, dependency/native imports, driver/libraries ও bounded tiny CUDA operation PASS; install owner করবেন |
 | 2. Model registration + server validation | Local snapshot verified হলেও target runtime alias/weights identity ও native loading unverified | Target snapshot manifest/checksum, `sdxl-turbo` registration, actual six-class object_info ও native prompt validation; metadata check-কে model load বলা যাবে না |
 | 3. Live transport + durable identity | Standalone production transport ও live generation/supervision storage আছে; workflow executor/session এখনও mock-only; [L4.4 review](comfy-live-admission-review.md) | Explicit real transport composition, actual TLS/auth gateway verification, accurate real provenance ও trusted deployment/model evidence; v2 identity/backward-read mock tests completed, live integration বাকি |
-| 4. Supervised execution/recovery | Durable cancellation ও offline R/P/I acceptance PASS; local direct-child CPU RAM telemetry আছে; GPU/remote telemetry, process-tree enforcement ও production supervised executor composition নেই; receipt হারালে outcome unknown | CPU RAM/GPU VRAM/time bounds, server stop/cleanup verification, same-job journal retention ও ambiguous outcome-তে no resubmit; paid host হলে launch/budget/lifecycle approval আগে |
+| 4. Supervised execution/recovery | Durable cancellation ও offline R/P/I acceptance PASS; fixed fixture child-এ measured RAM admission/monitoring আছে; GPU/remote telemetry, process-tree enforcement ও production supervised executor composition নেই; receipt হারালে outcome unknown | CPU RAM/GPU VRAM/time bounds, server stop/cleanup verification, same-job journal retention ও ambiguous outcome-তে no resubmit; paid host হলে launch/budget/lifecycle approval আগে |
 | 5. First real image | কোনো real PNG নেই; native Comfy loader-এর memory/latency evidence নেই | Approved bounded run-এ valid saved PNG/full decode, dimensions/checksum, model revision/seed/runtime ও real provenance recorded; anime quality owner review |
 
 Gate 1-এর verification existing 5.4 scope-এ অনুমোদিত, prerequisites পাওয়া পর্যন্ত
@@ -49,7 +54,7 @@ approval প্রয়োজন। Existing local snapshot-এর duplicate downl
   limits, native custom validators, GPU capacity বা weight identity যাচাই করে না।
 - `comfy_journal.py` ও `comfy_v2_executor.py` mandatory preflight দেয়; raw `ComfyHTTPExecutor.execute` bypass
   করলে সেই gate/durable protection নেই। Inventory read এবং submit atomic নয়।
-- Preflight/execution-এর cooperative budgets পৃথক; hard combined wall-clock cap নেই।
+- Offline session-এ D1 shared cooperative run/cleanup ceilings আছে; raw callers-এর budgets পৃথক, hard combined wall-clock cap নেই।
 - Intent-only journal recovery fail-closed; v2 একই private root/job ID-তে deterministic
   path ও lock দিয়ে resubmit ঠেকায়। নতুন root/job ID-তে global deduplication নেই।
   Accepted receipt recovery পূর্বের

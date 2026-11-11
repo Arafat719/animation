@@ -38,6 +38,9 @@ from animation_studio.pipeline.dispatcher import (
 )
 from animation_studio.settings import get_database_path, get_settings
 from apps.api.composer import router as composer_router
+from apps.api.character_preview import router as character_preview_router
+from apps.api.character_profiles import router as character_profiles_router
+from apps.api.reference_images import router as reference_images_router
 
 
 @asynccontextmanager
@@ -55,6 +58,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title='Animation Studio API', lifespan=lifespan)
 app.include_router(composer_router)
+app.include_router(character_preview_router)
+app.include_router(character_profiles_router)
+app.include_router(reference_images_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

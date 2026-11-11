@@ -50,7 +50,16 @@ def test_character_schema_drift_is_detected_without_overwriting(tmp_path):
 
 
 @pytest.mark.parametrize(
-    'revision', ['legacy', '0001_initial', '0002_job_results', '0003_fixture_jobs']
+    'revision',
+    [
+        'legacy',
+        '0001_initial',
+        '0002_job_results',
+        '0003_fixture_jobs',
+        '0004_plan_approval',
+        '0005_character_profiles',
+        '0006_reviewed_profiles',
+    ],
 )
 def test_character_migrations_preserve_all_fields_and_list_reads(tmp_path, monkeypatch, revision):
     target = str(tmp_path / 'characters.db')
@@ -84,12 +93,14 @@ def test_character_migrations_preserve_all_fields_and_list_reads(tmp_path, monke
         connection.row_factory = sqlite3.Row
         stored = [dict(row) for row in connection.execute('SELECT * FROM characters ORDER BY id')]
         assert [tuple(row.values()) for row in stored] == rows
+        assert connection.execute('SELECT COUNT(*) FROM character_profiles').fetchone()[0] == 0
+        assert connection.execute('SELECT COUNT(*) FROM reviewed_character_profiles').fetchone()[0] == 0
         assert set(CharacterRecord.model_fields) == {
             row['name'] for row in connection.execute('PRAGMA table_info(characters)')
         }
         assert (
             connection.execute('SELECT version_num FROM alembic_version').fetchone()[0]
-            == '0003_fixture_jobs'
+            == '0006_reviewed_profiles'
         )
     for row in stored:
         assert CharacterRecord.model_validate(row).model_dump() == row

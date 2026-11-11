@@ -55,6 +55,10 @@ class DurableComfyExecutorV2:
                 if admission_check is not None:
                     admission_check()
                 self._validate(graph, cancel)
+                if self.executor._run_budget is not None:
+                    self.executor._check(
+                        cancel, self.executor._deadline(self.executor.timeout_seconds)
+                    )
                 self.store.create_intent()
 
                 def persist(receipt):

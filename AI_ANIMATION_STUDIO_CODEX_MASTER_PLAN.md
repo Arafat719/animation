@@ -380,10 +380,27 @@ workflow-এর offline construction/validation অনুমোদিত।
 এতে existing files-এর path/size/identity/license/format ও completeness যাচাই হবে;
 Owner-এর পরবর্তী next-work নির্দেশে 5.4 existing-local-resource image কাজ ও
 তার runtime/hardware preflight অনুমোদিত; readiness checks pass ছাড়া model load নয়।
-Install owner করবেন; নতুন download/paid resource ও 5.5 onward অনুমোদিত নয়।
+Install owner করবেন; নতুন download/paid resource ও 5.5 onward-এর আগের সীমা
+নিচের GPU-free scope update ছাড়া বহাল।
 স্থগিত CPU planner experiments এই image scope-এর অন্তর্ভুক্ত নয়।
 5.3 offline profile validation live ComfyUI validation বা inference evidence নয়।
 এই exception Phase 3/4 সম্পূর্ণ ঘোষণা করে না; তাদের acceptance gates বহাল।
+
+**GPU-free scope update (2026-10-11):** Owner আপাতত GPU ছাড়া কাজ চালাতে বলেছেন।
+এই নির্দেশে একই Phase 5-এর independent 5.6 reference image upload validation
+micro-step নির্বাচন করা হয়েছে; 5.4/5.5 real-image gates deferred থাকবে।
+PNG/JPEG upload-এর filename, MIME/content, byte size, dimensions ও full decode
+যাচাই হবে; validation-only API ছবি persist করবে না। Storage/character attachment,
+reference conditioning, 5.7 onward ও নতুন phase এই একক কাজের অন্তর্ভুক্ত নয়।
+এতে real generation বা 5.5 সম্পন্ন দাবি করা যাবে না।
+
+**5.7 GPU-free decomposition (2026-10-11):** Owner আবার GPU ছাড়া এগোতে বলেছেন।
+5.7a-তে user-provided description ও explicit structured immutable traits-এর pure
+contract/tests; 5.7b-তে পৃথক migration/repository/API persistence। 5.7a extraction
+বা full 5.7 completion নয়। Description থেকে semantic extraction পরবর্তী provider
+কাজ; missing trait invent করা যাবে না। Existing Character v1 API/schema অপরিবর্তিত
+রাখতে হবে; 5.7b-তে legacy migration/backward-read checks বাধ্যতামূলক।
+
 
 | Step | Codex শুধু এই কাজ করবে | Pass check |
 |---|---|---|

@@ -10,6 +10,7 @@ import math
 import re
 import time
 from collections.abc import Callable
+from contextlib import contextmanager
 from dataclasses import dataclass
 from threading import Event
 from uuid import UUID
@@ -88,6 +89,7 @@ class ComfyHTTPExecutor:
                 raise ValueError('Timeout and polling interval must be finite and positive')
         if type(max_polls) is not int or not 1 <= max_polls <= 1000:
             raise ValueError('Invalid poll limit')
+        self._run_budget = None
         self.timeout_seconds = timeout_seconds
         self.poll_interval = poll_interval
         self.max_polls = max_polls
@@ -120,11 +122,29 @@ class ComfyHTTPExecutor:
     def close(self):
         self._client.close()
 
-    @staticmethod
-    def _check(cancel, deadline):
+    @contextmanager
+    def run_budget(self, budget):
+        """Scope one synchronous offline attempt; recovery keeps its own budget."""
+        if self._run_budget is not None:
+            raise ImageProviderError('execution_failed', 'Workflow budget already active')
+        self._run_budget = budget
+        try:
+            yield
+        finally:
+            self._run_budget = None
+
+    def _now(self):
+        return self._run_budget.now() if self._run_budget is not None else time.monotonic()
+
+    def _deadline(self, seconds, *, cleanup=False):
+        if self._run_budget is not None:
+            return self._run_budget.deadline(seconds, cleanup=cleanup)
+        return time.monotonic() + seconds
+
+    def _check(self, cancel, deadline):
         if cancel is not None and cancel.is_set():
             raise ImageProviderError('cancelled', 'Local wait cancelled; server outcome unknown')
-        remaining = deadline - time.monotonic()
+        remaining = deadline - self._now()
         if remaining <= 0:
             raise ImageProviderError(
                 'timeout', 'Workflow deadline exceeded; server outcome unknown'
@@ -150,6 +170,7 @@ class ComfyHTTPExecutor:
                 method,
                 path,
                 deadline=deadline,
+                clock=self._now if self._run_budget is not None else None,
                 timeout=min(10, remaining),
                 cancel=cancel,
                 limit=limit,
@@ -252,13 +273,13 @@ class ComfyHTTPExecutor:
             ) from None
 
     def _cancel_receipt(self, receipt: ComfyReceipt) -> ComfyCancellation:
-        # Independent cleanup budget: original event/deadline must not suppress it.
+        # Cleanup ignores the run expiry/event, but honors an active cleanup ceiling.
         try:
             response = self._json(
                 'POST',
                 f'api/jobs/{receipt.prompt_id}/cancel',
                 cancel=None,
-                deadline=time.monotonic() + 5,
+                deadline=self._deadline(5, cleanup=True),
             )
             if set(response) != {'cancelled'} or type(response['cancelled']) is not bool:
                 raise ImageProviderError('execution_failed', 'Invalid cancellation acknowledgement')
@@ -269,7 +290,7 @@ class ComfyHTTPExecutor:
     def preflight(self, graph: dict[str, dict], *, cancel: Event | None = None) -> None:
         """Bounded read-only inventory check of six unique node classes."""
         validate_image_workflow(graph)
-        deadline = time.monotonic() + self.timeout_seconds
+        deadline = self._deadline(self.timeout_seconds)
         inventory = {}
         for kind in dict.fromkeys(node['class_type'] for node in graph.values()):
             response = self._json('GET', f'object_info/{kind}', cancel=cancel, deadline=deadline)
@@ -288,7 +309,7 @@ class ComfyHTTPExecutor:
         on_cancel: Callable[[ComfyReceipt, ImageProviderError], ComfyCancellation] | None = None,
     ) -> bytes:
         validate_image_workflow(graph)
-        deadline = time.monotonic() + self.timeout_seconds
+        deadline = self._deadline(self.timeout_seconds)
         receipt = None
         try:
             self._check(cancel, deadline)

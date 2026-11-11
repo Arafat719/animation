@@ -131,8 +131,13 @@ class ComfyTransport:
         cancel=None,
         limit=None,
         mime=None,
+        clock=None,
     ):
         """Return bounded bytes, requiring caller JSON/MIME/media validation later."""
+        if clock is not None:
+            self.require_mock()
+            if not callable(clock):
+                raise TypeError('Expected offline clock')
         if limit is None:
             limit = MAX_RESPONSE_BYTES
         if type(limit) is not int or not 0 < limit <= MAX_RESPONSE_BYTES:
@@ -159,7 +164,7 @@ class ComfyTransport:
         def check():
             if cancel is not None and cancel.is_set():
                 raise ImageProviderError('cancelled', 'Comfy request cancelled; outcome unknown')
-            remaining = deadline - time.monotonic()
+            remaining = deadline - (time.monotonic() if clock is None else clock())
             if remaining <= 0:
                 raise ImageProviderError('timeout', 'Comfy deadline exceeded; outcome unknown')
             return remaining

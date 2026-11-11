@@ -341,7 +341,7 @@ def test_admission_time_failure_before_intent(setup, graph, stage, failure):
     def clock():
         nonlocal count
         count += 1
-        if stage == 'after' and count == 1:
+        if stage == 'after' and len(server.calls) < 6:
             return 101.0
         if failure == 'clock_error':
             raise RuntimeError('synthetic-private-clock')
@@ -401,14 +401,18 @@ def test_both_admission_checks_hold_generation_lock_and_precede_intent(setup, gr
     other = make()
     calls = []
 
-    def clock():
+    session = make()
+    original = session._check_admission
+
+    def check():
         assert not (root / f'{context.job_id}.json').exists()
         with pytest.raises(BlockingIOError), other._durable.store.locked():
             pass
         calls.append(len(server.calls))
-        return 101.0
+        return original()
 
-    assert make(clock=clock).execute(graph) == server.png
+    session._check_admission = check
+    assert session.execute(graph) == server.png
     assert calls == [0, 6]
 
 
@@ -440,16 +444,19 @@ def test_invalid_clock_rejected_before_transport_ownership(setup):
 
 def test_failed_preflight_does_not_refresh_or_recheck_admission(setup, graph):
     server, make, context, root = setup
-    ticks = []
+    session = make()
+    checks = []
+    original = session._check_admission
 
-    def clock():
-        ticks.append(101.0)
-        return 101.0
+    def check():
+        checks.append(True)
+        return original()
 
+    session._check_admission = check
     server.override = lambda request: httpx.Response(403)
     with pytest.raises(ImageProviderError):
-        make(clock=clock).execute(graph)
-    assert ticks == [101.0] and len(server.calls) == 1
+        session.execute(graph)
+    assert checks == [True] and len(server.calls) == 1
     assert not (root / f'{context.job_id}.json').exists()
 
 
@@ -458,17 +465,421 @@ def test_cancellation_during_final_admission_prevents_intent(setup, graph):
 
     server, make, context, root = setup
     cancel = Event()
-    count = 0
+    session = make()
+    original = session._check_admission
 
-    def clock():
-        nonlocal count
-        count += 1
-        if count == 2:
+    def check():
+        original()
+        if len(server.calls) == 6:
             cancel.set()
-        return 101.0
 
+    session._check_admission = check
     with pytest.raises(ImageProviderError) as caught:
-        make(clock=clock).execute(graph, cancel=cancel)
+        session.execute(graph, cancel=cancel)
     assert caught.value.code == 'cancelled'
     assert len(server.calls) == 6 and all(r.method == 'GET' for r in server.calls)
+    assert not (root / f'{context.job_id}.json').exists()
+
+
+@pytest.mark.parametrize('stage', ['before', 'after'])
+@pytest.mark.parametrize(
+    'failure,reason',
+    [
+        ('missing', 'telemetry_missing'),
+        ('stale', 'telemetry_stale'),
+        ('future', 'telemetry_invalid'),
+        ('prestart', 'telemetry_invalid'),
+        ('worker', 'telemetry_invalid'),
+        ('device', 'telemetry_invalid'),
+        ('context', 'telemetry_invalid'),
+        ('ram', 'ram_limit'),
+        ('reserve', 'host_reserve'),
+        ('vram', 'vram_limit'),
+        ('deadline', 'run_deadline'),
+        ('start_missing', 'resource_input_invalid'),
+        ('start_nan', 'resource_input_invalid'),
+        ('start_future', 'resource_input_invalid'),
+        ('type', 'resource_input_invalid'),
+        ('bytes', 'resource_input_invalid'),
+        ('extra', 'resource_input_invalid'),
+        ('context_extra', 'resource_input_invalid'),
+    ],
+)
+def test_resource_rejection_before_intent(setup, graph, stage, failure, reason):
+    from dataclasses import replace
+
+    server, make, context, root = setup
+    session = make()
+    snapshot = session._admission
+    sample = snapshot.resource_sample
+    changes = {
+        'stale': {'sampled_at': 98.0},
+        'future': {'sampled_at': 102.0},
+        'prestart': {'sampled_at': 99.0},
+        'worker': {'worker_id': 'other'},
+        'device': {'device_index': 1},
+        'context': {'context': context.model_copy(update={'model_manifest_sha256': 'd' * 64})},
+        'ram': {'rss_bytes': 1024},
+        'reserve': {'available_ram_bytes': 512},
+        'vram': {'used_vram_bytes': 1024},
+        'bytes': {'rss_bytes': True},
+        'extra': {'private_extra': 'synthetic-private'},
+        'context_extra': {
+            'context': context.model_copy(update={'private_extra': 'synthetic-private'})
+        },
+    }
+    updates = {}
+    if failure in changes:
+        updates['resource_sample'] = sample.model_copy(update=changes[failure])
+    if failure == 'stale':
+        updates['run_started_at'] = 97.0
+    if failure == 'missing':
+        updates['resource_sample'] = None
+    if failure == 'type':
+        updates['resource_sample'] = sample.model_dump()
+    if failure == 'deadline':
+        updates['run_started_at'] = 51.0
+    if failure.startswith('start_'):
+        updates['run_started_at'] = {
+            'start_missing': None,
+            'start_nan': float('nan'),
+            'start_future': 102.0,
+        }[failure]
+    rejected = replace(snapshot, **updates)
+    if stage == 'before':
+        session._admission = rejected
+    else:
+
+        def change_during_inventory(request):
+            session._admission = rejected
+
+        server.override = change_during_inventory
+    with pytest.raises(ImageProviderError) as caught:
+        session.execute(graph)
+    assert caught.value.resource_reasons == (reason,)
+    assert 'synthetic-private' not in str(caught.value)
+    assert not (root / f'{context.job_id}.json').exists()
+    assert len(server.calls) == (0 if stage == 'before' else 6)
+    assert all(r.method == 'GET' for r in server.calls)
+
+
+def test_resource_sample_ages_during_preflight_without_refresh(setup, graph):
+    from dataclasses import replace
+
+    server, make, context, root = setup
+    session = make(clock=lambda: 101.0 if len(server.calls) < 6 else 103.0)
+    session._admission = replace(session._admission, max_age_seconds=10.0)
+    snapshot = session._admission
+    with pytest.raises(ImageProviderError) as caught:
+        session.execute(graph)
+    assert caught.value.resource_reasons == ('telemetry_stale',)
+    assert session._admission is snapshot and snapshot.resource_sample.sampled_at == 100.0
+    assert len(server.calls) == 6 and all(r.method == 'GET' for r in server.calls)
+    assert not (root / f'{context.job_id}.json').exists()
+
+
+def test_resource_freshness_and_budget_success_boundaries(setup, graph):
+    from dataclasses import replace
+
+    server, make, _, _ = setup
+    session = make(clock=lambda: 102.0)
+    session._admission = replace(
+        session._admission,
+        resource_sample=session._admission.resource_sample.model_copy(
+            update={
+                'rss_bytes': 1023,
+                'available_ram_bytes': 513,
+                'used_vram_bytes': 1023,
+            }
+        ),
+    )
+    assert session.execute(graph) == server.png
+    assert session.is_mock
+    assert sum(r.url.path == '/prompt' for r in server.calls) == 1
+
+
+def test_resource_multiple_breaches_have_stable_reasons(setup, graph):
+    from dataclasses import replace
+
+    server, make, _, _ = setup
+    session = make()
+    session._admission = replace(
+        session._admission,
+        run_started_at=51.0,
+        resource_sample=session._admission.resource_sample.model_copy(
+            update={
+                'sampled_at': 98.0,
+                'rss_bytes': 1024,
+                'available_ram_bytes': 512,
+                'used_vram_bytes': 1024,
+            }
+        ),
+    )
+    with pytest.raises(ImageProviderError) as caught:
+        session.execute(graph)
+    assert caught.value.resource_reasons == (
+        'telemetry_stale',
+        'ram_limit',
+        'host_reserve',
+        'vram_limit',
+        'run_deadline',
+    )
+    assert not server.calls
+
+
+def timed_session(setup, **options):
+    """One mutable fixture clock across admission, HTTP and transport."""
+    from dataclasses import replace
+
+    _, make, _, _ = setup
+    now = [101.0]
+    session = make(clock=lambda: now[0], **options)
+    snapshot = session._admission
+    policy = snapshot.policy.model_copy(
+        update={
+            'overall_timeout_seconds': 10.0,
+            'cleanup_reserve_seconds': 2.0,
+            'reap_allowance_seconds': 2.0,
+            'stale_after_seconds': 100.0,
+        }
+    )
+    session._admission = replace(
+        snapshot,
+        policy=policy,
+        max_age_seconds=100.0,
+        observations=tuple(
+            o.model_copy(
+                update={
+                    'policy_sha256': admission_policy_sha256(policy),
+                }
+            )
+            for o in snapshot.observations
+        ),
+    )
+    return session, now
+
+
+def test_shared_deadline_decreases_across_inventory_submit_history_view(setup, graph):
+    server, _, _, _ = setup
+    session, now = timed_session(setup, timeout_seconds=3)
+    budgets = []
+
+    def consume(request):
+        budgets.append(request.extensions['timeout']['read'])
+        now[0] += 0.1
+
+    server.override = consume
+    assert session.execute(graph) == server.png
+    assert len(budgets) == 9
+    assert budgets == pytest.approx([3 - i * 0.1 for i in range(9)])
+    assert [r.url.path for r in server.calls[-3:]] == [
+        '/prompt',
+        f'/history/{PROMPT_ID}',
+        '/view',
+    ]
+    assert session._run_budget is None and session._http._run_budget is None
+
+
+@pytest.mark.parametrize('stage', ['initial', 'inventory', 'pre_intent', 'post_intent'])
+def test_shared_deadline_expiry_journal_boundary(setup, graph, stage):
+    server, _, context, root = setup
+    session, now = timed_session(setup)
+    if stage == 'initial':
+        now[0] = 106.0
+    elif stage == 'inventory':
+
+        def consume(request):
+            now[0] = 106.0
+
+        server.override = consume
+    elif stage == 'pre_intent':
+        original = session._check_admission
+
+        def expire_after_recheck():
+            original()
+            if len(server.calls) == 6:
+                now[0] = 106.0
+
+        session._check_admission = expire_after_recheck
+    else:
+        original = session._durable.store.create_intent
+
+        def expire_after_write():
+            original()
+            now[0] = 106.0
+
+        session._durable.store.create_intent = expire_after_write
+    with pytest.raises(ImageProviderError):
+        session.execute(graph)
+    assert all(r.method == 'GET' for r in server.calls)
+    journal = root / f'{context.job_id}.json'
+    assert journal.exists() == (stage == 'post_intent')
+    if journal.exists():
+        assert json.loads(journal.read_bytes())['state'] == 'intent'
+        server.calls.clear()
+        with pytest.raises(ImageProviderError, match='Journal exists'):
+            session.execute(graph)
+        with pytest.raises(ImageProviderError, match='outcome unknown'):
+            session.recover(graph)
+        assert not server.calls
+
+
+@pytest.mark.parametrize('expired_at,allowance', [(106.0, 2.0), (107.0, 1.0), (108.0, 0)])
+def test_cleanup_uses_original_ceiling_and_recovery_stays_get_only(
+    setup, graph, expired_at, allowance
+):
+    server, make, context, root = setup
+    session, now = timed_session(setup)
+
+    def expire_on_history(request):
+        if request.url.path.startswith('/history/'):
+            now[0] = expired_at
+
+    server.override = expire_on_history
+    with pytest.raises(ComfyExecutionError) as caught:
+        session.execute(graph)
+    assert caught.value.code == 'timeout'
+    cancels = [r for r in server.calls if r.url.path.endswith('/cancel')]
+    assert len(cancels) == (1 if allowance else 0)
+    if cancels:
+        assert cancels[0].extensions['timeout']['read'] == allowance
+    else:
+        assert caught.value.cancellation.dispatched is None
+    sidecar = root / f'{context.job_id}.supervision.json'
+    saved = sidecar.read_bytes()
+    assert json.loads(saved)['attempt_count'] == 1
+    assert json.loads((root / f'{context.job_id}.json').read_bytes())['state'] == 'accepted'
+    server.calls.clear()
+    server.override = None
+    # Same session restores host-clock GET-only recovery, without stale admission.
+    assert session.recover(graph) == server.png
+    assert make(admission=None).recover(graph) == server.png
+    assert all(r.method == 'GET' for r in server.calls)
+    assert sidecar.read_bytes() == saved
+
+
+@pytest.mark.parametrize('change', ['start', 'policy', 'clock_session'])
+def test_recheck_cannot_replace_attempt_budget(setup, graph, change):
+    from dataclasses import replace
+
+    server, _, context, root = setup
+    session, _ = timed_session(setup)
+    snapshot = session._admission
+    if change == 'start':
+        replacement = replace(
+            snapshot,
+            run_started_at=100.5,
+            resource_sample=snapshot.resource_sample.model_copy(update={'sampled_at': 100.5}),
+        )
+    elif change == 'policy':
+        policy = snapshot.policy.model_copy(update={'overall_timeout_seconds': 20.0})
+        replacement = replace(
+            snapshot,
+            policy=policy,
+            observations=tuple(
+                o.model_copy(update={'policy_sha256': admission_policy_sha256(policy)})
+                for o in snapshot.observations
+            ),
+        )
+    else:
+        clock_id = '22345678-1234-4234-8234-123456789abc'
+        replacement = replace(
+            snapshot,
+            clock_session_id=clock_id,
+            observations=tuple(
+                o.model_copy(update={'clock_session_id': clock_id}) for o in snapshot.observations
+            ),
+        )
+
+    def swap(request):
+        session._admission = replacement
+
+    server.override = swap
+    with pytest.raises(ImageProviderError, match='budget changed'):
+        session.execute(graph)
+    assert len(server.calls) == 6 and all(r.method == 'GET' for r in server.calls)
+    assert not (root / f'{context.job_id}.json').exists()
+
+
+@pytest.mark.parametrize('value', [float('nan'), float('inf'), True, 100.0])
+def test_http_clock_corruption_closes_response_without_intent(setup, graph, value):
+    server, _, context, root = setup
+    session, now = timed_session(setup)
+
+    def corrupt(request):
+        now[0] = value
+
+    server.override = corrupt
+    with pytest.raises(ImageProviderError, match='clock invalid'):
+        session.execute(graph)
+    assert len(server.calls) == 1 and server.calls[0].method == 'GET'
+    assert not (root / f'{context.job_id}.json').exists()
+    assert session._http._run_budget is None
+
+
+def test_poll_wait_is_clamped_to_original_run_deadline(setup, graph, monkeypatch):
+    server, _, _, _ = setup
+    session, now = timed_session(setup, poll_interval=2)
+    session._http.max_polls = 2
+    server.pending = 1
+    waits = []
+
+    class Wait:
+        def wait(self, seconds):
+            waits.append(seconds)
+            now[0] += seconds
+
+    monkeypatch.setattr('animation_studio.providers.comfy_http.Event', Wait)
+
+    def consume(request):
+        if request.url.path == '/prompt':
+            now[0] = 105.5
+
+    server.override = consume
+    with pytest.raises(ComfyExecutionError) as caught:
+        session.execute(graph)
+    assert caught.value.code == 'timeout' and waits == [0.5]
+    assert sum(r.url.path.startswith('/history/') for r in server.calls) == 1
+    assert sum(r.url.path.endswith('/cancel') for r in server.calls) == 1
+
+
+def test_stream_chunks_cannot_outlive_shared_deadline(setup, graph):
+    server, _, context, root = setup
+    session, now = timed_session(setup)
+    closed = []
+
+    class SlowStream(httpx.SyncByteStream):
+        def __iter__(self):
+            yield b'{'
+            now[0] = 106.0
+            yield b'}'
+
+        def close(self):
+            closed.append(True)
+
+    server.override = lambda request: httpx.Response(
+        200, headers={'Content-Type': 'application/json'}, stream=SlowStream()
+    )
+    with pytest.raises(ImageProviderError) as caught:
+        session.execute(graph)
+    assert caught.value.code == 'timeout' and closed
+    assert not session._transport._pending_streams
+    assert len(server.calls) == 1 and not (root / f'{context.job_id}.json').exists()
+
+
+def test_throwing_clock_is_sanitized_during_http_and_attempt_is_released(setup, graph):
+    server, _, context, root = setup
+    session, _ = timed_session(setup)
+
+    def clock():
+        if server.calls:
+            raise RuntimeError('synthetic-private-clock')
+        return 101.0
+
+    session._clock = clock
+    with pytest.raises(ImageProviderError) as caught:
+        session.execute(graph)
+    assert 'synthetic-private' not in str(caught.value)
+    assert session._run_budget is None and session._http._run_budget is None
+    assert not session._transport._pending_streams
     assert not (root / f'{context.job_id}.json').exists()

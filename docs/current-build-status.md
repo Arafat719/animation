@@ -1721,3 +1721,285 @@ mock durable callback optional; session mandatory। 22 new session cases, final
 combined 237 PASS; Ruff/format/drift/docs PASS। No live/schema/install/GPU changes।
 Next proposed owner-directed A3 existing mock resource evaluator integration/recheck;
 actual target evidence/remote enforcement/full L4/5.4 এখনও অসম্পূর্ণ।
+
+**5.4 A3 offline resource admission acceptance (2026-10-10): সম্পন্ন।**
+[Checkpoint](comfy-resource-admission-checkpoint.md)। Existing session resource
+integration পুনরায় না লিখে 39 new regression cases ও contract docstring যোগ করা হয়েছে।
+Before/after-preflight missing/stale/invalid/mismatched/over-budget/deadline checks
+no intent/POST নিশ্চিত করে; sample ageing ও success boundary covered। Baseline 113,
+targeted 152, final combined 348 PASS; Ruff/format/docs/drift/whitespace PASS।
+No schema change, install, network, GPU, paid resource বা commit। Real measurement,
+enforcement/shared hard deadline/live composition অসম্পূর্ণ; 5.4 real GPU blocked।
+Next proposed owner-directed remaining offline/live prerequisite gap review;
+পরবর্তী implementation বা live dispatch অনুমোদিত নয়।
+
+**5.4 A3-পরবর্তী offline/live gap review (2026-10-10): সম্পন্ন।**
+[Review ও D1 scope](comfy-post-admission-review.md)। Source-এ confirmed: resource
+run deadline admission-এই থাকে; HTTP preflight/execute আলাদা budgets এবং cleanup
+পৃথক পাঁচ সেকেন্ড পায়। Next owner-directed D1 এক shared cooperative run/cleanup
+ceiling propagation ও fixture tests; implementation এই review-এ নয়। Clock-domain,
+no-reset, durable single-cancel ও GET-only recovery pass criteria নির্ধারিত।
+A3 348 PASS reused; docs links/RESUME/drift/whitespace PASS। Source/tests অপরিবর্তিত;
+real GPU/native preflight blocked, live supervision/collector/composition বাকি।
+
+**5.4 D1 shared cooperative deadline integration (2026-10-10): সম্পন্ন।**
+[Checkpoint](comfy-shared-deadline-checkpoint.md)। One guarded mock clock ও retained
+run/cleanup ceilings preflight→submit→poll/view-তে সংযুক্ত; timeout cap reset নয়।
+Pre-intent final check, post-intent ambiguity retention, durable single cancel-এর
+cleanup ceiling এবং fresh GET-only recovery verified। D1 17 নতুন cases; final 598
+PASS/session 98; Ruff/format/docs/drift/whitespace PASS। Legacy mock behavior ও
+schema অপরিবর্তিত; no GPU/network/install/paid/commit। Real target telemetry/hard
+supervision/live composition বাকি। Next owner-directed D2 independent offline
+supervision boundary design; real native preflight hardware না থাকায় blocked।
+
+**5.4 D2 independent offline supervision boundary design (2026-10-10): সম্পন্ন।**
+[Design ও D3 scope](comfy-independent-supervision-design.md)। Fixed mock session
+child/independent parent ownership, spawn-পূর্ব immutable deadlines, bounded IPC,
+child-only durable cancel, confirmed-exit GET-only recovery ও exceptional cleanup
+handle retention নির্ধারিত। Dummy/C3/I1 পুনরায় implementation নয়। Next owner-directed
+D3 fixed offline session child supervision/tests; এই turn docs-only। D1 598/C3 320
+PASS ও I1 evidence reused; docs links/RESUME/drift/whitespace PASS। Source/tests
+অপরিবর্তিত; কোনো process/network/GPU/paid run নয়। Real target gates এখনও blocked।
+
+**5.4 D3 fixed offline session child supervision (2026-10-10): সম্পন্ন।**
+[Checkpoint](comfy-session-supervision-checkpoint.md)। New fixed child existing
+session/D1/fixture provider compose করে; independent parent original deadlines,
+nonblocking bounded IPC, owned kill/reap ও exceptional cleanup handles রাখে।
+Parent no HTTP/cancel/journal mutation; child durable one-cancel; explicit confirmed-
+exit recovery GET-only। 29 new cases; final combined 214 PASS, Ruff/format/docs/
+drift/whitespace PASS। Initial test startup-budget failure ledger দিয়ে diagnosed;
+fixture-only run allowance 3s, production limit unchanged। No live/GPU/install/paid/
+commit। Real target RAM/VRAM/worker-tree supervision ও live composition বাকি।
+Next existing-authorized GPU/native preflight hardware absence-এ blocked; নতুন
+offline scope নির্ধারিত নয়, unchanged probe নয়।
+
+**5.4 D4 supervised fixture child RAM design (2026-10-10): সম্পন্ন।**
+[Design ও D5 scope](comfy-session-ram-design.md)। GPU-free next-scope হিসেবে existing
+OwnedChildRamReader/RamSampler/CPU guard reuse, first-sample-before-startup-payload
+admission, running monitoring, partial-startup abort ও sampler cleanup retention
+নির্ধারিত। Parent local measured RAM ও child synthetic inference evidence পৃথক।
+Next owner-directed D5 implementation/tests; এই turn docs-only। D3 214 PASS/C3
+evidence reused; links/RESUME/drift/whitespace PASS। GPU probe/install/paid/source
+edit নয়; real target RAM/VRAM/live inference gate এখনও অসম্পূর্ণ।
+
+**5.4 D5 parent RAM admission/monitoring (2026-10-11): সম্পন্ন।**
+[Checkpoint](comfy-session-ram-checkpoint.md)। Existing অসমাপ্ত parent/source/tests
+সংরক্ষণ করে review ও failure coverage সম্পূর্ণ। First guard-allowed local reading-এর
+আগে startup payload নেই; running RAM/freshness/identity guard ও blocked sampler
+cleanup handles retained। Partial startup abort fail-closed; child synthetic inference
+ও local measured RAM পৃথক, VRAM unknown। Baseline 42 PASS; final session 49 cases,
+combined D3/D1/A3/CPU/RAM/recovery regression 515 PASS (97.52s)। Ruff/check/format,
+docs links/RESUME length, plan drift ও whitespace PASS। Schema/master অপরিবর্তিত।
+No install/model/GPU/live/paid/commit; earlier dirty edits preserved। Next authorized
+real native/GPU preflight hardware absence-এ blocked; unchanged probe নয়। নতুন
+offline implementation scope নির্ধারিত নেই; next owner instruction প্রয়োজন।
+
+**5.4 D6 post-RAM readiness review (2026-10-11): সম্পন্ন।**
+[Review](comfy-post-ram-review.md)। D1/D3/D5 source ও current readiness cross-check;
+local measured RAM বনাম child synthetic admission এবং standalone live transport/store
+বনাম mock-only orchestration স্পষ্ট করা হয়েছে। Stale current readiness heading/table
+হালনাগাদ। New concrete source defect পাওয়া যায়নি; source/test/schema/master বদলায়নি।
+515 PASS reused; docs links/RESUME/drift/whitespace PASS। Next existing-authorized
+GPU/native preflight hardware absence-এ blocked; usable target/runtime location দরকার।
+নতুন offline scope নির্ধারিত নয়; repeated probe/install/live/paid/commit নয়।
+
+**5.6 GPU-free reference upload validation (2026-10-11): সম্পন্ন।**
+[Checkpoint](reference-image-validation-checkpoint.md)। Owner GPU-free নির্দেশে same-phase
+independent validation নির্বাচন; master/excerpt scope sync। Raw PNG/JPEG endpoint,
+bounded stream/type/name/dimensions/full decode ও SHA256; stored=false, no persistence/
+GPU/provider। New 28 PASS; combined 66 PASS/4 FAIL। Four stale character migration
+head assertions (0003 expected/0004 actual) baseline without new route-তেও পুনরুৎপাদিত
+(28 PASS/4 FAIL)। Combined green নয়; next authorized একক migration-test fix।
+Ruff/format/docs/drift/whitespace PASS। Sandbox TestClient hang diagnostic-এর পরে
+local tests outside sandbox; no install/server/live/model/paid/commit।
+
+**GPU-free character migration-test fix (2026-10-11): সম্পন্ন।**
+[Checkpoint](character-migration-test-checkpoint.md)। Expected revision 0003→0004;
+current-head repeated-init case যোগ, legacy/older upgrade ও exact data/API preservation
+checks অক্ষত। Previous four baseline failures closed; combined upload/character/API/DB
+78 PASS (5.42s), two existing deprecation warnings। Ruff/format/docs/drift/whitespace
+PASS। App/schema/master অপরিবর্তিত; no GPU/install/server/commit। Next GPU-free
+candidate 5.7 profile/traits persistence-এর existing source/contract scope যাচাই।
+
+**5.7a immutable character profile contract (2026-10-11): সম্পন্ন।**
+[Checkpoint](character-profile-contract-checkpoint.md)। Existing flat planner traits ও
+legacy metadata gap যাচাই; structured user-provided draft, nested frozen traits/tuples,
+bounded Unicode text ও no inferred traits। New 25 cases; combined 57 PASS (0.38s)।
+Prior 78 API/DB baseline reused; API/storage/schema untouched। Master/excerpts scope
+sync; Ruff/format/docs/drift/whitespace PASS। Next authorized GPU-free 5.7b পৃথক
+profile persistence migration/repository/API; full 5.7/extraction এখনও অসম্পূর্ণ।
+
+**5.7b profile persistence/API (2026-10-11): সম্পন্ন।**
+[Checkpoint](character-profile-persistence-checkpoint.md)। Additive 0005 profile table,
+immutable save/read API, transaction-serialized single snapshot, DB UPDATE guard,
+validated/sanitized read। Old Character records/API অপরিবর্তিত; legacy/all revisions
+migration ও empty profile table checks PASS। New 12 cases; combined 148 PASS;
+two existing deprecation warnings। Ruff/format/docs/drift/whitespace PASS। Only temp
+DBs tested, no user DB migration/GPU/install/server/commit। Next GPU-free candidate
+saved-profile→planner mapping/identity contract; extraction/full 5.7 এখনও অসম্পূর্ণ।
+
+**5.7c saved-profile planner adapter (2026-10-11): সম্পন্ন।**
+[Checkpoint](character-profile-adapter-checkpoint.md)। Pure explicit-ID mapping to
+canonical character-ID, structured labels/Unicode preservation, snapshot revalidation,
+independent PlannerCharacter। Existing assembler visibility/length/duplicate checks
+reuse; no API/project wiring। New 14 cases, combined 71 PASS; initial boolean version
+coercion finding raw type validation দিয়ে closed। Prior 148 API/DB baseline reused।
+Ruff/format/docs/drift/whitespace PASS; no GPU/install/server/commit। Next authorized
+GPU-free explicit saved-character IDs দিয়ে mock preview API composition।
+
+
+**5.7d saved-character mock preview API (2026-10-12): সম্পন্ন।**
+[Checkpoint](character-preview-checkpoint.md)। Workspace-এর existing draft integration
+reviewed; subset/snapshot-name/default-duration এবং mixed valid/unknown selection
+coverage যোগ করা হয়েছে। Explicit bounded unique IDs দিয়ে DB profile read ও adapter
+ব্যবহার; missing/unknown/corrupt rejection, no retry, mock/review labels। Existing GET
+compatible; preview project assignment/plan approval persist করে না। Combined 118 PASS
+(17 preview cases), 2 existing deprecation warnings; Ruff/format/drift/whitespace PASS।
+Sandbox TestClient portal hang diagnostic captured; three blocked runs interrupted,
+auto-review-approved outside-sandbox bounded local run 4.95s-এ PASS। No install/GPU/
+model/server/commit। Next candidate GPU-free remaining-scope review; further feature
+implementation not authorized by this completed bounded step। Full 5.7 deferred।
+
+
+**5.7d-পরবর্তী GPU-free scope review (2026-10-12): সম্পন্ন।**
+[Review/proposed 5.7e](character-gpu-free-scope-review.md)। Current schema/API/UI এবং
+master-এর Phase 5 headings verified; user-provided profile API ready, authoring/read UI
+missing। Next bounded proposal existing saved character-এর immutable profile form ও
+read-only view; no backend migration, extraction, project assignment বা preview approval
+wiring। Loading/empty/error/success, bounds, refresh, conflict/ambiguous save reconciliation
+ও stale-response checks নির্দিষ্ট। Documentation-only; prior 118 PASS evidence reused,
+app tests rerun নয়। Links/RESUME length/drift/whitespace PASS। Implementation pending
+owner next-work instruction; no new phase/GPU/install/download/commit।
+
+
+**5.7e saved-character profile create/read UI (2026-10-12): সম্পন্ন।**
+[Checkpoint](character-profile-ui-checkpoint.md)। Owner next-work authorization-এ
+CharactersPage selection, focused profile component, schema-bound Unicode validation ও
+styles যোগ হয়েছে। User-authored traits save/read-only display; missing profile বনাম
+failed read পৃথক; conflict/network/timeout GET reconciliation, duplicate POST guard,
+keyed abort/stale response protection। Legacy create/API/backend schema unchanged।
+38 API tests PASS; 13 mock browser scenarios PASS, separate actual API/temp SQLite
+save→refresh PASS। Build/typecheck/format PASS; lint only existing ShotList warning।
+Browser initial StrictMode GET-count expectation corrected; new effect lint findings
+fixed; final checks rerun। Desktop/mobile screenshots inspected, fixtures only।
+Docs links/length/drift/whitespace PASS; no install/GPU/publish/commit। Owned localhost
+servers stopped। Next proposed 5.7f explicit saved-cast read-only mock preview UI;
+owner next-work instruction authorizes that bounded scope, not persistent assignment/
+approval/render wiring। Full 5.7 semantic extraction ও real image gates pending।
+
+
+**5.7f explicit saved-character mock preview UI (2026-10-12): সম্পন্ন।**
+[Checkpoint](character-cast-preview-ui-checkpoint.md)। ProjectWorkspace-এ bounded
+read-only preview component, selection/response validation ও styles যুক্ত; backend,
+legacy ShotList/plan approval/render unchanged। Explicit ordered IDs, same-name identity,
+missing-profile errors, mock/review labels, Unicode traits, pending shots/seed display।
+Selection/project/reload stale-result protection, duplicate submit guard ও timeout/manual
+retry verified। API 38 PASS; new browser 17 scenarios PASS; actual temp SQLite/API
+previewে Bengali traits present, plan/jobs unchanged, refresh clears preview। Build/
+typecheck/lint/format PASS except existing ShotList warning; docs checks PASS। Desktop
+screenshot inspected/mobile overflow PASS। No install/GPU/publish/commit; servers stopped।
+Next proposed 5.7g description-to-profile provider contract design review, docs-only on
+owner next-work instruction; no automatic extraction/save or real inference authorized।
+
+
+**5.7g description-to-profile provider contract design review (2026-10-12): সম্পন্ন।**
+[Design](character-extraction-design.md)। Existing user_provided immutable profile,
+store/API/adapter এবং master 5.7 heading verified। Proposed separate extractive review
+candidate/report, exact description spans, missing/ambiguous trait handling, request
+fingerprint binding ও configured mock provenance specified। Exact spans semantic proof
+নয়; model-origin save-এর future provenance-preserving versioning requirement identified,
+legacy source relabel/auto-save নয়। Next bounded 5.7h pure contract/fixture mock/tests;
+owner next-work instruction authorizes that implementation। Current turn docs-only:
+source/schema/master requirements unchanged; prior 38 API + 17 browser evidence reused।
+Links/RESUME length/drift/whitespace PASS; no install/model/server/GPU/commit। Full 5.7
+real extraction/persistence ও image acceptance pending।
+
+
+**5.7h pure extraction contract/fixture mock (2026-10-12): সম্পন্ন।**
+[Checkpoint](character-extraction-contract-checkpoint.md)। Separate strict/frozen
+request/evidence/candidate/report, canonical hash/context binding, exact Unicode spans,
+derived missing traits ও ambiguity checks। Explicit fixture provider/Protocol; unknown
+input typed failure, always mock report, no save/model I/O। 41 new tests, combined 92
+PASS (2 existing warnings); Ruff/format/docs/drift/whitespace PASS। Manual contract,
+adapter/persistence regressions included। No install/GPU/model/API/UI/migration/commit।
+Next proposed reviewed extraction save/provenance design review, docs-only on owner
+next-work instruction। Real extraction/image generation/full 5.7 remain pending।
+
+
+**5.7i reviewed extraction save/provenance design (2026-10-12): সম্পন্ন।**
+[Design](character-reviewed-save-design.md)। Current extraction report, immutable v1
+store/0005 constraints inspected। Proposed explicit seven-field accept/replace/omit
+review, full-report hash/context binding, v2 reviewed values with original mock/provider
+provenance; no source relabel। Future additive table/cross-table single-profile guard,
+concurrent conflict/ambiguous-save readback, trusted server-owned draft boundary ও
+legacy-v1 read compatibility/consumer rollout specified। Implementation হয়নি। Next
+5.7j pure contract/builder/tests only on owner next-work instruction; migration/API/UI
+excluded। Prior 92 PASS reused; links/length/drift/whitespace PASS। No model/GPU/server/
+install/commit; full extraction and image generation pending।
+
+## 2026-10-12 — 5.7j pure reviewed-extraction contract
+
+[Checkpoint](character-review-contract-checkpoint.md): new character_review domain module ও
+40 tests; combined 117 PASS + final extra boundary/order case = 118 distinct PASS।
+Strict seven-field review decisions, canonical full-report hash, request/provider binding,
+immutable v2 values/provenance ও derived origin verification সম্পন্ন। Ruff/format/drift PASS।
+Known sandbox TestClient stall interrupted; outside-sandbox regression PASS, 2 prior warnings।
+No storage/API/UI/provider execution changes; full 5.7 অসম্পূর্ণ। Next proposed 5.7k
+additive storage migration/repository on next owner instruction; endpoint enable deferred।
+
+## 2026-10-12 — 5.7k additive reviewed profile storage
+
+[Checkpoint](character-reviewed-storage-checkpoint.md): migration 0006 reviewed table ও
+cross-table/same-table replace guards, immutable saved wrapper এবং authoritative v1/v2
+repository read/save সম্পন্ন। Manual repository conflict/unsupported-version guard added;
+existing v1 rows/JSON/timestamps preserved। 39 new persistence tests, **229 combined PASS**;
+Ruff/format/drift/docs/whitespace PASS। Two existing deprecation warnings; API suite outside
+sandbox per known TestClient restriction। Only temporary test DBs used, no live writer/GPU/commit।
+Internal caller still owns report/context trust; server-owned draft lookup pending।
+Current v1 API maps unsupported v2 to sanitized 500; explicit 409/versioned read API is
+next 5.7l bounded scope on next owner instruction। API/UI/adapter writer enable deferred;
+full 5.7 and real extraction remain incomplete।
+
+## 2026-10-12 — 5.7l version-aware profile read API
+
+[Checkpoint](character-versioned-read-checkpoint.md): GET /v2/characters/{character_id}/profile
+saved v1/v2 discriminated response ও full reviewed provenance রাখে; old GET-এ v2 হলে
+explicit 409। Existing manual API shape/conflict guard অক্ষত। New route read-only;
+corruption sanitized 500, empty null, missing 404, invalid ID 422। 30 new API cases;
+**123 combined PASS**, 2 prior warnings; lint/format/drift/docs/whitespace PASS।
+Callable discriminator দিয়ে strict storage validator ও JSON round-trip অক্ষত রাখা হয়েছে;
+initial schema-validator এবং model-before experiment failures closed। Final storage code
+অপরিবর্তিত; no migration/UI/preview/provider change। Temporary DB tests only; no GPU/commit।
+Next proposed 5.7m pure version-aware planner adapter/tests on next owner instruction;
+trusted drafts, preview/UI consumer integration ও reviewed writer remain deferred।
+
+## 2026-10-12 — 5.7m pure version-aware planner adapter
+
+[Checkpoint](character-reviewed-adapter-checkpoint.md): existing adapter saved v1/v2
+গ্রহণ করে; reviewed final traits mapping, recursive provenance/identity validation ও
+raw description/report exclusion যোগ হয়েছে। API/preview/UI wiring unchanged।
+27 new tests; 102 pure এবং **149 combined PASS**, 2 prior warnings। Ruff/format/drift/docs/
+whitespace PASS। No install/model/GPU/commit; temporary test DB only। Full 5.7 incomplete।
+Next proposed 5.7n version-aware cast preview API/tests with per-character origin metadata
+on next owner instruction; UI/mock marker, trusted draft এবং reviewed writer deferred।
+
+## 2026-10-12 — 5.7n version-aware cast preview API
+
+[Checkpoint](character-reviewed-preview-checkpoint.md): existing cast preview POST now uses
+v1/v2 authoritative reader + adapter; additive profile_origins retains selected character
+schema/source/extraction is_mock (manual=null), while preview stays mock/REVIEW_REQUIRED।
+10 new cases; **84 combined PASS**, 2 prior warnings। Mixed cast/no writes/corruption/missing
+selection/client metadata override regressions PASS; lint/format/drift/docs/whitespace PASS।
+UI and reviewed writer unchanged; no GPU/install/commit। Next proposed 5.7o cast preview UI
+version-aware selection/origin labels/tests on next owner instruction; trusted drafts ও
+reviewed-save endpoint still deferred, full 5.7 incomplete।
+
+## 2026-10-12 — 5.7o version-aware cast preview UI
+
+[Checkpoint](character-reviewed-cast-ui-checkpoint.md): versioned profile GET selection,
+missing-profile disabled state, manual/reviewed/mock labels ও strict origin response parsing
+যোগ হয়েছে। 26 browser scenarios PASS; TypeScript/build/Prettier/drift/docs/whitespace PASS;
+existing ShotList lint warning। Prior unchanged backend 84 PASS reused। Mobile labels reviewed;
+local Vite/Chromium fixture-only tests, no live backend/GPU/install/commit।
+Next proposed 5.7p server-owned extraction draft lifecycle documentation-only design review
+on next owner instruction। Trusted draft/writer ও real extraction pending; full 5.7 incomplete।
